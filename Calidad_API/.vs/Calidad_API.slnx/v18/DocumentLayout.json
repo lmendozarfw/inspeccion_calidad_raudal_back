@@ -1,0 +1,768 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\controllers\\inspeccionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\controllers\\inspeccionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\services\\inspeccionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\services\\inspeccionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\services\\transferservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\services\\transferservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\interfaces\\iinspeccionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\interfaces\\iinspeccionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\interfaces\\itransferservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\interfaces\\itransferservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\inspecciones\\inspecciondetallecreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\inspecciones\\inspecciondetallecreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\inspecciones\\inspecciondetalledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\inspecciones\\inspecciondetalledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\inspecciones\\inspeccioncerrardto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\inspecciones\\inspeccioncerrardto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\inspecciones\\inspeccioncreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\inspecciones\\inspeccioncreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\inspecciones\\inspecciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\inspecciones\\inspecciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\transfers\\transferscandto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\transfers\\transferscandto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\transfers\\transfercreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\transfers\\transfercreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\transfers\\transferdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\transfers\\transferdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\controllers\\defectoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\controllers\\defectoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\controllers\\areascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\controllers\\areascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\services\\defectoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\services\\defectoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\services\\areaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\services\\areaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\interfaces\\idefectoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\interfaces\\idefectoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\interfaces\\iareaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\interfaces\\iareaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\defectos\\defectoupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\defectos\\defectoupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\defectos\\defectocreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\defectos\\defectocreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\defectos\\defectodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\defectos\\defectodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\area\\areaupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\area\\areaupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\area\\areacreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\area\\areacreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\dtos\\area\\areadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\dtos\\area\\areadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\permisoarea.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\permisoarea.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\area.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\area.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\producciondiaria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\producciondiaria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\metacalidad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\metacalidad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\vale.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\vale.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\inspecciondetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\inspecciondetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\inspeccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\inspeccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\transfer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\transfer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\defectotipoinspeccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\defectotipoinspeccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\defecto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\defecto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\modelo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\modelo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\pieza.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\pieza.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\tipoinspeccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\tipoinspeccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\criticidad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\criticidad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\centrotrabajo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\centrotrabajo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|c:\\users\\programador\\documents\\github\\calidad_api\\calidad_api\\models\\departamento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2969A81C-E81F-4D27-81A4-084DEAC8C8D0}|Calidad_API\\Calidad_API.csproj|solutionrelative:calidad_api\\models\\departamento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "InspeccionesController.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Controllers\\InspeccionesController.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Controllers\\InspeccionesController.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Controllers\\InspeccionesController.cs",
+              "RelativeToolTip": "Calidad_API\\Controllers\\InspeccionesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGoAAABSAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T20:01:50.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "InspeccionService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\InspeccionService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Services\\InspeccionService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\InspeccionService.cs",
+              "RelativeToolTip": "Calidad_API\\Services\\InspeccionService.cs",
+              "ViewState": "AgIAAMQAAAAAAAAAAAAAAOIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T20:01:23.256Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TransferService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\TransferService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Services\\TransferService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\TransferService.cs",
+              "RelativeToolTip": "Calidad_API\\Services\\TransferService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:59:49.635Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IInspeccionService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\IInspeccionService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Interfaces\\IInspeccionService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\IInspeccionService.cs",
+              "RelativeToolTip": "Calidad_API\\Interfaces\\IInspeccionService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:57:17.246Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ITransferService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\ITransferService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Interfaces\\ITransferService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\ITransferService.cs",
+              "RelativeToolTip": "Calidad_API\\Interfaces\\ITransferService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:56:43.217Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "InspeccionDetalleCreateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleCreateDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleCreateDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleCreateDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:46:59.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "InspeccionDetalleDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Inspecciones\\InspeccionDetalleDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:46:36.559Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "InspeccionCerrarDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionCerrarDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Inspecciones\\InspeccionCerrarDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionCerrarDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Inspecciones\\InspeccionCerrarDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:45:45.094Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "InspeccionCreateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionCreateDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Inspecciones\\InspeccionCreateDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionCreateDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Inspecciones\\InspeccionCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:44:27.234Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "InspeccionDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Inspecciones\\InspeccionDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Inspecciones\\InspeccionDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Inspecciones\\InspeccionDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:39:55.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "TransferScanDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Transfers\\TransferScanDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Transfers\\TransferScanDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Transfers\\TransferScanDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Transfers\\TransferScanDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:35:03.956Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TransferCreateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Transfers\\TransferCreateDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Transfers\\TransferCreateDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Transfers\\TransferCreateDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Transfers\\TransferCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:34:33.974Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "TransferDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Transfers\\TransferDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Transfers\\TransferDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Transfers\\TransferDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Transfers\\TransferDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:33:25.366Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "DefectosController.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Controllers\\DefectosController.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Controllers\\DefectosController.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Controllers\\DefectosController.cs",
+              "RelativeToolTip": "Calidad_API\\Controllers\\DefectosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:14:32.909Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "AreasController.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Controllers\\AreasController.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Controllers\\AreasController.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Controllers\\AreasController.cs",
+              "RelativeToolTip": "Calidad_API\\Controllers\\AreasController.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAowDUAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T19:12:30.594Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "DefectoService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\DefectoService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Services\\DefectoService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\DefectoService.cs",
+              "RelativeToolTip": "Calidad_API\\Services\\DefectoService.cs",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAowAQAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:29:22.23Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "AreaService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\AreaService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Services\\AreaService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Services\\AreaService.cs",
+              "RelativeToolTip": "Calidad_API\\Services\\AreaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:25:48.175Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "IDefectoService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\IDefectoService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Interfaces\\IDefectoService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\IDefectoService.cs",
+              "RelativeToolTip": "Calidad_API\\Interfaces\\IDefectoService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:24:59.815Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "IAreaService.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\IAreaService.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Interfaces\\IAreaService.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Interfaces\\IAreaService.cs",
+              "RelativeToolTip": "Calidad_API\\Interfaces\\IAreaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:24:27.265Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Program.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Program.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Program.cs",
+              "RelativeToolTip": "Calidad_API\\Program.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABkAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:29:20.349Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "DefectoUpdateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Defectos\\DefectoUpdateDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Defectos\\DefectoUpdateDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Defectos\\DefectoUpdateDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Defectos\\DefectoUpdateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:22:14.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "DefectoCreateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Defectos\\DefectoCreateDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Defectos\\DefectoCreateDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Defectos\\DefectoCreateDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Defectos\\DefectoCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:21:52.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "DefectoDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Defectos\\DefectoDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Defectos\\DefectoDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Defectos\\DefectoDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Defectos\\DefectoDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:21:02.851Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "AreaUpdateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Area\\AreaUpdateDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Area\\AreaUpdateDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Area\\AreaUpdateDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Area\\AreaUpdateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:19:52.709Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "AreaCreateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Area\\AreaCreateDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Area\\AreaCreateDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Area\\AreaCreateDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Area\\AreaCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:19:30.991Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "AreaDto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Area\\AreaDto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\DTOs\\Area\\AreaDto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\DTOs\\Area\\AreaDto.cs",
+              "RelativeToolTip": "Calidad_API\\DTOs\\Area\\AreaDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:17:44.036Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "PermisoArea.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\PermisoArea.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\PermisoArea.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\PermisoArea.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\PermisoArea.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:26:06.614Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Usuario.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Usuario.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Usuario.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Usuario.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAzwBwAAABdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T18:03:04.837Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "ProduccionDiaria.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\ProduccionDiaria.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\ProduccionDiaria.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\ProduccionDiaria.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\ProduccionDiaria.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:59:09.021Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "MetaCalidad.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\MetaCalidad.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\MetaCalidad.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\MetaCalidad.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\MetaCalidad.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAgwB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:58:32.364Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "Vale.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Vale.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Vale.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Vale.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Vale.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAcwCcAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:58:04.746Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "InspeccionDetalle.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\InspeccionDetalle.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\InspeccionDetalle.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\InspeccionDetalle.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\InspeccionDetalle.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAIwDkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:57:29.71Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "Inspeccion.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Inspeccion.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Inspeccion.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Inspeccion.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Inspeccion.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAA5wB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:56:53.805Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Calidad_API\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAwwEQAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:26:37.564Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "Transfer.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Transfer.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Transfer.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Transfer.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Transfer.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAUwCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:56:27.046Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "DefectoTipoInspeccion.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\DefectoTipoInspeccion.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\DefectoTipoInspeccion.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\DefectoTipoInspeccion.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\DefectoTipoInspeccion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:55:59.234Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Area.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Area.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Area.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Area.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Area.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAcwCoAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:24:07.529Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "Defecto.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Defecto.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Defecto.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Defecto.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Defecto.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAywDEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:55:21.993Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "Modelo.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Modelo.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Modelo.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Modelo.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Modelo.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAkwCAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:52:59.894Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "Pieza.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Pieza.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Pieza.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Pieza.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Pieza.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAcwB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:52:32.897Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "TipoInspeccion.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\TipoInspeccion.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\TipoInspeccion.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\TipoInspeccion.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\TipoInspeccion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:52:13.289Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "Criticidad.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Criticidad.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Criticidad.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Criticidad.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Criticidad.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:51:50.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "CentroTrabajo.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\CentroTrabajo.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\CentroTrabajo.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\CentroTrabajo.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\CentroTrabajo.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwB0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:51:08.764Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "Departamento.cs",
+              "DocumentMoniker": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Departamento.cs",
+              "RelativeDocumentMoniker": "Calidad_API\\Models\\Departamento.cs",
+              "ToolTip": "C:\\Users\\Programador\\Documents\\GitHub\\Calidad_API\\Calidad_API\\Models\\Departamento.cs",
+              "RelativeToolTip": "Calidad_API\\Models\\Departamento.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwBoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T17:50:36.588Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
