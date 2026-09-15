@@ -32,7 +32,7 @@ namespace Calidad_API.Models
         public string? RutaPdf { get; set; }
 
         [Column("estado")]
-        public string Estado { get; set; } = "GENERADO";   // GENERADO | ENTREGADO | CANCELADO
+        public string Estado { get; set; } = "GENERADO";
 
         public InspeccionDetalle InspeccionDetalle { get; set; } = null!;
         public Pieza Pieza { get; set; } = null!;

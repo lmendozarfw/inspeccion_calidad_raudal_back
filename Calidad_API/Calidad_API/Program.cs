@@ -27,6 +27,14 @@ builder.Services.AddScoped<IDefectoService, DefectoService>();
 builder.Services.AddScoped<ITransferService, TransferService>();
 builder.Services.AddScoped<IInspeccionService, InspeccionService>();
 builder.Services.AddScoped<ICriticidadService, CriticidadService>();
+builder.Services.AddScoped<IValeService, ValeService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ValePdfService>();
+builder.Services.AddScoped<IUnidadNegocioService, UnidadNegocioService>();
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+builder.Services.AddScoped<ITipoInspeccionService, TipoInspeccionService>();
+builder.Services.AddScoped<IPiezaService, PiezaService>();
+builder.Services.AddScoped<IModeloService, ModeloService>();
 
 // Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -87,10 +95,10 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    // Solo para generar el hash una vez
-    var hasher = new PasswordHasher<Usuario>();
-    var hash = hasher.HashPassword(new Usuario(), "Password123*");
-    Console.WriteLine(hash);
+    //// Solo para generar el hash una vez
+    //var hasher = new PasswordHasher<Usuario>();
+    //var hash = hasher.HashPassword(new Usuario(), "Password123*");
+    //Console.WriteLine(hash);
     app.MapOpenApi();                 // expone /openapi/v1.json
     app.MapScalarApiReference();      // expone /scalar (UI interactiva)
                                       // Solo para generar el hash una vez
