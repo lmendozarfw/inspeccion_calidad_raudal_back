@@ -31,9 +31,9 @@ namespace Calidad_API.Services
             foreach (var ur in usuario.UsuarioRoles)
                 claims.Add(new Claim(ClaimTypes.Role, ur.Rol.Codigo));
 
-            // Opcional: incluir áreas con permiso de captura como claims
-            foreach (var p in usuario.PermisosArea.Where(x => x.PuedeCapturar))
-                claims.Add(new Claim("area_captura", p.IdArea.ToString()));
+            // Opcional: incluir operaciones con permiso de captura como claims
+            foreach (var p in usuario.PermisosOperacion.Where(x => x.PuedeCapturar))
+                claims.Add(new Claim("operacion_captura", p.IdOperacion.ToString()));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

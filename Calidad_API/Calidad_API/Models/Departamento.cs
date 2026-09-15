@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Azure;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Calidad_API.Models
@@ -16,13 +17,16 @@ namespace Calidad_API.Models
         [Column("nombre")]
         public string Nombre { get; set; } = null!;
 
+        [Column("id_unidad_negocio")]
+        public long? IdUnidadNegocio { get; set; }
+
         [Column("activo")]
         public bool Activo { get; set; }
 
         [Column("fecha_alta")]
         public DateTime FechaAlta { get; set; }
 
-        public ICollection<CentroTrabajo> CentrosTrabajo { get; set; } = new List<CentroTrabajo>();
-        public ICollection<Area> Areas { get; set; } = new List<Area>();
+        public UnidadNegocio? UnidadNegocio { get; set; }
+        public ICollection<Operacion> Operaciones { get; set; } = new List<Operacion>();
     }
 }

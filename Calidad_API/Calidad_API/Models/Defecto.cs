@@ -10,8 +10,8 @@ namespace Calidad_API.Models
         [Column("id_defecto")]
         public long IdDefecto { get; set; }
 
-        [Column("id_area")]
-        public long IdArea { get; set; }
+        [Column("id_operacion")]
+        public long IdOperacion { get; set; }
 
         [Column("codigo")]
         public string Codigo { get; set; } = null!;
@@ -40,7 +40,8 @@ namespace Calidad_API.Models
         [Column("usuario_alta")]
         public long? UsuarioAlta { get; set; }
 
-        public Area Area { get; set; } = null!;
+
+        public Operacion Operacion { get; set; } = null!;
         public Criticidad? Criticidad { get; set; }
         public Pieza? Pieza { get; set; }
         public ICollection<DefectoTipoInspeccion> DefectoTiposInspeccion { get; set; } = new List<DefectoTipoInspeccion>();

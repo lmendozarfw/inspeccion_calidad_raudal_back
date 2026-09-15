@@ -15,13 +15,13 @@ namespace Calidad_API.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<DefectoDto>> GetByAreaAsync(long idArea, bool soloActivos = true)
+        public async Task<IEnumerable<DefectoDto>> GetByAreaAsync(long IdOperacion, bool soloActivos = true)
         {
             var query = _context.Defectos
                 .AsNoTracking()
                 .Include(d => d.Criticidad)
                 .Include(d => d.Pieza)
-                .Where(d => d.IdArea == idArea);
+                .Where(d => d.IdOperacion == IdOperacion);
 
             if (soloActivos) query = query.Where(d => d.Activo);
 
@@ -29,7 +29,7 @@ namespace Calidad_API.Services
                 .OrderBy(d => d.Codigo)
                 .Select(d => new DefectoDto(
                     d.IdDefecto,
-                    d.IdArea,
+                    d.IdOperacion,
                     d.Codigo,
                     d.Nombre,
                     d.IdCriticidad,
@@ -53,7 +53,7 @@ namespace Calidad_API.Services
             if (d is null) return null;
 
             return new DefectoDto(
-                d.IdDefecto, d.IdArea, d.Codigo, d.Nombre,
+                d.IdDefecto, d.IdOperacion, d.Codigo, d.Nombre,
                 d.IdCriticidad, d.Criticidad?.Codigo,
                 d.AplicaPieza, d.IdPieza, d.Pieza?.Codigo,
                 d.Ponderacion, d.Activo);
@@ -62,13 +62,13 @@ namespace Calidad_API.Services
         public async Task<DefectoDto> CreateAsync(DefectoCreateDto dto)
         {
             // Validar que el área exista
-            var areaExiste = await _context.Areas.AnyAsync(a => a.IdArea == dto.IdArea && a.Activo);
+            var areaExiste = await _context.Operaciones.AnyAsync(a => a.IdOperacion == dto.IdOperacion && a.Activo);
             if (!areaExiste)
                 throw new InvalidOperationException("El área no existe o está inactiva.");
 
             var entity = new Defecto
             {
-                IdArea = dto.IdArea,
+                IdOperacion = dto.IdOperacion,
                 Codigo = dto.Codigo.Trim().ToUpper(),
                 Nombre = dto.Nombre.Trim(),
                 IdCriticidad = dto.IdCriticidad,

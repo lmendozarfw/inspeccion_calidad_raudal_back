@@ -26,9 +26,7 @@ namespace Calidad_API.Models
         public DateTime FechaAlta { get; set; }
 
         public ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
-        public ICollection<PermisoArea> PermisosArea { get; set; } = new List<PermisoArea>();
-
-        // Relaciones
+        public ICollection<PermisoOperacion> PermisosOperacion { get; set; } = new List<PermisoOperacion>();
         public ICollection<Inspeccion> Inspecciones { get; set; } = new List<Inspeccion>();
         public ICollection<InspeccionDetalle> InspeccionDetalles { get; set; } = new List<InspeccionDetalle>();
         public ICollection<Vale> ValesSolicitados { get; set; } = new List<Vale>();

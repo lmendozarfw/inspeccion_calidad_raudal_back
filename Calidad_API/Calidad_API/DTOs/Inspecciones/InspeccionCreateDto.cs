@@ -2,7 +2,7 @@
 {
     public record InspeccionCreateDto(
         long IdTransfer,
-        long IdArea,
+        long IdOperacion,
         short IdTipoInspeccion,
         string? Dispositivo,
         string? Observaciones

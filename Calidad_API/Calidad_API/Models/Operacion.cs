@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Calidad_API.Models
 {
-    [Table("area")]
-    public class Area
+    [Table("operacion")]
+    public class Operacion
     {
         [Key]
-        [Column("id_area")]
-        public long IdArea { get; set; }
+        [Column("id_operacion")]
+        public long IdOperacion { get; set; }
 
         [Column("codigo")]
         public string Codigo { get; set; } = null!;
@@ -16,11 +16,11 @@ namespace Calidad_API.Models
         [Column("nombre")]
         public string Nombre { get; set; } = null!;
 
-        [Column("id_centro_trabajo")]
-        public long? IdCentroTrabajo { get; set; }
-
         [Column("id_departamento")]
         public long? IdDepartamento { get; set; }
+
+        [Column("id_unidad_negocio")]
+        public long? IdUnidadNegocio { get; set; }
 
         [Column("proceso")]
         public string Proceso { get; set; } = null!;
@@ -34,10 +34,10 @@ namespace Calidad_API.Models
         [Column("usuario_alta")]
         public long? UsuarioAlta { get; set; }
 
-        public CentroTrabajo? CentroTrabajo { get; set; }
         public Departamento? Departamento { get; set; }
+        public UnidadNegocio? UnidadNegocio { get; set; }
         public ICollection<Defecto> Defectos { get; set; } = new List<Defecto>();
-        public ICollection<PermisoArea> PermisosArea { get; set; } = new List<PermisoArea>();
+        public ICollection<PermisoOperacion> PermisosOperacion { get; set; } = new List<PermisoOperacion>();
         public ICollection<Inspeccion> Inspecciones { get; set; } = new List<Inspeccion>();
         public ICollection<MetaCalidad> MetasCalidad { get; set; } = new List<MetaCalidad>();
         public ICollection<ProduccionDiaria> ProduccionesDiarias { get; set; } = new List<ProduccionDiaria>();

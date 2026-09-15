@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Azure;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Calidad_API.Models
 {
-    [Table("centro_trabajo")]
-    public class CentroTrabajo
+    [Table("unidad_negocio")]
+    public class UnidadNegocio
     {
         [Key]
-        [Column("id_centro_trabajo")]
-        public long IdCentroTrabajo { get; set; }
+        [Column("id_unidad_negocio")]
+        public long IdUnidadNegocio { get; set; }
 
         [Column("codigo")]
         public string Codigo { get; set; } = null!;
@@ -16,16 +17,13 @@ namespace Calidad_API.Models
         [Column("nombre")]
         public string Nombre { get; set; } = null!;
 
-        [Column("id_departamento")]
-        public long? IdDepartamento { get; set; }
-
         [Column("activo")]
         public bool Activo { get; set; }
 
         [Column("fecha_alta")]
         public DateTime FechaAlta { get; set; }
 
-        public Departamento? Departamento { get; set; }
-        public ICollection<Area> Areas { get; set; } = new List<Area>();
+        public ICollection<Departamento> Departamentos { get; set; } = new List<Departamento>();
+        public ICollection<Operacion> Operaciones { get; set; } = new List<Operacion>();
     }
 }

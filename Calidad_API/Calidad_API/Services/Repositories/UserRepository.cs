@@ -19,7 +19,7 @@ namespace Calidad_API.Services.Repositories
             return await _context.Usuarios
                 .Include(u => u.UsuarioRoles)
                     .ThenInclude(ur => ur.Rol)
-                .Include(u => u.PermisosArea)
+                .Include(u => u.PermisosOperacion)
                 .FirstOrDefaultAsync(u => u.Username == username && u.Activo);
         }
     }

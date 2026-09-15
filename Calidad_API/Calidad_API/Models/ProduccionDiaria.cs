@@ -10,8 +10,8 @@ namespace Calidad_API.Models
         [Column("id_produccion")]
         public long IdProduccion { get; set; }
 
-        [Column("id_area")]
-        public long IdArea { get; set; }
+        [Column("id_operacion")]
+        public long IdOperacion { get; set; }
 
         [Column("fecha")]
         public DateTime Fecha { get; set; }   // solo fecha en BD (DATE)
@@ -25,6 +25,6 @@ namespace Calidad_API.Models
         [Column("origen")]
         public string? Origen { get; set; }
 
-        public Area Area { get; set; } = null!;
+        public Operacion Operacion { get; set; } = null!;
     }
 }

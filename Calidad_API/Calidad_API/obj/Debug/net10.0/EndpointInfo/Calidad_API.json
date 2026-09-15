@@ -556,6 +556,358 @@
         }
       }
     },
+    "/Inspecciones/{id}": {
+      "get": {
+        "tags": [
+          "Inspecciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Inspecciones/transfer/{idTransfer}": {
+      "get": {
+        "tags": [
+          "Inspecciones"
+        ],
+        "parameters": [
+          {
+            "name": "idTransfer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InspeccionDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InspeccionDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InspeccionDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Inspecciones/area/{idArea}": {
+      "get": {
+        "tags": [
+          "Inspecciones"
+        ],
+        "parameters": [
+          {
+            "name": "idArea",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "desde",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "hasta",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InspeccionDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InspeccionDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InspeccionDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Inspecciones": {
+      "post": {
+        "tags": [
+          "Inspecciones"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionCreateDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Inspecciones/{idInspeccion}/detalles": {
+      "post": {
+        "tags": [
+          "Inspecciones"
+        ],
+        "parameters": [
+          {
+            "name": "idInspeccion",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionDetalleCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionDetalleCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionDetalleCreateDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDetalleDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDetalleDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDetalleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Inspecciones/{id}/cerrar": {
+      "put": {
+        "tags": [
+          "Inspecciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionCerrarDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionCerrarDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspeccionCerrarDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspeccionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Inspecciones/detalles/{idDetalle}": {
+      "delete": {
+        "tags": [
+          "Inspecciones"
+        ],
+        "parameters": [
+          {
+            "name": "idDetalle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/WeatherForecast": {
       "get": {
         "tags": [
@@ -730,7 +1082,7 @@
       },
       "DefectoCreateDto": {
         "required": [
-          "idArea",
+          "idOperacion",
           "codigo",
           "nombre",
           "idCriticidad",
@@ -740,7 +1092,7 @@
         ],
         "type": "object",
         "properties": {
-          "idArea": {
+          "idOperacion": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -920,6 +1272,372 @@
           }
         }
       },
+      "InspeccionCerrarDto": {
+        "required": [
+          "observaciones"
+        ],
+        "type": "object",
+        "properties": {
+          "observaciones": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "InspeccionCreateDto": {
+        "required": [
+          "idTransfer",
+          "idOperacion",
+          "idTipoInspeccion",
+          "dispositivo",
+          "observaciones"
+        ],
+        "type": "object",
+        "properties": {
+          "idTransfer": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "idOperacion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "idTipoInspeccion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int16"
+          },
+          "dispositivo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "observaciones": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "InspeccionDetalleCreateDto": {
+        "required": [
+          "idDefecto",
+          "tipoRegistro",
+          "lado",
+          "cantidad",
+          "valorObjetivo",
+          "valorMin",
+          "valorMax",
+          "unidad",
+          "valorObtenido",
+          "resultadoCualitativo"
+        ],
+        "type": "object",
+        "properties": {
+          "idDefecto": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "tipoRegistro": {
+            "type": "string"
+          },
+          "lado": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cantidad": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valorObjetivo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valorMin": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valorMax": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unidad": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "valorObtenido": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "resultadoCualitativo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "InspeccionDetalleDto": {
+        "required": [
+          "idDetalle",
+          "idDefecto",
+          "defectoCodigo",
+          "defectoNombre",
+          "tipoRegistro",
+          "lado",
+          "cantidad",
+          "valorObjetivo",
+          "valorMin",
+          "valorMax",
+          "unidad",
+          "valorObtenido",
+          "resultadoCualitativo",
+          "fechaRegistro"
+        ],
+        "type": "object",
+        "properties": {
+          "idDetalle": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "idDefecto": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "defectoCodigo": {
+            "type": "string"
+          },
+          "defectoNombre": {
+            "type": "string"
+          },
+          "tipoRegistro": {
+            "type": "string"
+          },
+          "lado": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cantidad": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valorObjetivo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valorMin": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valorMax": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unidad": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "valorObtenido": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "resultadoCualitativo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "fechaRegistro": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "InspeccionDto": {
+        "required": [
+          "idInspeccion",
+          "idTransfer",
+          "lote",
+          "idOperacion",
+          "operacionCodigo",
+          "operacionNombre",
+          "idTipoInspeccion",
+          "tipoInspeccionCodigo",
+          "idUsuario",
+          "usuarioNombre",
+          "fechaInspeccion",
+          "dispositivo",
+          "observaciones",
+          "estado",
+          "detalles"
+        ],
+        "type": "object",
+        "properties": {
+          "idInspeccion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "idTransfer": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "lote": {
+            "type": "string"
+          },
+          "idOperacion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "operacionCodigo": {
+            "type": "string"
+          },
+          "operacionNombre": {
+            "type": "string"
+          },
+          "idTipoInspeccion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int16"
+          },
+          "tipoInspeccionCodigo": {
+            "type": "string"
+          },
+          "idUsuario": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "usuarioNombre": {
+            "type": "string"
+          },
+          "fechaInspeccion": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dispositivo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "observaciones": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "estado": {
+            "type": "string"
+          },
+          "detalles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InspeccionDetalleDto"
+            }
+          }
+        }
+      },
       "LoginRequestDto": {
         "required": [
           "usuario",
@@ -1045,6 +1763,9 @@
     },
     {
       "name": "Defectos"
+    },
+    {
+      "name": "Inspecciones"
     },
     {
       "name": "WeatherForecast"

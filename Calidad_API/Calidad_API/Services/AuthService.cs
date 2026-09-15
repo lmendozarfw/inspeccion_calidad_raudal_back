@@ -33,8 +33,8 @@ namespace Calidad_API.Services
             var token = _tokenService.GenerateToken(user);
 
             var roles = user.UsuarioRoles.Select(ur => ur.Rol.Codigo).ToList();
-            var permisos = user.PermisosArea.Select(p => new PermisoAreaDto(
-                p.IdArea,
+            var permisos = user.PermisosOperacion.Select(p => new PermisoAreaDto(
+                p.IdOperacion,
                 p.PuedeCapturar,
                 p.PuedeConsultar,
                 p.PuedeGenerarVale

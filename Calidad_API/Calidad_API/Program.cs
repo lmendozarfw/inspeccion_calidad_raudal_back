@@ -22,7 +22,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher<Calidad_API.Models.Usuario>, PasswordHasher<Calidad_API.Models.Usuario>>();
-builder.Services.AddScoped<IAreaService, AreaService>();
+builder.Services.AddScoped<IAreaService, OperacionService>();
 builder.Services.AddScoped<IDefectoService, DefectoService>();
 builder.Services.AddScoped<ITransferService, TransferService>();
 builder.Services.AddScoped<IInspeccionService, InspeccionService>();
@@ -86,7 +86,10 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-
+    // Solo para generar el hash una vez
+    var hasher = new PasswordHasher<Usuario>();
+    var hash = hasher.HashPassword(new Usuario(), "Password123*");
+    Console.WriteLine(hash);
     app.MapOpenApi();                 // expone /openapi/v1.json
     app.MapScalarApiReference();      // expone /scalar (UI interactiva)
                                       // Solo para generar el hash una vez

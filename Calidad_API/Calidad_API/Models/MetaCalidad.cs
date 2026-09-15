@@ -10,8 +10,8 @@ namespace Calidad_API.Models
         [Column("id_meta")]
         public long IdMeta { get; set; }
 
-        [Column("id_area")]
-        public long IdArea { get; set; }
+        [Column("id_operacion")]
+        public long IdOperacion { get; set; }
 
         [Column("anio")]
         public short Anio { get; set; }
@@ -25,6 +25,6 @@ namespace Calidad_API.Models
         [Column("activo")]
         public bool Activo { get; set; }
 
-        public Area Area { get; set; } = null!;
+        public Operacion Operacion { get; set; } = null!;
     }
 }

@@ -20,7 +20,7 @@ namespace Calidad_API.Services
             var i = await _context.Inspecciones
                 .AsNoTracking()
                 .Include(x => x.Transfer)
-                .Include(x => x.Area)
+                .Include(x => x.Operacion)
                 .Include(x => x.TipoInspeccion)
                 .Include(x => x.Usuario)
                 .Include(x => x.Detalles).ThenInclude(d => d.Defecto)
@@ -34,7 +34,7 @@ namespace Calidad_API.Services
             var list = await _context.Inspecciones
                 .AsNoTracking()
                 .Include(x => x.Transfer)
-                .Include(x => x.Area)
+                .Include(x => x.Operacion)
                 .Include(x => x.TipoInspeccion)
                 .Include(x => x.Usuario)
                 .Include(x => x.Detalles).ThenInclude(d => d.Defecto)
@@ -50,11 +50,11 @@ namespace Calidad_API.Services
             var query = _context.Inspecciones
                 .AsNoTracking()
                 .Include(x => x.Transfer)
-                .Include(x => x.Area)
+                .Include(x => x.Operacion)
                 .Include(x => x.TipoInspeccion)
                 .Include(x => x.Usuario)
                 .Include(x => x.Detalles).ThenInclude(d => d.Defecto)
-                .Where(x => x.IdArea == idArea);
+                .Where(x => x.IdOperacion == idArea);
 
             if (desde.HasValue) query = query.Where(x => x.FechaInspeccion >= desde.Value);
             if (hasta.HasValue) query = query.Where(x => x.FechaInspeccion <= hasta.Value);
@@ -73,19 +73,19 @@ namespace Calidad_API.Services
             var transferExiste = await _context.Transfers.AnyAsync(t => t.IdTransfer == dto.IdTransfer);
             if (!transferExiste) throw new InvalidOperationException("El transfer no existe.");
 
-            var areaExiste = await _context.Areas.AnyAsync(a => a.IdArea == dto.IdArea && a.Activo);
-            if (!areaExiste) throw new InvalidOperationException("El área no existe o está inactiva.");
+            var operacionExiste = await _context.Operaciones.AnyAsync(o => o.IdOperacion == dto.IdOperacion && o.Activo);
+            if (!operacionExiste) throw new InvalidOperationException("La operación no existe o está inactiva.");
 
-            // Verificar permiso del usuario sobre el área
-            var tienePermiso = await _context.PermisosArea
-                .AnyAsync(p => p.IdUsuario == idUsuario && p.IdArea == dto.IdArea && p.PuedeCapturar);
+            // Verificar permiso del usuario sobre la operación
+            var tienePermiso = await _context.PermisosOperacion
+                .AnyAsync(p => p.IdUsuario == idUsuario && p.IdOperacion == dto.IdOperacion && p.PuedeCapturar);
             if (!tienePermiso)
                 throw new UnauthorizedAccessException("No tienes permiso de captura en esta área.");
 
             var entity = new Inspeccion
             {
                 IdTransfer = dto.IdTransfer,
-                IdArea = dto.IdArea,
+                IdOperacion = dto.IdOperacion,
                 IdTipoInspeccion = dto.IdTipoInspeccion,
                 IdUsuario = idUsuario,
                 FechaInspeccion = DateTime.UtcNow,
@@ -110,11 +110,11 @@ namespace Calidad_API.Services
             if (inspeccion.Estado != "ABIERTA")
                 throw new InvalidOperationException("La inspección ya está cerrada.");
 
-            // Validar defecto pertenece al área de la inspección
+            // Validar defecto pertenece a la operación de la inspección
             var defecto = await _context.Defectos
-                .FirstOrDefaultAsync(d => d.IdDefecto == dto.IdDefecto && d.IdArea == inspeccion.IdArea && d.Activo);
+                .FirstOrDefaultAsync(d => d.IdDefecto == dto.IdDefecto && d.IdOperacion == inspeccion.IdOperacion && d.Activo);
             if (defecto is null)
-                throw new InvalidOperationException("El defecto no pertenece al área de la inspección o está inactivo.");
+                throw new InvalidOperationException("El defecto no pertenece a la operación de la inspección o está inactivo.");
 
             var tipo = dto.TipoRegistro.Trim().ToUpper();
             if (tipo is not ("PIOCHA" or "REPROCESO"))
@@ -195,9 +195,9 @@ namespace Calidad_API.Services
             i.IdInspeccion,
             i.IdTransfer,
             i.Transfer.Lote,
-            i.IdArea,
-            i.Area.Codigo,
-            i.Area.Nombre,
+            i.IdOperacion,
+            i.Operacion.Codigo,
+            i.Operacion.Nombre,
             i.IdTipoInspeccion,
             i.TipoInspeccion.Codigo,
             i.IdUsuario,

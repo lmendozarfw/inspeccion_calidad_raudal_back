@@ -13,8 +13,8 @@ namespace Calidad_API.Models
         [Column("id_transfer")]
         public long IdTransfer { get; set; }
 
-        [Column("id_area")]
-        public long IdArea { get; set; }
+        [Column("id_operacion")]
+        public long IdOperacion { get; set; }
 
         [Column("id_tipo_inspeccion")]
         public short IdTipoInspeccion { get; set; }
@@ -35,7 +35,7 @@ namespace Calidad_API.Models
         public string Estado { get; set; } = "ABIERTA";   // ABIERTA | CERRADA
 
         public Transfer Transfer { get; set; } = null!;
-        public Area Area { get; set; } = null!;
+        public Operacion Operacion { get; set; } = null!;
         public TipoInspeccion TipoInspeccion { get; set; } = null!;
         public Usuario Usuario { get; set; } = null!;
         public ICollection<InspeccionDetalle> Detalles { get; set; } = new List<InspeccionDetalle>();

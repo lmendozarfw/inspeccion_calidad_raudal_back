@@ -2,15 +2,14 @@
 
 namespace Calidad_API.Models
 {
-    [Table("permiso_area")]
-    public class PermisoArea
+    [Table("permiso_operacion")]
+    public class PermisoOperacion
     {
         [Column("id_usuario")]
         public long IdUsuario { get; set; }
-        public Usuario Usuario { get; set; } = null!;
 
-        [Column("id_area")]
-        public long IdArea { get; set; }
+        [Column("id_operacion")]
+        public long IdOperacion { get; set; }
 
         [Column("puede_capturar")]
         public bool PuedeCapturar { get; set; }
@@ -21,6 +20,7 @@ namespace Calidad_API.Models
         [Column("puede_generar_vale")]
         public bool PuedeGenerarVale { get; set; }
 
-        public Area Area { get; set; } = null!;
+        public Usuario Usuario { get; set; } = null!;
+        public Operacion Operacion { get; set; } = null!;
     }
 }
