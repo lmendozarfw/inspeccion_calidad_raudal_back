@@ -31,6 +31,9 @@ project.lock.json
 ## Logs
 *.log
 
+## Backups
+*.Backup.tmp
+
 ## OS
 .DS_Store
 Thumbs.db
