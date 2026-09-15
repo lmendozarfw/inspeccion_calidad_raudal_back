@@ -20,6 +20,7 @@ namespace Calidad_API.Services.Repositories
                 .Include(u => u.UsuarioRoles)
                     .ThenInclude(ur => ur.Rol)
                 .Include(u => u.PermisosOperacion)
+                    .ThenInclude(p => p.Operacion)
                 .FirstOrDefaultAsync(u => u.Username == username && u.Activo);
         }
     }

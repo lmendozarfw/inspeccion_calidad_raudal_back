@@ -35,6 +35,8 @@ namespace Calidad_API.Services
             var roles = user.UsuarioRoles.Select(ur => ur.Rol.Codigo).ToList();
             var permisos = user.PermisosOperacion.Select(p => new PermisoAreaDto(
                 p.IdOperacion,
+                p.Operacion.Nombre,
+                p.Operacion.Codigo,
                 p.PuedeCapturar,
                 p.PuedeConsultar,
                 p.PuedeGenerarVale

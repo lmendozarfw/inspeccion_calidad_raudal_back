@@ -10,5 +10,5 @@
         IEnumerable<PermisoAreaDto> Permisos
     );
 
-    public record PermisoAreaDto(long IdArea, bool PuedeCapturar, bool PuedeConsultar, bool PuedeGenerarVale);
+    public record PermisoAreaDto(long IdArea, string nombre, string codigo, bool PuedeCapturar, bool PuedeConsultar, bool PuedeGenerarVale);
 }
