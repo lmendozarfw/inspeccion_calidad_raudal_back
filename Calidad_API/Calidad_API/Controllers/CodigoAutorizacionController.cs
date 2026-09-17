@@ -20,7 +20,7 @@ public class CodigoAutorizacionController : ControllerBase
         _codigoAutorizacionService = codigoAutorizacionService;
     }
     
-    [HttpGet]
+    [HttpGet("ObtenerCodigoNuevo")]
     public async Task<ActionResult<CodigoAutorizacionDto>> ObtenerCodigoAutorizacion()
     {
         var idUsuarioStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
