@@ -35,6 +35,7 @@ builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<ITipoInspeccionService, TipoInspeccionService>();
 builder.Services.AddScoped<IPiezaService, PiezaService>();
 builder.Services.AddScoped<IModeloService, ModeloService>();
+builder.Services.AddScoped<ICodigoAutorizacionService, CodigoAutorizacionService>();
 
 // Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
