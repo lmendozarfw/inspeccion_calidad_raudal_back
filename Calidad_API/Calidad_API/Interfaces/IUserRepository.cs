@@ -11,5 +11,6 @@ namespace Calidad_API.Interfaces
         Task<UsuarioDto?> CreateAsync(CreateUsuarioDto user);
         Task<UsuarioDto?> UpdateAsync(long id, UpdateUsuarioDto user);
         Task<UsuarioDto?> ToggleAsync(long id, ToggleActivoDto toggle);
+        Task<UsuarioDto?> AsignarOperacionesAsync(long idUsuario, AsignarOperacionesDto dto);
     }
 }

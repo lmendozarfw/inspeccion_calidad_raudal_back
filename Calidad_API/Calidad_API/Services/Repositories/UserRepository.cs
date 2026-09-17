@@ -36,6 +36,7 @@ namespace Calidad_API.Services.Repositories
                     NombreCompleto = u.Nombre,
                     IdsRol = u.UsuarioRoles.Select(ur => ur.IdRol).ToList(),
                     Roles = u.UsuarioRoles.Select(ur => ur.Rol).ToList(),
+                    IdsOperacion = u.PermisosOperacion.Select(p => p.IdOperacion).ToList(),
                     Activo = u.Activo,
                     FechaCreacion = u.FechaAlta
                 })
@@ -53,6 +54,7 @@ namespace Calidad_API.Services.Repositories
                     NombreCompleto = u.Nombre,
                     IdsRol = u.UsuarioRoles.Select(ur => ur.IdRol).ToList(),
                     Roles = u.UsuarioRoles.Select(ur => ur.Rol).ToList(),
+                    IdsOperacion = u.PermisosOperacion.Select(p => p.IdOperacion).ToList(),
                     Activo = u.Activo,
                     FechaCreacion = u.FechaAlta
                 })
@@ -160,10 +162,58 @@ namespace Calidad_API.Services.Repositories
             return await GetByIdAsync(usuario.IdUsuario);
         }
 
+        public async Task<UsuarioDto?> AsignarOperacionesAsync(long idUsuario, AsignarOperacionesDto dto)
+        {
+            if (dto.IdsOperacion.Count == 0)
+            {
+                return null;
+            }
+
+            var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.IdUsuario == idUsuario);
+            if (!usuarioExiste)
+            {
+                return null;
+            }
+
+            var idsOperaciones = dto.IdsOperacion.Distinct().ToList();
+            if (!await ExistenTodasLasOperacionesAsync(idsOperaciones))
+            {
+                return null;
+            }
+
+            var permisosActuales = await _context.PermisosOperacion
+                .Where(p => p.IdUsuario == idUsuario)
+                .ToListAsync();
+
+            _context.PermisosOperacion.RemoveRange(permisosActuales);
+            await _context.SaveChangesAsync();
+
+            var nuevosPermisos = idsOperaciones.Select(idOperacion => new PermisoOperacion
+            {
+                IdUsuario = idUsuario,
+                IdOperacion = idOperacion,
+                PuedeCapturar = true,
+                PuedeConsultar = true,
+                PuedeGenerarVale = true
+            }).ToList();
+
+            await _context.PermisosOperacion.AddRangeAsync(nuevosPermisos);
+            await _context.SaveChangesAsync();
+
+            return await GetByIdAsync(idUsuario);
+        }
+
         private async Task<bool> ExistenTodosLosRolesAsync(List<short> idsRoles)
         {
             var cantidadRolesExistentes = await _context.Roles.CountAsync(r => idsRoles.Contains(r.IdRol));
             return cantidadRolesExistentes == idsRoles.Count;
+        }
+
+        private async Task<bool> ExistenTodasLasOperacionesAsync(List<long> idsOperaciones)
+        {
+            var cantidadOperacionesExistentes = await _context.Operaciones
+                .CountAsync(o => idsOperaciones.Contains(o.IdOperacion));
+            return cantidadOperacionesExistentes == idsOperaciones.Count;
         }
     }
 }

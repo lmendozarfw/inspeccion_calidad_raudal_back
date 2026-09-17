@@ -9,6 +9,7 @@ public class UsuarioDto
     public string NombreCompleto { get; set; } = string.Empty;
     public List<short> IdsRol { get; set; } = [];
     public List<Rol> Roles { get; set; } = [];
+    public List<long> IdsOperacion { get; set; } = [];
     public bool Activo { get; set; }
     public DateTime FechaCreacion { get; set; }
 }
