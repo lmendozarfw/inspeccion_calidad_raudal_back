@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Calidad_API.Models;
 
-[Table("codigo_autorizacion")]
+[Table("codigos_autorizacion")]
 public class CodigoAutorizacion
 {
     [Key]
     [Column("id_codigo_autorizacion")]
-    public short IdCodigoAutorizacion { get; set; }
+    public long IdCodigoAutorizacion { get; set; }
     
-    [Column("is_usuario")]
+    [Column("id_usuario")]
     public long IdUsuario { get; set; }
     
     [Column("codigo_hash")]

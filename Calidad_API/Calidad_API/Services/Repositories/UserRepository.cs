@@ -1,7 +1,9 @@
 ﻿using Calidad_API.Data;
+using Calidad_API.DTOs.Roles;
 using Calidad_API.DTOs.Usuario;
 using Calidad_API.Interfaces;
 using Calidad_API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Calidad_API.Services.Repositories
@@ -9,10 +11,12 @@ namespace Calidad_API.Services.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPasswordHasher<Usuario> _passwordHasher;
 
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context, IPasswordHasher<Usuario> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Usuario?> GetByUsernameAsync(string username)
@@ -35,7 +39,7 @@ namespace Calidad_API.Services.Repositories
                     Username = u.Username,
                     NombreCompleto = u.Nombre,
                     IdsRol = u.UsuarioRoles.Select(ur => ur.IdRol).ToList(),
-                    Roles = u.UsuarioRoles.Select(ur => ur.Rol).ToList(),
+                    Roles = u.UsuarioRoles.Select(ur => new RolDto(ur.Rol.IdRol, ur.Rol.Codigo, ur.Rol.Nombre)).ToList(),
                     IdsOperacion = u.PermisosOperacion.Select(p => p.IdOperacion).ToList(),
                     Activo = u.Activo,
                     FechaCreacion = u.FechaAlta
@@ -53,7 +57,7 @@ namespace Calidad_API.Services.Repositories
                     Username = u.Username,
                     NombreCompleto = u.Nombre,
                     IdsRol = u.UsuarioRoles.Select(ur => ur.IdRol).ToList(),
-                    Roles = u.UsuarioRoles.Select(ur => ur.Rol).ToList(),
+                    Roles = u.UsuarioRoles.Select(ur => new RolDto(ur.Rol.IdRol, ur.Rol.Codigo, ur.Rol.Nombre)).ToList(),
                     IdsOperacion = u.PermisosOperacion.Select(p => p.IdOperacion).ToList(),
                     Activo = u.Activo,
                     FechaCreacion = u.FechaAlta
@@ -92,7 +96,7 @@ namespace Calidad_API.Services.Repositories
             {
                 Username = user.Username.Trim(),
                 Nombre = user.NombreCompleto.Trim(),
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password),
+                PasswordHash = _passwordHasher.HashPassword(new Usuario(), user.Password),
                 Activo = true,
                 FechaAlta = DateTime.UtcNow,
                 UsuarioRoles = idsRoles.Select(id => new UsuarioRol { IdRol = id }).ToList()

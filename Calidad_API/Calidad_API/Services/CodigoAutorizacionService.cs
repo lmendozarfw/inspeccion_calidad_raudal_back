@@ -34,11 +34,12 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
         {
             IdUsuario = IdUsuario,
             Activo = true,
-            CodigoHash = codigo,
+            CodigoHash = HashCodigo(codigo),
             FechaCreacion = fechaCreacion,
             FechaExpiracion = fechaExpiracion
         };
         _contex.CodigosAutorizacion.Add(entity);
+        await _contex.SaveChangesAsync();
         return new CodigoAutorizacionDto(
             codigo, fechaCreacion, fechaExpiracion);
     }
