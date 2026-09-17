@@ -6,6 +6,7 @@ namespace Calidad_API.Interfaces
     public interface IUserRepository
     {
         Task<Usuario?> GetByUsernameAsync(string username);
+        Task<Usuario?> GetByIdWithDetailsAsync(long id);
         Task<List<UsuarioDto>> GetAllAsync();
         Task<UsuarioDto?> GetByIdAsync(long id);
         Task<UsuarioDto?> CreateAsync(CreateUsuarioDto user);

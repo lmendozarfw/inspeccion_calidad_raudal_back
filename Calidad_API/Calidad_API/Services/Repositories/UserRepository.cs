@@ -29,6 +29,16 @@ namespace Calidad_API.Services.Repositories
                 .FirstOrDefaultAsync(u => u.Username == username && u.Activo);
         }
 
+        public async Task<Usuario?> GetByIdWithDetailsAsync(long id)
+        {
+            return await _context.Usuarios
+                .Include(u => u.UsuarioRoles)
+                    .ThenInclude(ur => ur.Rol)
+                .Include(u => u.PermisosOperacion)
+                    .ThenInclude(p => p.Operacion)
+                .FirstOrDefaultAsync(u => u.IdUsuario == id && u.Activo);
+        }
+
         public async Task<List<UsuarioDto>> GetAllAsync()
         {
             return await _context.Usuarios.AsNoTracking()

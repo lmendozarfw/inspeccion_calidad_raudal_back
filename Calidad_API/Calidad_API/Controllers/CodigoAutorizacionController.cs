@@ -19,6 +19,13 @@ public class CodigoAutorizacionController : ControllerBase
     {
         _codigoAutorizacionService = codigoAutorizacionService;
     }
+
+    [HttpGet("ObtenerCodigosPorUsuario/{idUsuario}")]
+    public async Task<ActionResult<IEnumerable<CodigoAutorizacionDto>>> ObtenerCodigosPorUsuarioAsync(long idUsuario)
+    {
+        var codigos = await _codigoAutorizacionService.GetCodigosAutorizacionByUsuarioAsync(idUsuario);
+        return Ok(codigos);
+    }
     
     [HttpGet("ObtenerCodigoNuevo")]
     public async Task<ActionResult<CodigoAutorizacionDto>> ObtenerCodigoAutorizacion()

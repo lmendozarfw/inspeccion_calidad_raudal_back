@@ -18,10 +18,22 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
         _contex = context;
     }
 
-    public async Task<CodigoAutorizacionDto?> ObtenerCodigoAutorizacionAsync(long IdUsuario)
+    public async Task<IEnumerable<CodigoAutorizacionDto>> GetCodigosAutorizacionByUsuarioAsync(long idUsuario)
+    {
+        var query = _contex.CodigosAutorizacion.AsNoTracking().Where(c => c.IdUsuario == idUsuario).AsQueryable();
+        return await query.OrderBy(c => c.FechaExpiracion)
+            .Select(ca => new CodigoAutorizacionDto(
+                ca.CodigoHash,
+                ca.FechaCreacion,
+                ca.FechaExpiracion,
+                ca.Activo
+            )).ToListAsync();
+    }
+
+    public async Task<CodigoAutorizacionDto?> ObtenerCodigoAutorizacionAsync(long idUsuario)
     {
         var tieneRolSupervisor = await _contex.UsuarioRoles.AsNoTracking()
-            .AnyAsync(ur => ur.IdUsuario == IdUsuario && ur.Rol.Codigo == "SUPERVISOR");
+            .AnyAsync(ur => ur.IdUsuario == idUsuario && ur.Rol.Codigo == "SUPERVISOR");
         if (!tieneRolSupervisor)
         {
             return null;
@@ -32,7 +44,7 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
         var fechaExpiracion = fechaCreacion.AddDays(90);
         var entity = new CodigoAutorizacion
         {
-            IdUsuario = IdUsuario,
+            IdUsuario = idUsuario,
             Activo = true,
             CodigoHash = HashCodigo(codigo),
             FechaCreacion = fechaCreacion,
@@ -41,7 +53,7 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
         _contex.CodigosAutorizacion.Add(entity);
         await _contex.SaveChangesAsync();
         return new CodigoAutorizacionDto(
-            codigo, fechaCreacion, fechaExpiracion);
+            codigo, fechaCreacion, fechaExpiracion, true);
     }
 
     private string GenerarCodigo(int longitud)

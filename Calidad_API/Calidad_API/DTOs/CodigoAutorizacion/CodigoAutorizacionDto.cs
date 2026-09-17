@@ -3,5 +3,6 @@
 public record CodigoAutorizacionDto(
     string Codigo,
     DateTime FechaCreacion,
-    DateTime FechaExpiracion
+    DateTime FechaExpiracion,
+    bool Activo
     );

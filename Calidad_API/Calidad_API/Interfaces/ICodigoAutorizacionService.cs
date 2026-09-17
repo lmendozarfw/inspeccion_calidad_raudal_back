@@ -4,5 +4,6 @@ namespace Calidad_API.Interfaces;
 
 public interface ICodigoAutorizacionService
 {
-    public Task<CodigoAutorizacionDto?> ObtenerCodigoAutorizacionAsync(long IdUsuario);
+    public Task<IEnumerable<CodigoAutorizacionDto>> GetCodigosAutorizacionByUsuarioAsync(long idUsuario);
+    public Task<CodigoAutorizacionDto?> ObtenerCodigoAutorizacionAsync(long idUsuario);
 }
