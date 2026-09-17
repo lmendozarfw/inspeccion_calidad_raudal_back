@@ -11,7 +11,7 @@ public class CodigoAutorizacion
     public short IdCodigoAutorizacion { get; set; }
     
     [Column("is_usuario")]
-    public short IdUsuario { get; set; }
+    public long IdUsuario { get; set; }
     
     [Column("codigo_hash")]
     public string CodigoHash { get; set; }
@@ -19,9 +19,11 @@ public class CodigoAutorizacion
     [Column("activo")]
     public bool Activo { get; set; }
     
-    [Column("fecha_expiracion")]
+    [Column("fecha_creacion")]
     public DateTime FechaCreacion { get; set; }
     
     [Column("fecha_expiracion")]
     public DateTime FechaExpiracion { get; set; }
+    
+    public Usuario Usuario { get; set; } = null!;
 }
