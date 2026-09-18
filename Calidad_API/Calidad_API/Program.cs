@@ -40,6 +40,7 @@ builder.Services.AddScoped<ICodigoAutorizacionService, CodigoAutorizacionService
 builder.Services.AddSingleton<ICodigoCipher, AesGcmCodigoCipher>();
 builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 // Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

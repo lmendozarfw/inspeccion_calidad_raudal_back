@@ -7,6 +7,7 @@
         string Proceso,
         bool Activo,
         long? IdCentroTrabajo,
-        long? IdDepartamento
+        long? IdDepartamento,
+        string? Departamento
     );
 }

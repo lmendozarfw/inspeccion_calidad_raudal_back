@@ -23,20 +23,21 @@ namespace Calidad_API.Services
             return await query
                 .OrderBy(a => a.Proceso)
                 .ThenBy(a => a.Codigo)
+                .Include(a => a.Departamento)
                 .Select(a => new AreaDto(
                     a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
-                    a.IdDepartamento, a.IdUnidadNegocio))
+                    a.IdDepartamento, a.IdUnidadNegocio, a.Departamento != null ? a.Departamento.Nombre : ""))
                 .ToListAsync();
         }
 
         public async Task<AreaDto?> GetByIdAsync(long id)
         {
-            var a = await _context.Operaciones.AsNoTracking()
+            var a = await _context.Operaciones.AsNoTracking().Include(operacion => operacion.Departamento)
                 .FirstOrDefaultAsync(x => x.IdOperacion == id);
             if (a is null) return null;
 
             return new AreaDto(a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
-                a.IdDepartamento, a.IdUnidadNegocio);
+                a.IdDepartamento, a.IdUnidadNegocio, a.Departamento != null ? a.Departamento.Nombre : "");
         }
 
         public async Task<IEnumerable<AreaDto>> GetByProcesoAsync(string proceso)
@@ -44,9 +45,10 @@ namespace Calidad_API.Services
             return await _context.Operaciones.AsNoTracking()
                 .Where(a => a.Activo && a.Proceso == proceso)
                 .OrderBy(a => a.Codigo)
+                .Include(a => a.Departamento)
                 .Select(a => new AreaDto(
                     a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
-                    a.IdDepartamento, a.IdUnidadNegocio))
+                    a.IdDepartamento, a.IdUnidadNegocio,  a.Departamento != null ? a.Departamento.Nombre : ""))
                 .ToListAsync();
         }
 
@@ -65,9 +67,9 @@ namespace Calidad_API.Services
 
             _context.Operaciones.Add(entity);
             await _context.SaveChangesAsync();
-
+            var departamento = await _context.Departamentos.AsNoTracking().FirstOrDefaultAsync(d => d.IdDepartamento == entity.IdDepartamento);
             return new AreaDto(entity.IdOperacion, entity.Codigo, entity.Nombre,
-                entity.Proceso, entity.Activo, entity.IdDepartamento, entity.IdUnidadNegocio);
+                entity.Proceso, entity.Activo, entity.IdDepartamento, entity.IdUnidadNegocio, departamento != null ? departamento.Nombre : "");
         }
 
         public async Task<AreaDto?> UpdateAsync(long id, AreaUpdateDto dto)
@@ -82,9 +84,9 @@ namespace Calidad_API.Services
             entity.IdUnidadNegocio = dto.IdDepartamento;
 
             await _context.SaveChangesAsync();
-
+            var departamento = await _context.Departamentos.AsNoTracking().FirstOrDefaultAsync(d => d.IdDepartamento == entity.IdDepartamento);
             return new AreaDto(entity.IdOperacion, entity.Codigo, entity.Nombre,
-                entity.Proceso, entity.Activo, entity.IdDepartamento, entity.IdUnidadNegocio);
+                entity.Proceso, entity.Activo, entity.IdDepartamento, entity.IdUnidadNegocio, departamento != null ? departamento.Nombre : "");
         }
 
         public async Task<bool> DeleteAsync(long id)
