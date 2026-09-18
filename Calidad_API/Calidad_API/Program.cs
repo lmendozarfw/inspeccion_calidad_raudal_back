@@ -1,5 +1,6 @@
 using Calidad_API.Data;
 using Calidad_API.Interfaces;
+using Calidad_API.Middleware;
 using Calidad_API.Models;
 using Calidad_API.Services;
 using Calidad_API.Services.Repositories;
@@ -35,6 +36,10 @@ builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<ITipoInspeccionService, TipoInspeccionService>();
 builder.Services.AddScoped<IPiezaService, PiezaService>();
 builder.Services.AddScoped<IModeloService, ModeloService>();
+builder.Services.AddScoped<ICodigoAutorizacionService, CodigoAutorizacionService>();
+builder.Services.AddSingleton<ICodigoCipher, AesGcmCodigoCipher>();
+builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -105,6 +110,7 @@ if (app.Environment.IsDevelopment())
 
 }
 
+app.UseExceptionHandler();
 app.UseCors("Angular");
 app.UseHttpsRedirection();
 app.UseAuthentication();

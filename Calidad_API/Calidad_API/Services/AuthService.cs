@@ -1,4 +1,5 @@
 ﻿using Calidad_API.DTOs;
+using Calidad_API.DTOs.Usuario;
 using Calidad_API.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -42,7 +43,28 @@ namespace Calidad_API.Services
                 p.PuedeGenerarVale
             )).ToList();
 
-            return new LoginResponseDto(token, user.Username, user.Nombre, roles, permisos);
+            return new LoginResponseDto(token, user.IdUsuario,user.Username, user.Nombre, roles, permisos);
+        }
+
+        public async Task<UsuarioMeDto?> ObtenerUsuarioActualAsync(long idUsuario)
+        {
+            var user = await _userRepository.GetByIdWithDetailsAsync(idUsuario);
+            if (user is null)
+            {
+                return null;
+            }
+
+            var roles = user.UsuarioRoles.Select(ur => ur.Rol.Codigo).ToList();
+            var permisos = user.PermisosOperacion.Select(p => new PermisoAreaDto(
+                p.IdOperacion,
+                p.Operacion.Nombre,
+                p.Operacion.Codigo,
+                p.PuedeCapturar,
+                p.PuedeConsultar,
+                p.PuedeGenerarVale
+            )).ToList();
+
+            return new UsuarioMeDto(user.IdUsuario, user.Username, user.Nombre, roles, permisos);
         }
     }
 }

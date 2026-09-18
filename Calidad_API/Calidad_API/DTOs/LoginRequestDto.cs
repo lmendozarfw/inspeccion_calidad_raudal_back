@@ -4,6 +4,7 @@
 
     public record LoginResponseDto(
         string Token,
+        long IdUsuario,
         string Usuario,
         string Nombre,
         IEnumerable<string> Roles,

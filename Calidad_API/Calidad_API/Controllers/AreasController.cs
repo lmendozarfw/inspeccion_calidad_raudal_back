@@ -28,7 +28,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<OperacionDto>> GetById(long id)
         {
             var area = await _areaService.GetByIdAsync(id);
-            return area is null ? NotFound() : Ok(area);
+            return area is null ? NotFound(new { mensaje = "Área no encontrada." }) : Ok(area);
         }
 
         [HttpGet("proceso/{proceso}")]
@@ -51,7 +51,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<OperacionDto>> Update(long id, [FromBody] OperacionUpdateDto dto)
         {
             var updated = await _areaService.UpdateAsync(id, dto);
-            return updated is null ? NotFound() : Ok(updated);
+            return updated is null ? NotFound(new { mensaje = "Área no encontrada." }) : Ok(updated);
         }
 
         [HttpDelete("{id:long}")]
@@ -59,7 +59,7 @@ namespace Calidad_API.Controllers
         public async Task<IActionResult> Delete(long id)
         {
             var ok = await _areaService.DeleteAsync(id);
-            return ok ? NoContent() : NotFound();
+            return ok ? NoContent() : NotFound(new { mensaje = "Área no encontrada." });
         }
     }
 }

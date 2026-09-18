@@ -12,6 +12,8 @@ namespace Calidad_API.Data
         public DbSet<Rol> Roles { get; set; } = null!;
         public DbSet<UsuarioRol> UsuarioRoles { get; set; } = null!;
         public DbSet<PermisoOperacion> PermisosOperacion { get; set; } = null!;
+        public DbSet<CodigoAutorizacion> CodigosAutorizacion { get; set; } = null!;
+        public DbSet<RegistroAutorizacion> RegistrosAutorizacion { get; set; } = null!;
 
         // ——— Catálogos / Jerarquía ———
         public DbSet<UnidadNegocio> UnidadesNegocio { get; set; } = null!;
@@ -41,6 +43,34 @@ namespace Calidad_API.Data
             // =====================================================
             // SEGURIDAD
             // =====================================================
+
+
+            modelBuilder.Entity<CodigoAutorizacion>(e =>
+            {
+                e.HasKey(e => e.IdCodigoAutorizacion);
+                e.HasOne(e => e.Usuario)
+                    .WithMany(u => u.CodigosAutorizacion)
+                    .HasForeignKey(e => e.IdUsuario)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<RegistroAutorizacion>(e =>
+            {
+                e.HasKey(e => e.IdRegistroAutorizacion);
+                e.HasOne(e => e.UsuarioSolicita)
+                    .WithMany(u => u.RegistrosAutorizacionSolicitados)
+                    .HasForeignKey(e => e.IdUsuarioSolicita)
+                    .OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(e => e.UsuarioAutoriza)
+                    .WithMany(u => u.RegistrosAutorizacionRealizados)
+                    .HasForeignKey(e => e.IdUsuarioAutoriza)
+                    .OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(e => e.Inspeccion)
+                    .WithMany()
+                    .HasForeignKey(e => e.IdInspeccion)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            
             modelBuilder.Entity<UsuarioRol>(e =>
             {
                 e.HasKey(x => new { x.IdUsuario, x.IdRol });
@@ -80,7 +110,6 @@ namespace Calidad_API.Data
             {
                 e.HasIndex(x => x.Codigo).IsUnique();
             });
-
             // =====================================================
             // CATÁLOGOS / JERARQUÍA
             // =====================================================

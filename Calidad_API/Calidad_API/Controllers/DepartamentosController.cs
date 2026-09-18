@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calidad_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     [Authorize]
     public class DepartamentosController : ControllerBase
@@ -25,7 +25,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<DepartamentoDto>> GetById(long id)
         {
             var item = await _service.GetByIdAsync(id);
-            return item is null ? NotFound() : Ok(item);
+            return item is null ? NotFound(new { mensaje = "Departamento no encontrado." }) : Ok(item);
         }
 
         [HttpPost]
@@ -41,12 +41,12 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<DepartamentoDto>> Update(long id, [FromBody] DepartamentoUpdateDto dto)
         {
             var updated = await _service.UpdateAsync(id, dto);
-            return updated is null ? NotFound() : Ok(updated);
+            return updated is null ? NotFound(new { mensaje = "Departamento no encontrado." }) : Ok(updated);
         }
 
         [HttpDelete("{id:long}")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Delete(long id)
-            => await _service.DeleteAsync(id) ? NoContent() : NotFound();
+            => await _service.DeleteAsync(id) ? NoContent() : NotFound(new { mensaje = "Departamento no encontrado." });
     }
 }

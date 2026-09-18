@@ -30,5 +30,10 @@ namespace Calidad_API.Models
         public ICollection<Inspeccion> Inspecciones { get; set; } = new List<Inspeccion>();
         public ICollection<InspeccionDetalle> InspeccionDetalles { get; set; } = new List<InspeccionDetalle>();
         public ICollection<Vale> ValesSolicitados { get; set; } = new List<Vale>();
+        public ICollection<CodigoAutorizacion> CodigosAutorizacion { get; set; } = new List<CodigoAutorizacion>();
+        public ICollection<RegistroAutorizacion> RegistrosAutorizacionSolicitados { get; set; } = new List<RegistroAutorizacion>();
+
+        public ICollection<RegistroAutorizacion> RegistrosAutorizacionRealizados { get; set; } =
+            new List<RegistroAutorizacion>();
     }
 }

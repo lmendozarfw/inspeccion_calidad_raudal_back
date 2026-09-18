@@ -1,5 +1,8 @@
-﻿using Calidad_API.DTOs;
+﻿using System.Security.Claims;
+using Calidad_API.DTOs;
+using Calidad_API.DTOs.Usuario;
 using Calidad_API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calidad_API.Controllers
@@ -27,6 +30,26 @@ namespace Calidad_API.Controllers
             {
                 return Unauthorized(new { message = ex.Message });
             }
+        }
+        
+        [HttpGet("Me")]
+        [Authorize]
+        public async Task<ActionResult<UsuarioMeDto>> GetMe()
+        {
+            var idUsuarioStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(idUsuarioStr, out var idUsuario))
+            {
+                return Unauthorized(new { mensaje = "Token inválido o usuario no autenticado." });
+            }
+
+            var usuario = await _authService.ObtenerUsuarioActualAsync(idUsuario);
+
+            if (usuario is null)
+            {
+                return Unauthorized(new { mensaje = "Token inválido o usuario no autenticado." });
+            }
+
+            return Ok(usuario);
         }
     }
 }
