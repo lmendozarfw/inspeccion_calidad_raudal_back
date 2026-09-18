@@ -23,7 +23,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher<Calidad_API.Models.Usuario>, PasswordHasher<Calidad_API.Models.Usuario>>();
-builder.Services.AddScoped<IAreaService, OperacionService>();
+builder.Services.AddScoped<IOperacionService, OperacionService>();
 builder.Services.AddScoped<IDefectoService, DefectoService>();
 builder.Services.AddScoped<ITransferService, TransferService>();
 builder.Services.AddScoped<IInspeccionService, InspeccionService>();

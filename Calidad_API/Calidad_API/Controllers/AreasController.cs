@@ -1,4 +1,4 @@
-﻿using Calidad_API.DTOs.Area;
+﻿using Calidad_API.DTOs.Operaciones;
 using Calidad_API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,29 +10,29 @@ namespace Calidad_API.Controllers
     [Authorize]
     public class AreasController : ControllerBase
     {
-        private readonly IAreaService _areaService;
+        private readonly IOperacionService _areaService;
 
-        public AreasController(IAreaService areaService)
+        public AreasController(IOperacionService areaService)
         {
             _areaService = areaService;
         }
-
+            
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AreaDto>>> GetAll([FromQuery] bool soloActivas = true)
+        public async Task<ActionResult<IEnumerable<OperacionDto>>> GetAll([FromQuery] bool soloActivas = true)
         {
             var result = await _areaService.GetAllAsync(soloActivas);
             return Ok(result);
         }
 
         [HttpGet("{id:long}")]
-        public async Task<ActionResult<AreaDto>> GetById(long id)
+        public async Task<ActionResult<OperacionDto>> GetById(long id)
         {
             var area = await _areaService.GetByIdAsync(id);
             return area is null ? NotFound(new { mensaje = "Área no encontrada." }) : Ok(area);
         }
 
         [HttpGet("proceso/{proceso}")]
-        public async Task<ActionResult<IEnumerable<AreaDto>>> GetByProceso(string proceso)
+        public async Task<ActionResult<IEnumerable<OperacionDto>>> GetByProceso(string proceso)
         {
             var result = await _areaService.GetByProcesoAsync(proceso);
             return Ok(result);
@@ -40,15 +40,15 @@ namespace Calidad_API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
-        public async Task<ActionResult<AreaDto>> Create([FromBody] AreaCreateDto dto)
+        public async Task<ActionResult<OperacionDto>> Create([FromBody] DTOs.Operaciones.OperacionCreateDto dto)
         {
             var created = await _areaService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.IdArea }, created);
+            return CreatedAtAction(nameof(GetById), new { id = created.IdOperacion }, created);
         }
 
         [HttpPut("{id:long}")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
-        public async Task<ActionResult<AreaDto>> Update(long id, [FromBody] AreaUpdateDto dto)
+        public async Task<ActionResult<OperacionDto>> Update(long id, [FromBody] OperacionUpdateDto dto)
         {
             var updated = await _areaService.UpdateAsync(id, dto);
             return updated is null ? NotFound(new { mensaje = "Área no encontrada." }) : Ok(updated);
