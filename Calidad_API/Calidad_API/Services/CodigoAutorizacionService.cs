@@ -2,8 +2,6 @@
 using Calidad_API.DTOs.CodigoAutorizacion;
 using Calidad_API.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
 using Calidad_API.Models;
 
 namespace Calidad_API.Services;
@@ -12,22 +10,27 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
 {
 
     private readonly ApplicationDbContext _contex;
+    private readonly ICodigoCipher _codigoCipher;
 
-    public CodigoAutorizacionService(ApplicationDbContext context)
+    public CodigoAutorizacionService(ApplicationDbContext context, ICodigoCipher codigoCipher)
     {
         _contex = context;
+        _codigoCipher = codigoCipher;
     }
 
     public async Task<IEnumerable<CodigoAutorizacionDto>> GetCodigosAutorizacionByUsuarioAsync(long idUsuario)
     {
-        var query = _contex.CodigosAutorizacion.AsNoTracking().Where(c => c.IdUsuario == idUsuario).AsQueryable();
-        return await query.OrderBy(c => c.FechaExpiracion)
-            .Select(ca => new CodigoAutorizacionDto(
-                ca.CodigoHash,
-                ca.FechaCreacion,
-                ca.FechaExpiracion,
-                ca.Activo
-            )).ToListAsync();
+        var codigos = await _contex.CodigosAutorizacion.AsNoTracking()
+            .Where(c => c.IdUsuario == idUsuario)
+            .OrderBy(c => c.FechaExpiracion)
+            .ToListAsync();
+
+        return codigos.Select(ca => new CodigoAutorizacionDto(
+            ca.CodigoCifrado is null ? null : _codigoCipher.Descifrar(ca.CodigoCifrado),
+            ca.FechaCreacion,
+            ca.FechaExpiracion,
+            ca.Activo
+        )).ToList();
     }
 
     public async Task<CodigoAutorizacionDto?> ObtenerCodigoAutorizacionAsync(long idUsuario)
@@ -46,7 +49,7 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
         {
             IdUsuario = idUsuario,
             Activo = true,
-            CodigoHash = HashCodigo(codigo),
+            CodigoCifrado = _codigoCipher.Cifrar(codigo),
             FechaCreacion = fechaCreacion,
             FechaExpiracion = fechaExpiracion
         };
@@ -63,21 +66,24 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
         return Random.Shared.Next(min, max).ToString();
     }
 
-    private string HashCodigo(string codigo)
-    {
-        return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(codigo)));
-    }
-    
     private async Task<string> CrearCodigoUnicoAsync(int longitud = 4)
     {
+        var codigosActivos = await _contex.CodigosAutorizacion.AsNoTracking()
+            .Where(c => c.Activo && c.CodigoCifrado != null)
+            .Select(c => c.CodigoCifrado!)
+            .ToListAsync();
+
+        var existentes = codigosActivos
+            .Select(cifrado => _codigoCipher.Descifrar(cifrado))
+            .ToHashSet();
+
         while (true)
         {
             var codigo = GenerarCodigo(longitud);
-            var hash = HashCodigo(codigo);
-            var repetido = await _contex.CodigosAutorizacion
-                .AsNoTracking()
-                .AnyAsync(c => c.CodigoHash == hash && c.Activo);
-            if (!repetido) return codigo;
+            if (!existentes.Contains(codigo))
+            {
+                return codigo;
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Calidad_API.DTOs.CodigoAutorizacion;
 
 public record CodigoAutorizacionDto(
-    string Codigo,
+    string? Codigo,
     DateTime FechaCreacion,
     DateTime FechaExpiracion,
     bool Activo

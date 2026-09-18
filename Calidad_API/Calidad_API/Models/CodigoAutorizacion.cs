@@ -13,8 +13,8 @@ public class CodigoAutorizacion
     [Column("id_usuario")]
     public long IdUsuario { get; set; }
     
-    [Column("codigo_hash")]
-    public string CodigoHash { get; set; }
+    [Column("codigo_cifrado")]
+    public string? CodigoCifrado { get; set; }
     
     [Column("activo")]
     public bool Activo { get; set; }
