@@ -21,7 +21,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<RolDto>> GetById(short id)
         {
             var rol = await _service.GetByIdAsync(id);
-            return rol is null ? NotFound() : Ok(rol);
+            return rol is null ? NotFound(new { mensaje = "Rol no encontrado." }) : Ok(rol);
         }
     }
 }

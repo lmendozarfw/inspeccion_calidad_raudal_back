@@ -30,12 +30,11 @@ public class CodigoAutorizacionController : ControllerBase
     [HttpGet("ObtenerCodigoNuevo")]
     public async Task<ActionResult<CodigoAutorizacionDto>> ObtenerCodigoAutorizacion()
     {
-        var idUsuarioStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        Console.WriteLine("id usuario" + " " + idUsuarioStr);
-        if (!long.TryParse(idUsuarioStr, out var idUsuario))
-        {
-            return Unauthorized();
-        }
+var idUsuarioStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(idUsuarioStr, out var idUsuario))
+            {
+                return Unauthorized(new { mensaje = "Token inválido o usuario no autenticado." });
+            }
         var codigo = await _codigoAutorizacionService.ObtenerCodigoAutorizacionAsync(idUsuario);
         return Ok(codigo);
     }

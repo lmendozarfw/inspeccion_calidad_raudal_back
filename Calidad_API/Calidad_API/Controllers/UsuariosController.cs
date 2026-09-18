@@ -21,7 +21,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<UsuarioDto>> GetById(long id)
         {
             var usuario = await _repository.GetByIdAsync(id);
-            return usuario is null ? NotFound() : Ok(usuario);
+            return usuario is null ? NotFound(new { mensaje = "Usuario no encontrado." }) : Ok(usuario);
         }
 
         [HttpPost]
@@ -29,7 +29,9 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<UsuarioDto>> Create([FromBody] CreateUsuarioDto dto)
         {
             var created = await _repository.CreateAsync(dto);
-            return created is null ? BadRequest() : CreatedAtAction(nameof(GetById), new { id = created.IdUsuario }, created);
+            return created is null
+                ? BadRequest(new { mensaje = "Datos inválidos, nombre de usuario ya existente o password no válido." })
+                : CreatedAtAction(nameof(GetById), new { id = created.IdUsuario }, created);
         }
 
         [HttpPut("{id:long}")]
@@ -37,7 +39,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<UsuarioDto>> Update(long id, [FromBody] UpdateUsuarioDto dto)
         {
             var updated = await _repository.UpdateAsync(id, dto);
-            return updated is null ? NotFound() : Ok(updated);
+            return updated is null ? NotFound(new { mensaje = "Usuario no encontrado o datos inválidos." }) : Ok(updated);
         }
 
         [HttpPut("{id:long}/activo")]
@@ -45,7 +47,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<UsuarioDto>> ToggleActivo(long id, [FromBody] ToggleActivoDto dto)
         {
             var usuario = await _repository.ToggleAsync(id, dto);
-            return usuario is null ? NotFound() : Ok(usuario);
+            return usuario is null ? NotFound(new { mensaje = "Usuario no encontrado." }) : Ok(usuario);
         }
 
         [HttpPut("{id:long}/operaciones")]
@@ -53,7 +55,9 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<UsuarioDto>> AsignarOperaciones(long id, [FromBody] AsignarOperacionesDto dto)
         {
             var usuario = await _repository.AsignarOperacionesAsync(id, dto);
-            return usuario is null ? BadRequest() : Ok(usuario);
+            return usuario is null
+                ? BadRequest(new { mensaje = "Datos inválidos, operaciones no encontradas o usuario no encontrado." })
+                : Ok(usuario);
         }
     }
 }
