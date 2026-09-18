@@ -9,7 +9,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
-    {
+    {   Console.WriteLine(exception.Message);
         var (statusCode, mensaje) = exception switch
         {
             UnauthorizedAccessException ex => (StatusCodes.Status401Unauthorized, ex.Message),

@@ -7,6 +7,7 @@
         short? IdCriticidad,
         bool AplicaPieza,
         long? IdPieza,
-        decimal? Ponderacion
+        decimal? Ponderacion,
+        List<short> IdsTipoInspeccion
     );
 }
