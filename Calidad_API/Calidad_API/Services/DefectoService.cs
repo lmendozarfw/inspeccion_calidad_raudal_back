@@ -15,6 +15,30 @@ namespace Calidad_API.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<DefectoDto>> GetByAllAsync()
+        {
+            var query = _context.Defectos
+                .AsNoTracking()
+                .Include(d => d.Criticidad)
+                .Include(d => d.Pieza);
+            
+            return await query
+                .OrderBy(d => d.Codigo)
+                .Select(d => new DefectoDto(
+                    d.IdDefecto,
+                    d.IdOperacion,
+                    d.Codigo,
+                    d.Nombre,
+                    d.IdCriticidad,
+                    d.Criticidad != null ? d.Criticidad.Codigo : null,
+                    d.AplicaPieza,
+                    d.IdPieza,
+                    d.Pieza != null ? d.Pieza.Codigo : null,
+                    d.Ponderacion,
+                    d.Activo))
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<DefectoDto>> GetByAreaAsync(long IdOperacion, bool soloActivos = true)
         {
             var query = _context.Defectos
@@ -61,8 +85,11 @@ namespace Calidad_API.Services
 
         public async Task<DefectoDto> CreateAsync(DefectoCreateDto dto)
         {
+            Console.WriteLine("id operacion " +  dto.IdOperacion);
             // Validar que el área exista
             var areaExiste = await _context.Operaciones.AnyAsync(a => a.IdOperacion == dto.IdOperacion && a.Activo);
+            Console.WriteLine(areaExiste);
+            Console.WriteLine("--------------------------------------------------");
             if (!areaExiste)
                 throw new InvalidOperationException("El área no existe o está inactiva.");
 

@@ -17,6 +17,13 @@ namespace Calidad_API.Controllers
             _defectoService = defectoService;
         }
 
+        [HttpGet("")]
+        public async Task<ActionResult<IEnumerable<DefectoDto>>> GetAll()
+        {
+            var result = await _defectoService.GetByAllAsync();
+            return Ok(result);
+        }
+        
         /// <summary>Lista defectos de un área (el más usado en captura)</summary>
         [HttpGet("area/{idArea:long}")]
         public async Task<ActionResult<IEnumerable<DefectoDto>>> GetByArea(long idArea, [FromQuery] bool soloActivos = true)
