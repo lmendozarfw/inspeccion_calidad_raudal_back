@@ -17,7 +17,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetAll()
             => Ok(await _repository.GetAllAsync());
 
-        [HttpGet("{id:long}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<UsuarioDto>> GetById(long id)
         {
             var usuario = await _repository.GetByIdAsync(id);
@@ -34,7 +34,7 @@ namespace Calidad_API.Controllers
                 : CreatedAtAction(nameof(GetById), new { id = created.IdUsuario }, created);
         }
 
-        [HttpPut("{id:long}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
         public async Task<ActionResult<UsuarioDto>> Update(long id, [FromBody] UpdateUsuarioDto dto)
         {
@@ -42,7 +42,7 @@ namespace Calidad_API.Controllers
             return updated is null ? NotFound(new { mensaje = "Usuario no encontrado o datos inválidos." }) : Ok(updated);
         }
 
-        [HttpPut("{id:long}/activo")]
+        [HttpPatch("{id}/toggle-status")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
         public async Task<ActionResult<UsuarioDto>> ToggleActivo(long id, [FromBody] ToggleActivoDto dto)
         {
@@ -50,7 +50,7 @@ namespace Calidad_API.Controllers
             return usuario is null ? NotFound(new { mensaje = "Usuario no encontrado." }) : Ok(usuario);
         }
 
-        [HttpPut("{id:long}/operaciones")]
+        [HttpPut("{id}/operaciones")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
         public async Task<ActionResult<UsuarioDto>> AsignarOperaciones(long id, [FromBody] AsignarOperacionesDto dto)
         {
@@ -58,6 +58,19 @@ namespace Calidad_API.Controllers
             return usuario is null
                 ? BadRequest(new { mensaje = "Datos inválidos, operaciones no encontradas o usuario no encontrado." })
                 : Ok(usuario);
+        }
+        
+        [HttpPut("{id}/cambiar-password")]
+        public async Task<IActionResult> CambiarPassword(long id, [FromBody] CambiarPasswordDto dto)
+        {
+            // Solo el propio usuario o un administrador debería poder cambiar la contraseña
+            // (puedes reforzar esto después con roles)
+            var resultado = await _repository.CambiarPasswordAsync(id, dto);
+
+            if (!resultado)
+                return BadRequest(new { mensaje = "No se pudo cambiar la contraseña. Verifique la contraseña actual." });
+
+            return Ok(new { mensaje = "Contraseña actualizada correctamente." });
         }
     }
 }

@@ -111,7 +111,7 @@ namespace Calidad_API.Services.Repositories
                 PasswordHash = _passwordHasher.HashPassword(new Usuario(), user.Password),
                 Activo = true,
                 FechaAlta = DateTime.UtcNow,
-                UsuarioRoles = idsRoles.Select(id => new UsuarioRol { IdRol = id }).ToList()
+                UsuarioRoles = idsRoles.Select(id => new UsuarioRol { IdRol = id }).ToList(),
             };
 
             _context.Usuarios.Add(usuario);
@@ -230,6 +230,24 @@ namespace Calidad_API.Services.Repositories
             var cantidadOperacionesExistentes = await _context.Operaciones
                 .CountAsync(o => idsOperaciones.Contains(o.IdOperacion));
             return cantidadOperacionesExistentes == idsOperaciones.Count;
+        }
+        
+        public async Task<bool> CambiarPasswordAsync(long id, CambiarPasswordDto dto)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null) return false;
+
+            // Verificar password actual
+            var verificacion = _passwordHasher.VerifyHashedPassword(usuario, usuario.PasswordHash, dto.PasswordActual);
+            if (verificacion == PasswordVerificationResult.Failed) return false;
+
+            if (string.IsNullOrWhiteSpace(dto.PasswordNuevo) || dto.PasswordNuevo.Length < 8)
+                return false;
+
+            usuario.PasswordHash = _passwordHasher.HashPassword(usuario, dto.PasswordNuevo);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }
