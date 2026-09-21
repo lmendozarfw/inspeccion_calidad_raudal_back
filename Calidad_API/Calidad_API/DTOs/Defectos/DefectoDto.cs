@@ -3,10 +3,7 @@
     public record DefectoDto(
         long IdDefecto,
         long IdOperacion,
-<<<<<<< HEAD
-=======
         string OperacionNombre,
->>>>>>> 4772ae54ccaefaf661a47359c90261a8750ce6bb
         string Codigo,
         string Nombre,
         short? IdCriticidad,
