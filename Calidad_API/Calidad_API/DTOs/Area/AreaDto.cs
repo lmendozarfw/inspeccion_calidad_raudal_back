@@ -1,13 +1,13 @@
-﻿namespace Calidad_API.DTOs.Operaciones
+﻿namespace Calidad_API.DTOs.Area
 {
-    public record OperacionDto(
-        long IdOperacion,
+    public record AreaDto(
+        long IdArea,
         string Codigo,
         string Nombre,
         string Proceso,
         bool Activo,
+        long? IdCentroTrabajo,
         long? IdDepartamento,
-        long? IdUnidadNegocio,
         string? Departamento
     );
 }

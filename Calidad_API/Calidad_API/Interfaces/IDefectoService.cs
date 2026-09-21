@@ -4,6 +4,7 @@ namespace Calidad_API.Interfaces
 {
     public interface IDefectoService
     {
+        Task<IEnumerable<DefectoDto>> GetByAllAsync();
         Task<IEnumerable<DefectoDto>> GetByAreaAsync(long idArea, bool soloActivos = true);
         Task<DefectoDto?> GetByIdAsync(long id);
         Task<DefectoDto> CreateAsync(DefectoCreateDto dto);

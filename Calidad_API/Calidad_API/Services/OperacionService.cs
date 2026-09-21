@@ -1,12 +1,13 @@
 ﻿using Calidad_API.Data;
+using Calidad_API.DTOs.Area;
 using Calidad_API.DTOs.Operaciones;
-using Calidad_API.Interfaces;
+using Calidad_API.Interfaces; // o DTOs.Operaciones si ya lo renombraste
 using Calidad_API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Calidad_API.Services
 {
-    public class OperacionService : IOperacionService
+    public class OperacionService : IOperacionService   // o IOperacionService
     {
         private readonly ApplicationDbContext _context;
 
@@ -23,9 +24,10 @@ namespace Calidad_API.Services
             return await query
                 .OrderBy(a => a.Proceso)
                 .ThenBy(a => a.Codigo)
+                .Include(a => a.Departamento)
                 .Select(a => new OperacionDto(
                     a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
-                    a.IdDepartamento, a.IdUnidadNegocio))
+                    a.IdDepartamento, a.IdUnidadNegocio, a.Departamento != null ? a.Departamento.Nombre : ""))
                 .ToListAsync();
         }
 
@@ -34,50 +36,31 @@ namespace Calidad_API.Services
             var a = await _context.Operaciones.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.IdOperacion == id);
             if (a is null) return null;
-
-            return new OperacionDto(
-                a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
-                a.IdDepartamento, a.IdUnidadNegocio);
+            var departamento = await _context.Departamentos.AsNoTracking().FirstOrDefaultAsync(d => d.IdDepartamento == a.IdDepartamento);
+            return new OperacionDto(a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
+                a.IdDepartamento, a.IdUnidadNegocio,  departamento != null ? departamento.Nombre : "");
         }
 
         public async Task<IEnumerable<OperacionDto>> GetByProcesoAsync(string proceso)
         {
             return await _context.Operaciones.AsNoTracking()
-                .Where(a => a.Activo && a.Proceso == proceso.ToUpper())
+                .Where(a => a.Activo && a.Proceso == proceso)
                 .OrderBy(a => a.Codigo)
+                .Include(a => a.Departamento)
                 .Select(a => new OperacionDto(
                     a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
-                    a.IdDepartamento, a.IdUnidadNegocio))
+                    a.IdDepartamento, a.IdUnidadNegocio, a.Departamento != null ? a.Departamento.Nombre : ""))
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<OperacionDto>> GetByDepartamentoAsync(long idDepartamento)
+        public Task<IEnumerable<OperacionDto>> GetByDepartamentoAsync(long idDepartamento)
         {
-            return await _context.Operaciones.AsNoTracking()
-                .Where(a => a.Activo && a.IdDepartamento == idDepartamento)
-                .OrderBy(a => a.Codigo)
-                .Select(a => new OperacionDto(
-                    a.IdOperacion, a.Codigo, a.Nombre, a.Proceso, a.Activo,
-                    a.IdDepartamento, a.IdUnidadNegocio))
-                .ToListAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<OperacionPermisoDto>> GetMisPermisosAsync(long idUsuario)
+        public Task<IEnumerable<OperacionPermisoDto>> GetMisPermisosAsync(long idUsuario)
         {
-            return await _context.PermisosOperacion.AsNoTracking()
-                .Include(p => p.Operacion)
-                .Where(p => p.IdUsuario == idUsuario && p.Operacion.Activo)
-                .OrderBy(p => p.Operacion.Proceso)
-                .ThenBy(p => p.Operacion.Codigo)
-                .Select(p => new OperacionPermisoDto(
-                    p.IdOperacion,
-                    p.Operacion.Codigo,
-                    p.Operacion.Nombre,
-                    p.Operacion.Proceso,
-                    p.PuedeCapturar,
-                    p.PuedeConsultar,
-                    p.PuedeGenerarVale))
-                .ToListAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<OperacionDto> CreateAsync(OperacionCreateDto dto)
@@ -88,18 +71,16 @@ namespace Calidad_API.Services
                 Nombre = dto.Nombre.Trim(),
                 Proceso = dto.Proceso.Trim().ToUpper(),
                 IdDepartamento = dto.IdDepartamento,
-                IdUnidadNegocio = dto.IdUnidadNegocio,
+                IdUnidadNegocio = dto.IdDepartamento,
                 Activo = true,
                 FechaAlta = DateTime.UtcNow
             };
 
             _context.Operaciones.Add(entity);
             await _context.SaveChangesAsync();
-
-            return new OperacionDto(
-                entity.IdOperacion, entity.Codigo, entity.Nombre,
-                entity.Proceso, entity.Activo,
-                entity.IdDepartamento, entity.IdUnidadNegocio);
+            var departamento = await _context.Departamentos.AsNoTracking().FirstOrDefaultAsync(d => d.IdDepartamento == dto.IdDepartamento);
+            return new OperacionDto(entity.IdOperacion, entity.Codigo, entity.Nombre,
+                entity.Proceso, entity.Activo, entity.IdDepartamento, entity.IdUnidadNegocio, departamento  != null ? departamento.Nombre : "");
         }
 
         public async Task<OperacionDto?> UpdateAsync(long id, OperacionUpdateDto dto)
@@ -111,14 +92,12 @@ namespace Calidad_API.Services
             entity.Proceso = dto.Proceso.Trim().ToUpper();
             entity.Activo = dto.Activo;
             entity.IdDepartamento = dto.IdDepartamento;
-            entity.IdUnidadNegocio = dto.IdUnidadNegocio;
+            entity.IdUnidadNegocio = dto.IdDepartamento;
 
             await _context.SaveChangesAsync();
-
-            return new OperacionDto(
-                entity.IdOperacion, entity.Codigo, entity.Nombre,
-                entity.Proceso, entity.Activo,
-                entity.IdDepartamento, entity.IdUnidadNegocio);
+            var departamento = await _context.Departamentos.AsNoTracking().FirstOrDefaultAsync(d => d.IdDepartamento == dto.IdDepartamento);
+            return new OperacionDto(entity.IdOperacion, entity.Codigo, entity.Nombre,
+                entity.Proceso, entity.Activo, entity.IdDepartamento, entity.IdUnidadNegocio, departamento != null ? departamento.Nombre : "");
         }
 
         public async Task<bool> DeleteAsync(long id)
