@@ -23,6 +23,14 @@ namespace Calidad_API.Controllers
             var result = await _defectoService.GetByAllAsync();
             return Ok(result);
         }
+
+        [HttpGet("operacion/{idOperacion}/tipoInspeccion/{idTipoInspeccion}")]
+        public async Task<ActionResult<IEnumerable<DefectoDto>>> GetByOperationAndInspectionType(long idOperacion,
+            long idTipoInspeccion)
+        {
+            var defectos = await _defectoService.GetByOperationAndInspectionType(idOperacion, idTipoInspeccion);
+            return Ok(defectos);
+        }
         
         /// <summary>Lista defectos de un área (el más usado en captura)</summary>
         [HttpGet("operacion/{idOperacion:long}")]

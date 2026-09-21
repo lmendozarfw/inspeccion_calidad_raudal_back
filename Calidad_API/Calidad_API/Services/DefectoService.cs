@@ -24,7 +24,7 @@ namespace Calidad_API.Services
                 .Include(d => d.DefectoTiposInspeccion).ThenInclude(di => di.TipoInspeccion);
 
             return await query
-                .OrderBy(d => d.Codigo)
+                .OrderBy(d => d.Nombre)
                 .Select(d => new DefectoDto(
                     d.IdDefecto,
                     d.IdOperacion,
@@ -57,7 +57,7 @@ namespace Calidad_API.Services
             if (soloActivos) query = query.Where(d => d.Activo);
 
             return await query
-                .OrderBy(d => d.Codigo)
+                .OrderBy(d => d.Nombre)
                 .Select(d => new DefectoDto(
                     d.IdDefecto,
                     d.IdOperacion,
@@ -76,6 +76,34 @@ namespace Calidad_API.Services
                     d.Ponderacion,
                     d.Activo))
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<DefectoDto>> GetByOperationAndInspectionType(long idOperacion, long idTipoInspeccion)
+        {
+            var query = _context.Defectos.AsNoTracking().Include(d => d.Criticidad)
+                .Include(d => d.Pieza)
+                .Include(d => d.DefectoTiposInspeccion).ThenInclude(di => di.TipoInspeccion).Where(d =>
+                d.Activo && d.IdOperacion == idOperacion &&
+                d.DefectoTiposInspeccion.Any(dt => dt.IdTipoInspeccion == idTipoInspeccion)).AsQueryable();
+            return await query.OrderBy(d => d.Nombre).Select(d => new DefectoDto(
+                d.IdDefecto,
+                d.IdOperacion,
+                d.Operacion.Nombre,
+                d.Codigo,
+                d.Nombre,
+                d.IdCriticidad,
+                d.Criticidad != null ? d.Criticidad.Codigo : null,
+                d.Criticidad != null ? d.Criticidad.Nombre : null,
+                d.AplicaPieza,
+                d.IdPieza,
+                d.Pieza != null ? d.Pieza.Codigo : null,
+                d.Pieza != null ? d.Pieza.Nombre : null,
+                d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.IdTipoInspeccion)
+                    .ToList(),
+                d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.TipoInspeccion.Nombre)
+                    .ToList(),
+                d.Ponderacion,
+                d.Activo)).ToListAsync();
         }
 
         public async Task<DefectoDto?> GetByIdAsync(long id)
