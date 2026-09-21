@@ -2,8 +2,8 @@
 {
     public record DefectoDto(
         long IdDefecto,
-        long IdOperacion,
-        string OperacionNombre,
+        List<long> IdsOperacion,
+        List<string> OperacionesNombre,
         string Codigo,
         string Nombre,
         short? IdCriticidad,

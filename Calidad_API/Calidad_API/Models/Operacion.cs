@@ -36,7 +36,7 @@ namespace Calidad_API.Models
 
         public Departamento? Departamento { get; set; }
         public UnidadNegocio? UnidadNegocio { get; set; }
-        public ICollection<Defecto> Defectos { get; set; } = new List<Defecto>();
+        public ICollection<DefectoOperacion> DefectosOperacion { get; set; } = new List<DefectoOperacion>();
         public ICollection<PermisoOperacion> PermisosOperacion { get; set; } = new List<PermisoOperacion>();
         public ICollection<Inspeccion> Inspecciones { get; set; } = new List<Inspeccion>();
         public ICollection<MetaCalidad> MetasCalidad { get; set; } = new List<MetaCalidad>();

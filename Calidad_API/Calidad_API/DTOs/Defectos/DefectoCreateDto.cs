@@ -1,7 +1,7 @@
 ﻿namespace Calidad_API.DTOs.Defectos
 {
     public record DefectoCreateDto(
-        long IdOperacion,
+        List<long> IdsOperacion,
         string Codigo,
         string Nombre,
         short? IdCriticidad,

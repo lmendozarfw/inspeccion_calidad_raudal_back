@@ -4,7 +4,7 @@ namespace Calidad_API.Interfaces
 {
     public interface IDefectoService
     {
-        Task<IEnumerable<DefectoDto>> GetByAllAsync();
+        Task<IEnumerable<DefectoDto>> GetAllAsync(DefectoFiltroDto? filtros = null);
         Task<IEnumerable<DefectoDto>> GetByAreaAsync(long idArea, bool soloActivos = true);
         Task<IEnumerable<DefectoDto>> GetByOperationAndInspectionType(long idOperacion, long idTipoInspeccion);
         Task<DefectoDto?> GetByIdAsync(long id);

@@ -20,7 +20,7 @@ namespace Calidad_API.Controllers
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<DefectoDto>>> GetAll()
         {
-            var result = await _defectoService.GetByAllAsync();
+            var result = await _defectoService.GetAllAsync();
             return Ok(result);
         }
 

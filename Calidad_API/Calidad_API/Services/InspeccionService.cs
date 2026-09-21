@@ -112,7 +112,7 @@ namespace Calidad_API.Services
 
             // Validar defecto pertenece a la operación de la inspección
             var defecto = await _context.Defectos
-                .FirstOrDefaultAsync(d => d.IdDefecto == dto.IdDefecto && d.IdOperacion == inspeccion.IdOperacion && d.Activo);
+                .FirstOrDefaultAsync(d => d.IdDefecto == dto.IdDefecto && d.DefectosOperacion.Any(dop => dop.IdOperacion == inspeccion.IdOperacion) && d.Activo);
             if (defecto is null)
                 throw new InvalidOperationException("El defecto no pertenece a la operación de la inspección o está inactivo.");
 

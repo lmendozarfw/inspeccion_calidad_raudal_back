@@ -1,4 +1,5 @@
 ﻿using Calidad_API.Data;
+using Calidad_API.DTOs.Operaciones;
 using Calidad_API.DTOs.Roles;
 using Calidad_API.DTOs.Usuario;
 using Calidad_API.Interfaces;
@@ -41,7 +42,7 @@ namespace Calidad_API.Services.Repositories
 
         public async Task<List<UsuarioDto>> GetAllAsync()
         {
-            return await _context.Usuarios.AsNoTracking()
+            return await _context.Usuarios.Include(x => x.PermisosOperacion).ThenInclude(po => po.Operacion).AsNoTracking()
                 .OrderBy(u => u.Username)
                 .Select(u => new UsuarioDto
                 {
@@ -51,6 +52,7 @@ namespace Calidad_API.Services.Repositories
                     IdsRol = u.UsuarioRoles.Select(ur => ur.IdRol).ToList(),
                     Roles = u.UsuarioRoles.Select(ur => new RolDto(ur.Rol.IdRol, ur.Rol.Codigo, ur.Rol.Nombre)).ToList(),
                     IdsOperacion = u.PermisosOperacion.Select(p => p.IdOperacion).ToList(),
+                    Operaciones = u.PermisosOperacion.Select(p => new OperacionDto(p.IdOperacion, p.Operacion.Codigo, p.Operacion.Nombre, p.Operacion.Proceso, p.Operacion.Activo, null, null, p.Operacion.Departamento.Nombre)).ToList(),
                     Activo = u.Activo,
                     FechaCreacion = u.FechaAlta
                 })

@@ -5,7 +5,9 @@ namespace Calidad_API.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
 
         // ——— Seguridad ———
         public DbSet<Usuario> Usuarios { get; set; } = null!;
@@ -25,8 +27,9 @@ namespace Calidad_API.Data
         public DbSet<Modelo> Modelos { get; set; } = null!;
         public DbSet<Defecto> Defectos { get; set; } = null!;
         public DbSet<DefectoTipoInspeccion> DefectoTiposInspeccion { get; set; } = null!;
+        public DbSet<DefectoOperacion> DefectosOperacion { get; set; } = null!;
 
-        // ——— Operación (flujo) ———
+    // ——— Operación (flujo) ———
         public DbSet<Transfer> Transfers { get; set; } = null!;
         public DbSet<Inspeccion> Inspecciones { get; set; } = null!;
         public DbSet<InspeccionDetalle> InspeccionDetalles { get; set; } = null!;
@@ -165,13 +168,6 @@ namespace Calidad_API.Data
 
             modelBuilder.Entity<Defecto>(e =>
             {
-                e.HasIndex(x => new { x.IdOperacion, x.Codigo }).IsUnique();
-                e.HasIndex(x => new { x.IdOperacion, x.Nombre }).IsUnique();
-
-                e.HasOne(x => x.Operacion)
-                    .WithMany(o => o.Defectos)
-                    .HasForeignKey(x => x.IdOperacion)
-                    .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasOne(x => x.Criticidad)
                     .WithMany(c => c.Defectos)
@@ -199,6 +195,14 @@ namespace Calidad_API.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<DefectoOperacion>(e =>
+            {
+                e.HasKey(x => new { x.IdDefecto, x.IdOperacion });
+                e.HasOne(x => x.Defecto).WithMany(d => d.DefectosOperacion).HasForeignKey(x => x.IdDefecto).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(x => x.Operacion).WithMany(o => o.DefectosOperacion).HasForeignKey(x => x.IdOperacion).OnDelete(DeleteBehavior.Restrict);
+                
+            });
+            
             // =====================================================
             // OPERACIÓN (flujo)
             // =====================================================
