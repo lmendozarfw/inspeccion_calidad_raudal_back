@@ -18,10 +18,10 @@ namespace Calidad_API.Controllers
         }
 
         /// <summary>Lista defectos de un área (el más usado en captura)</summary>
-        [HttpGet("area/{idArea:long}")]
-        public async Task<ActionResult<IEnumerable<DefectoDto>>> GetByArea(long idArea, [FromQuery] bool soloActivos = true)
+        [HttpGet("operacion/{idOperacion:long}")]
+        public async Task<ActionResult<IEnumerable<DefectoDto>>> GetByArea(long idOperacion, [FromQuery] bool soloActivos = true)
         {
-            var result = await _defectoService.GetByAreaAsync(idArea, soloActivos);
+            var result = await _defectoService.GetByAreaAsync(idOperacion, soloActivos);
             return Ok(result);
         }
 
@@ -29,7 +29,7 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<DefectoDto>> GetById(long id)
         {
             var defecto = await _defectoService.GetByIdAsync(id);
-            return defecto is null ? NotFound() : Ok(defecto);
+            return defecto is null ? NotFound(new { mensaje = "Defecto no encontrado." }) : Ok(defecto);
         }
 
         [HttpPost]

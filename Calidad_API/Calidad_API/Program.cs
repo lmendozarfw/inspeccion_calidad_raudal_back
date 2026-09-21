@@ -40,6 +40,7 @@ builder.Services.AddScoped<ICodigoAutorizacionService, CodigoAutorizacionService
 builder.Services.AddSingleton<ICodigoCipher, AesGcmCodigoCipher>();
 builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 // Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -100,20 +101,21 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    //// Solo para generar el hash una vez
-    //var hasher = new PasswordHasher<Usuario>();
-    //var hash = hasher.HashPassword(new Usuario(), "Password123*");
-    //Console.WriteLine(hash);
-    app.MapOpenApi();                 // expone /openapi/v1.json
-    app.MapScalarApiReference();      // expone /scalar (UI interactiva)
-                                      // Solo para generar el hash una vez
-
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("Módulo Calidad API");
+    });
 }
 
-app.UseExceptionHandler();
+app.MapGet("/", () => Results.Redirect("/scalar/v1"))
+   .ExcludeFromDescription();
+
+app.UseExceptionHandler();      // primero el handler de errores
 app.UseCors("Angular");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();

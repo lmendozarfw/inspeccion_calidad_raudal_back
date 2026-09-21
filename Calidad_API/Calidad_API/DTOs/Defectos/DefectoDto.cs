@@ -2,7 +2,7 @@
 {
     public record DefectoDto(
         long IdDefecto,
-        long IdArea,
+        long IdOperacion,
         string Codigo,
         string Nombre,
         short? IdCriticidad,

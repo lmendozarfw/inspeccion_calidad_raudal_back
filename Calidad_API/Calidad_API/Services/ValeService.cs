@@ -116,6 +116,58 @@ namespace Calidad_API.Services
             await _context.Entry(vale).Reference(v => v.Pieza).LoadAsync();
             await _context.Entry(vale).Reference(v => v.UsuarioSolicita).LoadAsync();
 
+            // 6. Cargar detalle completo para PDF y correo
+            var detalleFull = await _context.InspeccionDetalles
+                .AsNoTracking()
+                .Include(d => d.Defecto)
+                .Include(d => d.Inspeccion)
+                    .ThenInclude(i => i.Transfer)
+                .FirstAsync(d => d.IdDetalle == vale.IdInspeccionDetalle);
+
+            var lote = detalleFull.Inspeccion.Transfer.Lote;
+
+            // 7. Generar PDF
+            try
+            {
+                var ruta = _pdfService.GenerarYGuardar(vale, detalleFull, lote);
+                vale.RutaPdf = ruta;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Loguear; el vale ya existe aunque falle el PDF
+                // Si tienes ILogger: _logger.LogError(ex, "Error al generar PDF del vale {Folio}", vale.Folio);
+            }
+
+            // 8. Correo de aviso
+            try
+            {
+                var destinatarios = (_config["Email:AvisoValeTo"] ?? "")
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                if (destinatarios.Length > 0)
+                {
+                    var subject = $"Vale de material generado — {vale.Folio}";
+                    var body = $@"
+            <h3>Se generó un vale de material</h3>
+            <ul>
+              <li><b>Folio:</b> {vale.Folio}</li>
+              <li><b>Pieza:</b> {vale.Pieza.Codigo} - {vale.Pieza.Nombre}</li>
+              <li><b>Cantidad:</b> {vale.Cantidad}</li>
+              <li><b>Lote:</b> {lote}</li>
+              <li><b>Defecto:</b> {detalleFull.Defecto.Codigo} - {detalleFull.Defecto.Nombre}</li>
+              <li><b>Solicita:</b> {vale.UsuarioSolicita.Nombre}</li>
+              <li><b>Fecha:</b> {vale.FechaGeneracion:dd/MM/yyyy HH:mm} UTC</li>
+            </ul>
+        ";
+                    await _emailService.SendAsync(destinatarios, subject, body);
+                }
+            }
+            catch
+            {
+                // No tumbar la generación del vale si falla el correo
+            }
+
             return Map(vale);
         }
 

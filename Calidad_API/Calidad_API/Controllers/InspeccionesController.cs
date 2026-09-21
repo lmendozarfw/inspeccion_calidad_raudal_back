@@ -38,13 +38,13 @@ namespace Calidad_API.Controllers
             return Ok(list);
         }
 
-        [HttpGet("area/{idArea:long}")]
+        [HttpGet("operacion/{idOperacion:long}")]
         public async Task<ActionResult<IEnumerable<InspeccionDto>>> GetByArea(
-            long idArea,
+            long idOperacion,
             [FromQuery] DateTime? desde,
             [FromQuery] DateTime? hasta)
         {
-            var list = await _inspeccionService.GetByAreaAsync(idArea, desde, hasta);
+            var list = await _inspeccionService.GetByAreaAsync(idOperacion, desde, hasta);
             return Ok(list);
         }
 

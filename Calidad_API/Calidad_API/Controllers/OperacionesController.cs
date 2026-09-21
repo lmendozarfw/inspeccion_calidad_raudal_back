@@ -1,22 +1,27 @@
 ﻿using Calidad_API.DTOs.Operaciones;
 using Calidad_API.Interfaces;
+using Calidad_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Calidad_API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class AreasController : ControllerBase
+    public class OperacionesController : ControllerBase
     {
         private readonly IOperacionService _areaService;
 
-        public AreasController(IOperacionService areaService)
+        private long GetUserId() =>
+             long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        public OperacionesController(IOperacionService areaService)
         {
             _areaService = areaService;
         }
-            
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperacionDto>>> GetAll([FromQuery] bool soloActivas = true)
         {
@@ -60,6 +65,23 @@ namespace Calidad_API.Controllers
         {
             var ok = await _areaService.DeleteAsync(id);
             return ok ? NoContent() : NotFound(new { mensaje = "Área no encontrada." });
+        }
+
+        /// <summary>
+        /// Operaciones donde el usuario logueado tiene permisos (para captura en el front).
+        /// </summary>
+        [HttpGet("mis-permisos")]
+        public async Task<ActionResult<IEnumerable<OperacionPermisoDto>>> MisPermisos()
+        {
+            var result = await _areaService.GetMisPermisosAsync(GetUserId());
+            return Ok(result);
+        }
+
+        [HttpGet("departamento/{idDepartamento:long}")]
+        public async Task<ActionResult<IEnumerable<OperacionDto>>> GetByDepartamento(long idDepartamento)
+        {
+            var result = await _areaService.GetByDepartamentoAsync(idDepartamento);
+            return Ok(result);
         }
     }
 }
