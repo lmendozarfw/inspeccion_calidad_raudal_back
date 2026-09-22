@@ -1,4 +1,5 @@
-﻿using Calidad_API.DTOs.Defectos;
+﻿using System.Text.Json;
+using Calidad_API.DTOs.Defectos;
 using Calidad_API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +12,22 @@ namespace Calidad_API.Controllers
     public class DefectosController : ControllerBase
     {
         private readonly IDefectoService _defectoService;
+        private readonly ILogger<DefectosController> _logger;
 
-        public DefectosController(IDefectoService defectoService)
+        public DefectosController(IDefectoService defectoService, ILogger<DefectosController> logger)
         {
             _defectoService = defectoService;
+            _logger = logger;
         }
 
-        [HttpGet("")]
-        public async Task<ActionResult<IEnumerable<DefectoDto>>> GetAll()
+        [HttpGet()]
+        public async Task<ActionResult<IEnumerable<DefectoDto>>> GetAll([FromQuery] DefectoFiltroDto filtros)
         {
-            var result = await _defectoService.GetAllAsync();
+            var json = JsonSerializer.Serialize(filtros);
+
+            Console.WriteLine("Filtros recibidos:");
+            Console.WriteLine(json);
+            var result = await _defectoService.GetAllAsync(filtros);
             return Ok(result);
         }
 

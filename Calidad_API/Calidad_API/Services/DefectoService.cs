@@ -26,11 +26,11 @@ namespace Calidad_API.Services
             if (filtros != null)
             {
                 
-                if (filtros.OperationsIds != null && filtros.OperationsIds.Any())
+                if (filtros.OperationIds != null && filtros.OperationIds.Any())
                 {
                     query = query.Where(d =>
                         d.DefectosOperacion.Any(dop =>
-                            filtros.OperationsIds.Contains(dop.IdOperacion)
+                            filtros.OperationIds.Contains(dop.IdOperacion)
                         )
                     );
                 }
@@ -47,10 +47,13 @@ namespace Calidad_API.Services
                 if (filtros.CriticalityIds != null && filtros.CriticalityIds.Any())
                 {
                     query = query.Where(d =>
-                        _context.Criticidades.Any(c =>
-                            filtros.CriticalityIds.Contains(c.IdCriticidad)
-                        )
+                        d.IdCriticidad != null && filtros.CriticalityIds.Contains(d.IdCriticidad.Value)
                     );
+                }
+
+                if (filtros.RequirePiece.HasValue)
+                {
+                    query = query.Where(d => d.AplicaPieza == filtros.RequirePiece.Value);
                 }
             }
             

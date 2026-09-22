@@ -2,7 +2,7 @@
 
 public class DefectoFiltroDto
 {
-    public List<long>? OperationsIds { get; set; }
+    public List<long>? OperationIds { get; set; }
     public List<short>? InspectionTypeIds { get; set; }
     public bool? RequirePiece { get; set; }
     public List<short>? CriticalityIds { get; set; }
