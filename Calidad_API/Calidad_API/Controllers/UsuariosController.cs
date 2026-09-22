@@ -14,8 +14,8 @@ namespace Calidad_API.Controllers
         public UsuariosController(IUserRepository repository) => _repository = repository;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetAll()
-            => Ok(await _repository.GetAllAsync());
+        public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetAll(string? search)
+            => Ok(await _repository.GetAllAsync(search));
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UsuarioDto>> GetById(long id)

@@ -75,7 +75,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Angular", policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200")
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -111,9 +111,9 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Redirect("/scalar/v1"))
    .ExcludeFromDescription();
 
-app.UseExceptionHandler();      // primero el handler de errores
-app.UseCors("Angular");
+app.UseExceptionHandler(); // primero el handler de errores
 app.UseHttpsRedirection();
+app.UseCors("Angular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

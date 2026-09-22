@@ -40,10 +40,18 @@ namespace Calidad_API.Services.Repositories
                 .FirstOrDefaultAsync(u => u.IdUsuario == id && u.Activo);
         }
 
-        public async Task<List<UsuarioDto>> GetAllAsync()
+        public async Task<List<UsuarioDto>> GetAllAsync(string? search)
         {
-            return await _context.Usuarios.Include(x => x.PermisosOperacion).ThenInclude(po => po.Operacion).AsNoTracking()
-                .OrderBy(u => u.Username)
+            var query = _context.Usuarios.Include(x => x.UsuarioRoles).ThenInclude(ur => ur.Rol).Include(x => x.PermisosOperacion).ThenInclude(po => po.Operacion).AsNoTracking()
+                .OrderBy(u => u.Username).AsNoTracking().AsQueryable();
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u => u.Nombre.Contains(search) || 
+                                         u.Username.Contains(search) || 
+                                         u.UsuarioRoles.Any(ur => ur.Rol.Nombre.Contains(search) || ur.Rol.Codigo.Contains(search))
+                                         );
+            }
+            return await query
                 .Select(u => new UsuarioDto
                 {
                     IdUsuario = u.IdUsuario,

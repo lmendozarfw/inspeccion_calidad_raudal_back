@@ -7,7 +7,7 @@ namespace Calidad_API.Interfaces
     {
         Task<Usuario?> GetByUsernameAsync(string username);
         Task<Usuario?> GetByIdWithDetailsAsync(long id);
-        Task<List<UsuarioDto>> GetAllAsync();
+        Task<List<UsuarioDto>> GetAllAsync(string? search);
         Task<UsuarioDto?> GetByIdAsync(long id);
         Task<UsuarioDto?> CreateAsync(CreateUsuarioDto user);
         Task<UsuarioDto?> UpdateAsync(long id, UpdateUsuarioDto user);
