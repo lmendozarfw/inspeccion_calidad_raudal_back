@@ -1,7 +1,8 @@
-﻿using Calidad_API.Interfaces;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+﻿using Azure.Identity;
+using Calidad_API.Interfaces;
+using Microsoft.Graph;
+using Microsoft.Graph.Models;
+using Microsoft.Graph.Users.Item.SendMail;
 
 namespace Calidad_API.Services
 {
@@ -9,55 +10,81 @@ namespace Calidad_API.Services
     {
         private readonly IConfiguration _config;
         private readonly ILogger<EmailService> _logger;
+        private readonly GraphServiceClient _graph;
 
         public EmailService(IConfiguration config, ILogger<EmailService> logger)
         {
             _config = config;
             _logger = logger;
+
+            var tenantId = config["Email:TenantId"]
+                ?? throw new InvalidOperationException("Email:TenantId no configurado");
+            var clientId = config["Email:ClientId"]
+                ?? throw new InvalidOperationException("Email:ClientId no configurado");
+            var clientSecret = config["Email:ClientSecret"]
+                ?? throw new InvalidOperationException("Email:ClientSecret no configurado");
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            _graph = new GraphServiceClient(credential, new[] { "https://graph.microsoft.com/.default" });
         }
 
         public Task SendAsync(string to, string subject, string bodyHtml, CancellationToken ct = default)
             => SendAsync(new[] { to }, subject, bodyHtml, ct);
 
-        public async Task SendAsync(IEnumerable<string> to, string subject, string bodyHtml, CancellationToken ct = default)
+        public async Task SendAsync(
+            IEnumerable<string> to,
+            string subject,
+            string bodyHtml,
+            CancellationToken ct = default)
         {
-            var section = _config.GetSection("Email");
-            var host = section["SmtpHost"] ?? throw new InvalidOperationException("Email:SmtpHost no configurado");
-            var port = int.Parse(section["SmtpPort"] ?? "587");
-            var useSsl = bool.Parse(section["UseSsl"] ?? "true");
-            var user = section["User"];
-            var password = section["Password"];
-            var fromName = section["FromName"] ?? "Modulo Calidad";
-            var fromAddress = section["FromAddress"] ?? user;
+            var from = _config["Email:FromAddress"]
+                ?? throw new InvalidOperationException("Email:FromAddress no configurado");
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(fromName, fromAddress));
-            foreach (var addr in to.Where(x => !string.IsNullOrWhiteSpace(x)))
-                message.To.Add(MailboxAddress.Parse(addr.Trim()));
+            var recipients = to
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
-            if (!message.To.Any())
+            if (recipients.Count == 0)
             {
                 _logger.LogWarning("Email no enviado: no hay destinatarios.");
                 return;
             }
 
-            message.Subject = subject;
-            message.Body = new TextPart("html") { Text = bodyHtml };
+            var message = new Message
+            {
+                Subject = subject,
+                Body = new ItemBody
+                {
+                    ContentType = BodyType.Html,
+                    Content = bodyHtml
+                },
+                ToRecipients = recipients.Select(addr => new Recipient
+                {
+                    EmailAddress = new EmailAddress { Address = addr }
+                }).ToList()
+            };
 
-            using var client = new SmtpClient();
+            var body = new SendMailPostRequestBody
+            {
+                Message = message,
+                SaveToSentItems = true
+            };
+
             try
             {
-                await client.ConnectAsync(host, port, useSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto, ct);
-                if (!string.IsNullOrWhiteSpace(user))
-                    await client.AuthenticateAsync(user, password, ct);
+                // Envía como el buzón FromAddress
+                await _graph.Users[from]
+                    .SendMail
+                    .PostAsync(body, cancellationToken: ct);
 
-                await client.SendAsync(message, ct);
-                await client.DisconnectAsync(true, ct);
+                _logger.LogInformation("Correo enviado por Graph. Asunto: {Subject}", subject);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al enviar correo: {Subject}", subject);
-                // No relanzamos para que la generación del vale no falle por el correo
+                _logger.LogError(ex, "Error al enviar correo por Graph: {Subject}", subject);
+                // No relanzar: el vale no debe fallar por el correo
             }
         }
     }

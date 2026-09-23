@@ -14,58 +14,82 @@ namespace Calidad_API.Services
         public async Task<IEnumerable<ModeloDto>> GetAllAsync(bool soloActivos = true)
         {
             var q = _context.Modelos.AsNoTracking().AsQueryable();
-            if (soloActivos) q = q.Where(x => x.Activo);
-            return await q.OrderBy(x => x.Codigo)
-                .Select(x => new ModeloDto(x.IdModelo, x.Codigo, x.Nombre, x.Familia, x.Activo, x.FechaAlta))
+            if (soloActivos) q = q.Where(x => x.Estatus);
+
+            return await q
+                .OrderBy(x => x.CodigoMB)
+                .ThenBy(x => x.CodigoCombinacion)
+                .Select(x => new ModeloDto(
+                    x.IdModelo,
+                    x.CodigoMB,
+                    x.CodigoCombinacion,
+                    x.Descripcion,
+                    x.Estatus))
                 .ToListAsync();
         }
 
-        public async Task<ModeloDto?> GetByIdAsync(long id)
-        {
-            var x = await _context.Modelos.AsNoTracking().FirstOrDefaultAsync(m => m.IdModelo == id);
-            return x is null ? null : new ModeloDto(x.IdModelo, x.Codigo, x.Nombre, x.Familia, x.Activo, x.FechaAlta);
-        }
-
-        public async Task<ModeloDto?> GetByCodigoAsync(string codigo)
+        public async Task<ModeloDto?> GetByIdAsync(int id)
         {
             var x = await _context.Modelos.AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Codigo == codigo.Trim().ToUpper());
-            return x is null ? null : new ModeloDto(x.IdModelo, x.Codigo, x.Nombre, x.Familia, x.Activo, x.FechaAlta);
+                .FirstOrDefaultAsync(m => m.IdModelo == id);
+            return x is null ? null : Map(x);
+        }
+
+        public async Task<ModeloDto?> GetByCodigosAsync(string codigoModeloBase, string codigoCombinacion)
+        {
+            var baseCode = codigoModeloBase.Trim().ToUpper();
+            var comb = codigoCombinacion.Trim().ToUpper();
+
+            var x = await _context.Modelos.AsNoTracking()
+                .FirstOrDefaultAsync(m =>
+                    m.CodigoMB == baseCode &&
+                    m.CodigoCombinacion == comb);
+
+            return x is null ? null : Map(x);
         }
 
         public async Task<ModeloDto> CreateAsync(ModeloCreateDto dto)
         {
             var e = new Modelo
             {
-                Codigo = dto.Codigo.Trim().ToUpper(),
-                Nombre = dto.Nombre.Trim(),
-                Familia = dto.Familia?.Trim(),
-                Activo = true,
-                FechaAlta = DateTime.UtcNow
+                CodigoMB = dto.CodigoModeloBase.Trim().ToUpper(),
+                CodigoCombinacion = dto.CodigoCombinacion.Trim().ToUpper(),
+                Descripcion = dto.Descripcion.Trim(),
+                Estatus = true
             };
             _context.Modelos.Add(e);
             await _context.SaveChangesAsync();
-            return new ModeloDto(e.IdModelo, e.Codigo, e.Nombre, e.Familia, e.Activo, e.FechaAlta);
+            return Map(e);
         }
 
-        public async Task<ModeloDto?> UpdateAsync(long id, ModeloUpdateDto dto)
+        public async Task<ModeloDto?> UpdateAsync(int id, ModeloUpdateDto dto)
         {
             var e = await _context.Modelos.FindAsync(id);
             if (e is null) return null;
-            e.Nombre = dto.Nombre.Trim();
-            e.Familia = dto.Familia?.Trim();
-            e.Activo = dto.Activo;
+
+            e.CodigoMB = dto.CodigoModeloBase.Trim().ToUpper();
+            e.CodigoCombinacion = dto.CodigoCombinacion.Trim().ToUpper();
+            e.Descripcion = dto.Descripcion.Trim();
+            e.Estatus = dto.Estatus;
+
             await _context.SaveChangesAsync();
-            return new ModeloDto(e.IdModelo, e.Codigo, e.Nombre, e.Familia, e.Activo, e.FechaAlta);
+            return Map(e);
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var e = await _context.Modelos.FindAsync(id);
             if (e is null) return false;
-            e.Activo = false;
+            e.Estatus = false;
             await _context.SaveChangesAsync();
             return true;
         }
+
+        private static ModeloDto Map(Modelo x) => new(
+            x.IdModelo,
+            x.CodigoMB,
+            x.CodigoCombinacion,
+            x.Descripcion,
+            x.Estatus);
     }
 }

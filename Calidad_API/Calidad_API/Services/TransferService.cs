@@ -110,8 +110,9 @@ namespace Calidad_API.Services
             t.Lote,
             t.Punto,
             t.IdModelo,
-            t.Modelo?.Codigo,
-            t.Modelo?.Nombre,
+            t.Modelo?.CodigoMB,
+            t.Modelo?.CodigoCombinacion,
+            t.Modelo?.Descripcion,
             t.FechaPrimerScan,
             t.FechaUltimoScan
         );

@@ -9,25 +9,19 @@ namespace Calidad_API.Models
     {
         [Key]
         [Column("id_modelo")]
-        public long IdModelo { get; set; }
+        public int IdModelo { get; set; }
 
-        [Column("codigo")]
-        public string Codigo { get; set; } = null!;
+        [Column("codigo_modelo_base")]
+        public string CodigoMB { get; set; } = null!;
 
-        [Column("nombre")]
-        public string Nombre { get; set; } = null!;
+        [Column("codigo_combinacion")]
+        public string CodigoCombinacion { get; set; } = null!;
 
-        [Column("familia")]
-        public string? Familia { get; set; }
+        [Column("descripcion")]
+        public string Descripcion { get; set; } = null!;       
 
-        [Column("activo")]
-        public bool Activo { get; set; }
-
-        [Column("fecha_alta")]
-        public DateTime FechaAlta { get; set; }
-
-        [Column("usuario_alta")]
-        public long? UsuarioAlta { get; set; }
+        [Column("estatus")]
+        public bool Estatus { get; set; }
 
         public ICollection<Transfer> Transfers { get; set; } = new List<Transfer>();
     }

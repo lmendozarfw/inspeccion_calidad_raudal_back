@@ -163,7 +163,7 @@ namespace Calidad_API.Data
 
             modelBuilder.Entity<Modelo>(e =>
             {
-                e.HasIndex(x => x.Codigo).IsUnique();
+                e.HasIndex(x => new { x.CodigoMB, x.CodigoCombinacion }).IsUnique();
             });
 
             modelBuilder.Entity<Defecto>(e =>

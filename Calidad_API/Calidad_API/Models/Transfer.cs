@@ -26,7 +26,7 @@ namespace Calidad_API.Models
         public string? Punto { get; set; }
 
         [Column("id_modelo")]
-        public long? IdModelo { get; set; }
+        public int? IdModelo { get; set; }
 
         [Column("fecha_primer_scan")]
         public DateTime FechaPrimerScan { get; set; }

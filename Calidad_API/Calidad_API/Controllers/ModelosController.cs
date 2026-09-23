@@ -17,17 +17,19 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<IEnumerable<ModeloDto>>> GetAll([FromQuery] bool soloActivos = true)
             => Ok(await _service.GetAllAsync(soloActivos));
 
-        [HttpGet("{id:long}")]
-        public async Task<ActionResult<ModeloDto>> GetById(long id)
+        [HttpGet("buscar")]
+        public async Task<ActionResult<ModeloDto>> Buscar(
+     [FromQuery] string codigoModeloBase,
+     [FromQuery] string codigoCombinacion)
         {
-            var item = await _service.GetByIdAsync(id);
+            var item = await _service.GetByCodigosAsync(codigoModeloBase, codigoCombinacion);
             return item is null ? NotFound() : Ok(item);
         }
 
         [HttpGet("codigo/{codigo}")]
         public async Task<ActionResult<ModeloDto>> GetByCodigo(string codigo)
         {
-            var item = await _service.GetByCodigoAsync(codigo);
+            var item = await _service.GetByCodigosAsync(codigo, null);
             return item is null ? NotFound() : Ok(item);
         }
 
@@ -36,12 +38,12 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<ModeloDto>> Create([FromBody] ModeloCreateDto dto)
         {
             var created = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.IdModelo }, created);
+            return CreatedAtAction(nameof(Buscar), new { id = created.IdModelo }, created);
         }
 
         [HttpPut("{id:long}")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
-        public async Task<ActionResult<ModeloDto>> Update(long id, [FromBody] ModeloUpdateDto dto)
+        public async Task<ActionResult<ModeloDto>> Update(int id, [FromBody] ModeloUpdateDto dto)
         {
             var updated = await _service.UpdateAsync(id, dto);
             return updated is null ? NotFound() : Ok(updated);
@@ -49,7 +51,7 @@ namespace Calidad_API.Controllers
 
         [HttpDelete("{id:long}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(int id)
             => await _service.DeleteAsync(id) ? NoContent() : NotFound();
     }
 }

@@ -25,7 +25,7 @@ namespace Calidad_API.Services
                 .Include(d => d.DefectoTiposInspeccion).ThenInclude(di => di.TipoInspeccion).AsQueryable();
             if (filtros != null)
             {
-                
+
                 if (filtros.OperationIds != null && filtros.OperationIds.Any())
                 {
                     query = query.Where(d =>
@@ -34,7 +34,7 @@ namespace Calidad_API.Services
                         )
                     );
                 }
-            
+
                 if (filtros.InspectionTypeIds != null && filtros.InspectionTypeIds.Any())
                 {
                     query = query.Where(d =>
@@ -43,7 +43,7 @@ namespace Calidad_API.Services
                         )
                     );
                 }
-            
+
                 if (filtros.CriticalityIds != null && filtros.CriticalityIds.Any())
                 {
                     query = query.Where(d =>
@@ -56,26 +56,29 @@ namespace Calidad_API.Services
                     query = query.Where(d => d.AplicaPieza == filtros.RequirePiece.Value);
                 }
             }
-            
+
             return await query
                 .OrderBy(d => d.Codigo)
                 .Select(d => new DefectoDto(
-                    d.IdDefecto,
-                    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).ToList(),
-                    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).ToList(),
-                    d.Codigo,
-                    d.Nombre,
-                    d.Criticidad.IdCriticidad,
-                    d.Criticidad.Codigo,
-                    d.Criticidad.Nombre,
-                    d.AplicaPieza,
-                    d.IdPieza,
-                    d.Pieza.Codigo,
-                    d.Pieza.Nombre,
-                    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.IdTipoInspeccion).ToList(),
-                    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.TipoInspeccion.Nombre).ToList(),
-                    d.Ponderacion,
-                    d.Activo))
+    d.IdDefecto,
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).FirstOrDefault(),
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).FirstOrDefault() ?? string.Empty,
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).ToList(),
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).ToList(),
+    d.Codigo,
+    d.Nombre,
+    d.IdCriticidad,
+    d.Criticidad != null ? d.Criticidad.Codigo : null,
+    d.Criticidad != null ? d.Criticidad.Nombre : null,
+    d.AplicaPieza,
+    d.IdPieza,
+    d.Pieza != null ? d.Pieza.Codigo : null,
+    d.Pieza != null ? d.Pieza.Nombre : null,
+    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.IdTipoInspeccion).ToList(),
+    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.TipoInspeccion.Nombre).ToList(),
+    d.Ponderacion,
+    d.Activo
+))
                 .ToListAsync();
         }
 
@@ -94,24 +97,25 @@ namespace Calidad_API.Services
                 d.DefectosOperacion.Any(dop => dop.IdOperacion == idOperacion) &&
                 d.DefectoTiposInspeccion.Any(dt => dt.IdTipoInspeccion == idTipoInspeccion)).AsQueryable();
             return await query.OrderBy(d => d.Codigo).Select(d => new DefectoDto(
-                d.IdDefecto,
-                d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).ToList(),
-                d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).ToList(),
-                d.Codigo,
-                d.Nombre,
-                d.IdCriticidad,
-                d.Criticidad != null ? d.Criticidad.Codigo : null,
-                d.Criticidad != null ? d.Criticidad.Nombre : null,
-                d.AplicaPieza,
-                d.IdPieza,
-                d.Pieza != null ? d.Pieza.Codigo : null,
-                d.Pieza != null ? d.Pieza.Nombre : null,
-                d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.IdTipoInspeccion)
-                    .ToList(),
-                d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.TipoInspeccion.Nombre)
-                    .ToList(),
-                d.Ponderacion,
-                d.Activo)).ToListAsync();
+    d.IdDefecto,
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).FirstOrDefault(),
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).FirstOrDefault() ?? string.Empty,
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).ToList(),
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).ToList(),
+    d.Codigo,
+    d.Nombre,
+    d.IdCriticidad,
+    d.Criticidad != null ? d.Criticidad.Codigo : null,
+    d.Criticidad != null ? d.Criticidad.Nombre : null,
+    d.AplicaPieza,
+    d.IdPieza,
+    d.Pieza != null ? d.Pieza.Codigo : null,
+    d.Pieza != null ? d.Pieza.Nombre : null,
+    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.IdTipoInspeccion).ToList(),
+    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.TipoInspeccion.Nombre).ToList(),
+    d.Ponderacion,
+    d.Activo
+)).ToListAsync();
         }
 
         public async Task<DefectoDto?> GetByIdAsync(long id)
@@ -127,16 +131,25 @@ namespace Calidad_API.Services
             if (d is null) return null;
 
             return new DefectoDto(
-                d.IdDefecto, 
-                d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).ToList(),
-                d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).ToList(), 
-                d.Codigo, 
-                d.Nombre,
-                d.IdCriticidad, d.Criticidad?.Codigo, d.Criticidad?.Nombre,
-                d.AplicaPieza, d.IdPieza, d.Pieza?.Codigo, d.Pieza?.Nombre,
-                d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.IdTipoInspeccion).ToList(),
-                d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.TipoInspeccion.Nombre).ToList(),
-                d.Ponderacion, d.Activo);
+    d.IdDefecto,
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).FirstOrDefault(),
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).FirstOrDefault() ?? string.Empty,
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.IdOperacion).ToList(),
+    d.DefectosOperacion.OrderBy(dop => dop.Operacion.Nombre).Select(dop => dop.Operacion.Nombre).ToList(),
+    d.Codigo,
+    d.Nombre,
+    d.IdCriticidad,
+    d.Criticidad != null ? d.Criticidad.Codigo : null,
+    d.Criticidad != null ? d.Criticidad.Nombre : null,
+    d.AplicaPieza,
+    d.IdPieza,
+    d.Pieza != null ? d.Pieza.Codigo : null,
+    d.Pieza != null ? d.Pieza.Nombre : null,
+    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.IdTipoInspeccion).ToList(),
+    d.DefectoTiposInspeccion.OrderBy(di => di.TipoInspeccion.Nombre).Select(di => di.TipoInspeccion.Nombre).ToList(),
+    d.Ponderacion,
+    d.Activo
+);
         }
 
         public async Task<DefectoDto> CreateAsync(DefectoCreateDto dto)
@@ -149,7 +162,7 @@ namespace Calidad_API.Services
                     "Una o más operaciones no existen."
                 );
             }
-            
+
             var tiposInspeccion = await _context.TiposInspeccion
                 .Where(x => dto.IdsTipoInspeccion.Contains(x.IdTipoInspeccion))
                 .ToListAsync();
@@ -177,10 +190,10 @@ namespace Calidad_API.Services
             {
                 entity.DefectosOperacion.Add(new DefectoOperacion
                 {
-                   IdOperacion = operacion.IdOperacion,
+                    IdOperacion = operacion.IdOperacion,
                 });
             }
-            
+
             foreach (var tipo in tiposInspeccion)
             {
                 entity.DefectoTiposInspeccion.Add(
@@ -190,7 +203,7 @@ namespace Calidad_API.Services
                     }
                 );
             }
-            
+
             _context.Defectos.Add(entity);
             await _context.SaveChangesAsync();
 
@@ -213,7 +226,7 @@ namespace Calidad_API.Services
                     "Una o más operaciones no existen."
                 );
             }
-            
+
             var tiposInspeccion = await _context.TiposInspeccion
                 .Where(x => dto.IdsTipoInspeccion.Contains(x.IdTipoInspeccion))
                 .ToListAsync();
@@ -224,7 +237,7 @@ namespace Calidad_API.Services
                     "Uno o más tipos de inspección no existen."
                 );
             }
-            
+
             entity.Nombre = dto.Nombre.Trim();
             entity.IdCriticidad = dto.IdCriticidad;
             entity.AplicaPieza = dto.AplicaPieza;
@@ -252,7 +265,7 @@ namespace Calidad_API.Services
                     }
                 );
             }
-            
+
             await _context.SaveChangesAsync();
             return await GetByIdAsync(id);
         }

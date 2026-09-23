@@ -6,6 +6,6 @@
         string? Lista,
         string Lote,
         string? Punto,
-        long? IdModelo
+        int? IdModelo
     );
 }

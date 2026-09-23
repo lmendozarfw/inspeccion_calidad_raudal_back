@@ -7,9 +7,10 @@
         string? Lista,
         string Lote,
         string? Punto,
-        long? IdModelo,
-        string? ModeloCodigo,
-        string? ModeloNombre,
+        int? IdModelo,
+        string? CodigoModeloBase,
+        string? CodigoCombinacion,
+        string? Descripcion,
         DateTime FechaPrimerScan,
         DateTime FechaUltimoScan
     );
