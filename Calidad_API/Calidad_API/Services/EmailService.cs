@@ -1,8 +1,7 @@
-﻿using Azure.Identity;
-using Calidad_API.Interfaces;
-using Microsoft.Graph;
-using Microsoft.Graph.Models;
-using Microsoft.Graph.Users.Item.SendMail;
+﻿using Calidad_API.Interfaces;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace Calidad_API.Services
 {
@@ -10,35 +9,40 @@ namespace Calidad_API.Services
     {
         private readonly IConfiguration _config;
         private readonly ILogger<EmailService> _logger;
-        private readonly GraphServiceClient _graph;
 
         public EmailService(IConfiguration config, ILogger<EmailService> logger)
         {
             _config = config;
             _logger = logger;
-
-            var tenantId = config["Email:TenantId"]
-                ?? throw new InvalidOperationException("Email:TenantId no configurado");
-            var clientId = config["Email:ClientId"]
-                ?? throw new InvalidOperationException("Email:ClientId no configurado");
-            var clientSecret = config["Email:ClientSecret"]
-                ?? throw new InvalidOperationException("Email:ClientSecret no configurado");
-
-            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-            _graph = new GraphServiceClient(credential, new[] { "https://graph.microsoft.com/.default" });
         }
 
-        public Task SendAsync(string to, string subject, string bodyHtml, CancellationToken ct = default)
-            => SendAsync(new[] { to }, subject, bodyHtml, ct);
+        public Task SendAsync(
+    IEnumerable<string> to,
+    string subject,
+    string bodyHtml,
+    CancellationToken ct = default)
+    => SendAsync(to, subject, bodyHtml, null, null, ct);
 
         public async Task SendAsync(
             IEnumerable<string> to,
             string subject,
             string bodyHtml,
+            string? attachmentPath,
+            string? attachmentFileName = null,
             CancellationToken ct = default)
         {
-            var from = _config["Email:FromAddress"]
-                ?? throw new InvalidOperationException("Email:FromAddress no configurado");
+            var host = _config["Email:SmtpHost"];
+            var port = int.Parse(_config["Email:SmtpPort"] ?? "587");
+            var user = _config["Email:User"];
+            var password = _config["Email:Password"];
+            var fromName = _config["Email:FromName"] ?? "Módulo Calidad";
+            var fromAddress = _config["Email:FromAddress"] ?? user;
+
+            if (string.IsNullOrWhiteSpace(host))
+            {
+                _logger.LogWarning("Email:SmtpHost vacío. No se envía correo.");
+                return;
+            }
 
             var recipients = to
                 .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -48,43 +52,65 @@ namespace Calidad_API.Services
 
             if (recipients.Count == 0)
             {
-                _logger.LogWarning("Email no enviado: no hay destinatarios.");
+                _logger.LogWarning("Email sin destinatarios.");
                 return;
             }
 
-            var message = new Message
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress(fromName, fromAddress));
+            foreach (var addr in recipients)
+                message.To.Add(MailboxAddress.Parse(addr));
+            message.Subject = subject;
+
+            var builder = new BodyBuilder
             {
-                Subject = subject,
-                Body = new ItemBody
-                {
-                    ContentType = BodyType.Html,
-                    Content = bodyHtml
-                },
-                ToRecipients = recipients.Select(addr => new Recipient
-                {
-                    EmailAddress = new EmailAddress { Address = addr }
-                }).ToList()
+                HtmlBody = bodyHtml
             };
 
-            var body = new SendMailPostRequestBody
+            if (!string.IsNullOrWhiteSpace(attachmentPath) && File.Exists(attachmentPath))
             {
-                Message = message,
-                SaveToSentItems = true
+                var name = string.IsNullOrWhiteSpace(attachmentFileName)
+                    ? Path.GetFileName(attachmentPath)
+                    : attachmentFileName;
+
+                builder.Attachments.Add(name, await File.ReadAllBytesAsync(attachmentPath, ct));
+            }
+
+            message.Body = builder.ToMessageBody();
+
+            using var client = new SmtpClient();
+
+            client.ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
+            {
+                if (errors == System.Net.Security.SslPolicyErrors.None)
+                    return true;
+
+                if (errors == System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch
+                    && certificate?.Subject?.Contains("cloudfilter", StringComparison.OrdinalIgnoreCase) == true)
+                    return true;
+
+                return false;
             };
 
             try
             {
-                // Envía como el buzón FromAddress
-                await _graph.Users[from]
-                    .SendMail
-                    .PostAsync(body, cancellationToken: ct);
+                var secure = port == 465
+                    ? SecureSocketOptions.SslOnConnect
+                    : SecureSocketOptions.StartTls;
 
-                _logger.LogInformation("Correo enviado por Graph. Asunto: {Subject}", subject);
+                await client.ConnectAsync(host, port, secure, ct);
+
+                if (!string.IsNullOrWhiteSpace(user))
+                    await client.AuthenticateAsync(user, password, ct);
+
+                await client.SendAsync(message, ct);
+                await client.DisconnectAsync(true, ct);
+
+                _logger.LogInformation("Correo SMTP enviado. Asunto: {Subject}", subject);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al enviar correo por Graph: {Subject}", subject);
-                // No relanzar: el vale no debe fallar por el correo
+                _logger.LogError(ex, "Error al enviar correo SMTP: {Subject}", subject);
             }
         }
     }

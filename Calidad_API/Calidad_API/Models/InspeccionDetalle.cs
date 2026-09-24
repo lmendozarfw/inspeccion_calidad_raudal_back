@@ -54,6 +54,5 @@ namespace Calidad_API.Models
         public Inspeccion Inspeccion { get; set; } = null!;
         public Defecto Defecto { get; set; } = null!;
         public Usuario Usuario { get; set; } = null!;
-        public ICollection<Vale> Vales { get; set; } = new List<Vale>();
     }
 }

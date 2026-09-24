@@ -13,14 +13,8 @@ namespace Calidad_API.Models
         [Column("folio")]
         public string Folio { get; set; } = null!;
 
-        [Column("id_inspeccion_detalle")]
-        public long IdInspeccionDetalle { get; set; }
-
-        [Column("id_pieza")]
-        public long IdPieza { get; set; }
-
-        [Column("cantidad")]
-        public decimal Cantidad { get; set; }
+        [Column("id_inspeccion")]
+        public long IdInspeccion { get; set; }
 
         [Column("id_usuario_solicita")]
         public long IdUsuarioSolicita { get; set; }
@@ -34,8 +28,8 @@ namespace Calidad_API.Models
         [Column("estado")]
         public string Estado { get; set; } = "GENERADO";
 
-        public InspeccionDetalle InspeccionDetalle { get; set; } = null!;
-        public Pieza Pieza { get; set; } = null!;
+        public Inspeccion Inspeccion { get; set; } = null!;
         public Usuario UsuarioSolicita { get; set; } = null!;
+        public ICollection<ValeDetalle> Detalles { get; set; } = new List<ValeDetalle>();
     }
 }

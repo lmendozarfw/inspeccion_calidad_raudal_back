@@ -26,7 +26,7 @@ namespace Calidad_API.Models
         public DateTime FechaAlta { get; set; }
 
         public ICollection<Defecto> Defectos { get; set; } = new List<Defecto>();
-        public ICollection<Vale> Vales { get; set; } = new List<Vale>();
+        public ICollection<ValeDetalle> ValeDetalles { get; set; } = new List<ValeDetalle>();
     }
 
 }

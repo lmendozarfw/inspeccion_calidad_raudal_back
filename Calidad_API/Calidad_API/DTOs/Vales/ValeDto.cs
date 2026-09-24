@@ -3,15 +3,12 @@
     public record ValeDto(
         long IdVale,
         string Folio,
-        long IdInspeccionDetalle,
-        long IdPieza,
-        string PiezaCodigo,
-        string PiezaNombre,
-        decimal Cantidad,
+        long IdInspeccion,
         long IdUsuarioSolicita,
         string UsuarioNombre,
         DateTime FechaGeneracion,
         string? RutaPdf,
-        string Estado
+        string Estado,
+        IReadOnlyList<ValeLineaDto> Lineas
     );
 }

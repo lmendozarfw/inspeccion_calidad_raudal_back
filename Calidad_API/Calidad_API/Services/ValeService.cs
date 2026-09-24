@@ -31,7 +31,7 @@ namespace Calidad_API.Services
         {
             var v = await _context.Vales
                 .AsNoTracking()
-                .Include(x => x.Pieza)
+                .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
@@ -42,20 +42,20 @@ namespace Calidad_API.Services
         {
             var v = await _context.Vales
                 .AsNoTracking()
-                .Include(x => x.Pieza)
+                .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
                 .FirstOrDefaultAsync(x => x.Folio == folio);
 
             return v is null ? null : Map(v);
         }
 
-        public async Task<IEnumerable<ValeDto>> GetByInspeccionDetalleAsync(long idDetalle)
+        public async Task<IEnumerable<ValeDto>> GetByInspeccionDetalleAsync(long idInspeccion)
         {
             var list = await _context.Vales
                 .AsNoTracking()
-                .Include(x => x.Pieza)
+                .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
-                .Where(x => x.IdInspeccionDetalle == idDetalle)
+                .Where(x => x.IdInspeccion == idInspeccion)
                 .OrderByDescending(x => x.FechaGeneracion)
                 .ToListAsync();
 
@@ -64,103 +64,131 @@ namespace Calidad_API.Services
 
         public async Task<ValeDto> GenerarAsync(ValeCreateDto dto, long idUsuario)
         {
-            // 1. Validar detalle
-            var detalle = await _context.InspeccionDetalles
-                .Include(d => d.Inspeccion)
-                .Include(d => d.Defecto)
-                .FirstOrDefaultAsync(d => d.IdDetalle == dto.IdInspeccionDetalle);
+            var inspeccion = await _context.Inspecciones
+                .Include(i => i.Transfer)
+                .Include(i => i.Detalles)
+                    .ThenInclude(d => d.Defecto)
+                .FirstOrDefaultAsync(i => i.IdInspeccion == dto.IdInspeccion);
 
-            if (detalle is null)
-                throw new InvalidOperationException("El detalle de inspección no existe.");
+            if (inspeccion is null)
+                throw new InvalidOperationException("La inspección no existe.");
 
-            // 2. Validar pieza
-            var pieza = await _context.Piezas
-                .FirstOrDefaultAsync(p => p.IdPieza == dto.IdPieza && p.Activo);
-
-            if (pieza is null)
-                throw new InvalidOperationException("La pieza no existe o está inactiva.");
-
-            // 3. Validar permiso de generar vale en la operación de la inspección
-            var idOperacion = detalle.Inspeccion.IdOperacion;
-            var puedeGenerar = await _context.PermisosOperacion
-                .AnyAsync(p => p.IdUsuario == idUsuario
-                            && p.IdOperacion == idOperacion
-                            && p.PuedeGenerarVale);
+            var puedeGenerar = await _context.PermisosOperacion.AnyAsync(p =>
+                p.IdUsuario == idUsuario
+                && p.IdOperacion == inspeccion.IdOperacion
+                && p.PuedeGenerarVale);
 
             if (!puedeGenerar)
                 throw new UnauthorizedAccessException("No tienes permiso para generar vales en esta operación.");
 
-            if (dto.Cantidad <= 0)
-                throw new InvalidOperationException("La cantidad debe ser mayor a cero.");
+            // 1) Líneas: las del body, o automáticas desde detalles con pieza
+            List<(long IdPieza, decimal Cantidad)> lineasMerged;
 
-            // 4. Obtener siguiente folio con el SP
+            if (dto.Lineas is { Count: > 0 })
+            {
+                lineasMerged = dto.Lineas
+                    .GroupBy(x => x.IdPieza)
+                    .Select(g => (g.Key, g.Sum(x => x.Cantidad)))
+                    .ToList();
+            }
+            else
+            {
+                // Automático: defectos que requieren pieza
+                lineasMerged = inspeccion.Detalles
+                    .Where(d => d.Defecto.AplicaPieza
+                                && d.Defecto.IdPieza.HasValue
+                                && d.Defecto.IdPieza.Value > 0)
+                    .GroupBy(d => d.Defecto.IdPieza!.Value)
+                    .Select(g => (IdPieza: g.Key, Cantidad: g.Sum(x => x.Cantidad)))
+                    .ToList();
+            }
+
+            if (lineasMerged.Count == 0)
+                throw new InvalidOperationException(
+                    "No hay materiales para el vale. Los defectos de la inspección no tienen pieza asociada, " +
+                    "o indica 'lineas' manualmente.");
+
+            if (lineasMerged.Any(x => x.Cantidad <= 0))
+                throw new InvalidOperationException("La cantidad de cada línea debe ser mayor a cero.");
+
+            var idsPieza = lineasMerged.Select(x => x.IdPieza).ToList();
+            var piezas = await _context.Piezas
+                .Where(p => idsPieza.Contains(p.IdPieza) && p.Activo)
+                .ToListAsync();
+
+            if (piezas.Count != idsPieza.Count)
+                throw new InvalidOperationException("Una o más piezas no existen o están inactivas.");
+
             var folio = await ObtenerSiguienteFolioAsync();
 
-            // 5. Crear vale
             var vale = new Vale
             {
                 Folio = folio,
-                IdInspeccionDetalle = dto.IdInspeccionDetalle,
-                IdPieza = dto.IdPieza,
-                Cantidad = dto.Cantidad,
+                IdInspeccion = dto.IdInspeccion,
                 IdUsuarioSolicita = idUsuario,
                 FechaGeneracion = DateTime.UtcNow,
-                RutaPdf = null,                    // se puede llenar después al generar PDF
                 Estado = "GENERADO"
             };
+
+            foreach (var linea in lineasMerged)
+            {
+                vale.Detalles.Add(new ValeDetalle
+                {
+                    IdPieza = linea.IdPieza,
+                    Cantidad = linea.Cantidad
+                });
+            }
 
             _context.Vales.Add(vale);
             await _context.SaveChangesAsync();
 
-            // Recargar navegaciones
-            await _context.Entry(vale).Reference(v => v.Pieza).LoadAsync();
-            await _context.Entry(vale).Reference(v => v.UsuarioSolicita).LoadAsync();
+            // Recargar + PDF + correo (igual que ya tienes)
+            vale = await _context.Vales
+                .Include(v => v.UsuarioSolicita)
+                .Include(v => v.Detalles).ThenInclude(d => d.Pieza)
+                .Include(v => v.Inspeccion).ThenInclude(i => i.Transfer)
+                .FirstAsync(v => v.IdVale == vale.IdVale);
 
-            // 6. Cargar detalle completo para PDF y correo
-            var detalleFull = await _context.InspeccionDetalles
+            var inspeccionFull = await _context.Inspecciones
                 .AsNoTracking()
-                .Include(d => d.Defecto)
-                .Include(d => d.Inspeccion)
-                    .ThenInclude(i => i.Transfer)
-                .FirstAsync(d => d.IdDetalle == vale.IdInspeccionDetalle);
+                .Include(i => i.Transfer)
+                .Include(i => i.Detalles).ThenInclude(d => d.Defecto)
+                .FirstAsync(i => i.IdInspeccion == vale.IdInspeccion);
 
-            var lote = detalleFull.Inspeccion.Transfer.Lote;
+            var lote = inspeccionFull.Transfer.Lote;
 
-            // 7. Generar PDF
             try
             {
-                var ruta = _pdfService.GenerarYGuardar(vale, detalleFull, lote);
-                vale.RutaPdf = ruta;
+                vale.RutaPdf = _pdfService.GenerarYGuardar(vale, inspeccionFull, lote);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
-            {
-                // Loguear; el vale ya existe aunque falle el PDF
-                // Si tienes ILogger: _logger.LogError(ex, "Error al generar PDF del vale {Folio}", vale.Folio);
-            }
+            catch { /* log */ }
 
-            // 8. Correo de aviso
+            // correo...
             try
             {
                 var destinatarios = (_config["Email:AvisoValeTo"] ?? "")
-                    .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                 if (destinatarios.Length > 0)
                 {
                     var subject = $"Vale de material generado — {vale.Folio}";
                     var body = $@"
-            <h3>Se generó un vale de material</h3>
-            <ul>
-              <li><b>Folio:</b> {vale.Folio}</li>
-              <li><b>Pieza:</b> {vale.Pieza.Codigo} - {vale.Pieza.Nombre}</li>
-              <li><b>Cantidad:</b> {vale.Cantidad}</li>
-              <li><b>Lote:</b> {lote}</li>
-              <li><b>Defecto:</b> {detalleFull.Defecto.Codigo} - {detalleFull.Defecto.Nombre}</li>
-              <li><b>Solicita:</b> {vale.UsuarioSolicita.Nombre}</li>
-              <li><b>Fecha:</b> {vale.FechaGeneracion:dd/MM/yyyy HH:mm} UTC</li>
-            </ul>
-        ";
-                    await _emailService.SendAsync(destinatarios, subject, body);
+            <p>Se generó el vale de material <b>{vale.Folio}</b>.</p>
+            <p>
+              Lote: <b>{lote}</b><br/>
+              Solicita: <b>{vale.UsuarioSolicita.Nombre}</b><br/>
+              Fecha: <b>{vale.FechaGeneracion:dd/MM/yyyy HH:mm} UTC</b>
+            </p>
+            <p>Se adjunta el PDF del vale para su revisión e impresión.</p>
+            <p style='color:#666;font-size:12px;'>Módulo de Calidad — aviso automático</p>";
+
+                    await _emailService.SendAsync(
+                        destinatarios,
+                        subject,
+                        body,
+                        vale.RutaPdf,           // ruta del archivo
+                        $"{vale.Folio}.pdf");   // nombre del adjunto
                 }
             }
             catch
@@ -174,7 +202,7 @@ namespace Calidad_API.Services
         public async Task<ValeDto?> ActualizarEstadoAsync(long id, ValeUpdateEstadoDto dto)
         {
             var vale = await _context.Vales
-                .Include(x => x.Pieza)
+                .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
@@ -215,18 +243,36 @@ namespace Calidad_API.Services
         }
 
         private static ValeDto Map(Vale v) => new(
-            v.IdVale,
-            v.Folio,
-            v.IdInspeccionDetalle,
-            v.IdPieza,
-            v.Pieza.Codigo,
-            v.Pieza.Nombre,
-            v.Cantidad,
-            v.IdUsuarioSolicita,
-            v.UsuarioSolicita.Nombre,
-            v.FechaGeneracion,
-            v.RutaPdf,
-            v.Estado
-        );
+    v.IdVale,
+    v.Folio,
+    v.IdInspeccion,
+    v.IdUsuarioSolicita,
+    v.UsuarioSolicita.Nombre,
+    v.FechaGeneracion,
+    v.RutaPdf,
+    v.Estado,
+    v.Detalles
+        .OrderBy(d => d.Pieza.Codigo)
+        .Select(d => new ValeLineaDto(
+            d.IdValeDetalle,
+            d.IdPieza,
+            d.Pieza.Codigo,
+            d.Pieza.Nombre,
+            d.Cantidad))
+        .ToList()
+);
+
+        public async Task<IEnumerable<ValeDto>> GetByInspeccionAsync(long idInspeccion)
+        {
+            var list = await _context.Vales
+                .AsNoTracking()
+                .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
+                .Where(x => x.IdInspeccion == idInspeccion)
+                .OrderByDescending(x => x.FechaGeneracion)
+                .ToListAsync();
+
+            return list.Select(Map);
+        }
     }
 }

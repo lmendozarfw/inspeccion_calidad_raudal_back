@@ -93,5 +93,9 @@ namespace Calidad_API.Controllers
             var bytes = await System.IO.File.ReadAllBytesAsync(vale.RutaPdf);
             return File(bytes, "application/pdf", $"{vale.Folio}.pdf");
         }
+
+        [HttpGet("inspeccion/{idInspeccion:long}")]
+        public async Task<ActionResult<IEnumerable<ValeDto>>> GetByInspeccion(long idInspeccion)
+    => Ok(await _valeService.GetByInspeccionAsync(idInspeccion));
     }
 }

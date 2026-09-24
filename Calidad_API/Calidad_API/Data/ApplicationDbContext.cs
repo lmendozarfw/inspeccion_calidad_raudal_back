@@ -29,11 +29,12 @@ namespace Calidad_API.Data
         public DbSet<DefectoTipoInspeccion> DefectoTiposInspeccion { get; set; } = null!;
         public DbSet<DefectoOperacion> DefectosOperacion { get; set; } = null!;
 
-    // ——— Operación (flujo) ———
+        // ——— Operación (flujo) ———
         public DbSet<Transfer> Transfers { get; set; } = null!;
         public DbSet<Inspeccion> Inspecciones { get; set; } = null!;
         public DbSet<InspeccionDetalle> InspeccionDetalles { get; set; } = null!;
         public DbSet<Vale> Vales { get; set; } = null!;
+        public DbSet<ValeDetalle> ValesDetalles { get; set; } = null!;
 
         // ——— Métricas ———
         public DbSet<MetaCalidad> MetasCalidad { get; set; } = null!;
@@ -73,7 +74,7 @@ namespace Calidad_API.Data
                     .HasForeignKey(e => e.IdInspeccion)
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            
+
             modelBuilder.Entity<UsuarioRol>(e =>
             {
                 e.HasKey(x => new { x.IdUsuario, x.IdRol });
@@ -200,9 +201,9 @@ namespace Calidad_API.Data
                 e.HasKey(x => new { x.IdDefecto, x.IdOperacion });
                 e.HasOne(x => x.Defecto).WithMany(d => d.DefectosOperacion).HasForeignKey(x => x.IdDefecto).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(x => x.Operacion).WithMany(o => o.DefectosOperacion).HasForeignKey(x => x.IdOperacion).OnDelete(DeleteBehavior.Restrict);
-                
+
             });
-            
+
             // =====================================================
             // OPERACIÓN (flujo)
             // =====================================================
@@ -266,21 +267,39 @@ namespace Calidad_API.Data
 
             modelBuilder.Entity<Vale>(e =>
             {
+                e.ToTable("vale");
+                e.HasKey(x => x.IdVale);
+
                 e.HasIndex(x => x.Folio).IsUnique();
 
-                e.HasOne(x => x.InspeccionDetalle)
-                    .WithMany(d => d.Vales)
-                    .HasForeignKey(x => x.IdInspeccionDetalle)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                e.HasOne(x => x.Pieza)
-                    .WithMany(p => p.Vales)
-                    .HasForeignKey(x => x.IdPieza)
+                e.HasOne(x => x.Inspeccion)
+                    .WithMany(i => i.Vales)
+                    .HasForeignKey(x => x.IdInspeccion)
                     .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasOne(x => x.UsuarioSolicita)
-                    .WithMany(u => u.ValesSolicitados)
+                    .WithMany(u => u.ValesSolicitados) // o el nombre real de la colección
                     .HasForeignKey(x => x.IdUsuarioSolicita)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Importante: no debe quedar relación a InspeccionDetalle
+            });
+
+            modelBuilder.Entity<ValeDetalle>(e =>
+            {
+                e.ToTable("vale_detalle");
+                e.HasKey(x => x.IdValeDetalle);
+
+                e.HasIndex(x => new { x.IdVale, x.IdPieza }).IsUnique();
+
+                e.HasOne(x => x.Vale)
+                    .WithMany(v => v.Detalles)
+                    .HasForeignKey(x => x.IdVale)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(x => x.Pieza)
+                    .WithMany(p => p.ValeDetalles)
+                    .HasForeignKey(x => x.IdPieza)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
