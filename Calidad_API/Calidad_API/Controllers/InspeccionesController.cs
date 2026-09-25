@@ -31,6 +31,13 @@ namespace Calidad_API.Controllers
             return Ok(resultado);
         }
 
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<InspeccionDto>>> Buscar(
+            [FromQuery] string? search)
+        {
+            return Ok(await _inspeccionService.Search(search));
+        }
+
         [HttpGet("{id:long}")]
         public async Task<ActionResult<InspeccionDto>> GetById(long id)
         {

@@ -29,6 +29,39 @@ namespace Calidad_API.Services
             return list.Select(Map);
         }
 
+        public async Task<IEnumerable<InspeccionDto>> Search(string? search)
+        {
+            search = Limpiar(search);
+
+            var query = _context.Inspecciones.AsNoTracking()
+                    .Include(x => x.Transfer)
+                    .Include(x => x.Operacion)
+                    .Include(x => x.TipoInspeccion)
+                    .Include(x => x.Usuario)
+                    .Include(x => x.Detalles).ThenInclude(d => d.Defecto)
+                    .AsQueryable();
+
+            if (search is not null)
+            {
+                query = query.Where(i =>
+                        (i.Transfer.Programa != null && i.Transfer.Programa.Contains(search))
+                     || i.Transfer.Lote.Contains(search)
+                     || i.Operacion.Nombre.Contains(search)
+                     || i.Operacion.Codigo.Contains(search)
+                     || i.TipoInspeccion.Codigo.Contains(search)
+                     || i.Usuario.Nombre.Contains(search)
+                     || i.Detalles.Any(d =>
+                            d.Defecto.Nombre.Contains(search)
+                         || d.Defecto.Codigo.Contains(search)));
+            }
+
+            var list = await query
+                .OrderByDescending(x => x.FechaInspeccion)
+                .ToListAsync();
+
+            return list.Select(Map);
+        }
+
         public async Task<InspeccionDto?> GetByIdAsync(long id)
         {
             var i = await _context.Inspecciones
@@ -374,6 +407,9 @@ namespace Calidad_API.Services
                 modeloCodigo ?? transfer.Modelo?.CodigoCombinacion,
                 inspeccionesCreadas);
         }
+
+        private static string? Limpiar(string? valor)
+            => string.IsNullOrWhiteSpace(valor) ? null : valor.Trim();
 
         private static string? MapLado(string? lado)
         {

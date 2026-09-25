@@ -6,6 +6,7 @@ namespace Calidad_API.Interfaces
     {
         Task<InspeccionDto?> GetByIdAsync(long id);
         Task<IEnumerable<InspeccionDto>> GetAll();
+        Task<IEnumerable<InspeccionDto>> Search(string? search);
         Task<IEnumerable<InspeccionDto>> GetByTransferAsync(long idTransfer);
         Task<IEnumerable<InspeccionDto>> GetByAreaAsync(long idArea, DateTime? desde, DateTime? hasta);
         Task<InspeccionDto> CrearAsync(InspeccionCreateDto dto, long idUsuario);
