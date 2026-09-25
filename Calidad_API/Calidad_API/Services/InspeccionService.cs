@@ -191,6 +191,211 @@ namespace Calidad_API.Services
             return true;
         }
 
+        public async Task<InspectionRegisterResponse> RegistrarAsync(
+    InspectionRegisterRequest request,
+    long idUsuario)
+        {
+            if (request.Contexto is null)
+                throw new InvalidOperationException("El contexto es obligatorio.");
+
+            var programa = request.Contexto.Programa?.Trim();
+            var lote = request.Contexto.Lote?.Trim();
+
+            if (string.IsNullOrWhiteSpace(programa))
+                throw new InvalidOperationException("El programa es obligatorio.");
+            if (string.IsNullOrWhiteSpace(lote))
+                throw new InvalidOperationException("El lote es obligatorio.");
+            if (request.Inspecciones is null || request.Inspecciones.Count == 0)
+                throw new InvalidOperationException("Debes enviar al menos una inspección.");
+
+            // —— Modelo opcional (código combinación o base) ——
+            int? idModelo = null;
+            string? modeloCodigo = null;
+            if (!string.IsNullOrWhiteSpace(request.Contexto.Modelo))
+            {
+                var codigo = request.Contexto.Modelo.Trim();
+                var modelo = await _context.Modelos.AsNoTracking()
+                    .FirstOrDefaultAsync(m =>
+                        m.Estatus &&
+                        (m.CodigoCombinacion == codigo || m.CodigoMB == codigo));
+
+                if (modelo is not null)
+                {
+                    idModelo = modelo.IdModelo;
+                    modeloCodigo = modelo.CodigoCombinacion;
+                }
+                // Si no existe, se ignora (no obliga registro de modelo)
+            }
+
+            // —— Transfer: buscar por lote; crear o actualizar ——
+            var transfer = await _context.Transfers
+                .Include(t => t.Modelo)
+                .FirstOrDefaultAsync(t => t.Lote == lote);
+
+            if (transfer is null)
+            {
+                transfer = new Transfer
+                {
+                    QrRaw = $"LOTE:{lote}|PROG:{programa}",
+                    Programa = programa,
+                    Lista = string.IsNullOrWhiteSpace(request.Contexto.Lista)
+                        ? null
+                        : request.Contexto.Lista.Trim(),
+                    Lote = lote,
+                    Punto = string.IsNullOrWhiteSpace(request.Contexto.Punto)
+                        ? null
+                        : request.Contexto.Punto.Trim(),
+                    IdModelo = idModelo,
+                    FechaPrimerScan = DateTime.UtcNow,
+                    FechaUltimoScan = DateTime.UtcNow
+                };
+                _context.Transfers.Add(transfer);
+            }
+            else
+            {
+                transfer.FechaUltimoScan = DateTime.UtcNow;
+                transfer.Programa = programa;
+                if (!string.IsNullOrWhiteSpace(request.Contexto.Lista))
+                    transfer.Lista = request.Contexto.Lista.Trim();
+                if (!string.IsNullOrWhiteSpace(request.Contexto.Punto))
+                    transfer.Punto = request.Contexto.Punto.Trim();
+                if (idModelo.HasValue)
+                    transfer.IdModelo = idModelo;
+            }
+
+            await _context.SaveChangesAsync();
+
+            var inspeccionesCreadas = new List<InspectionCreatedDto>();
+
+            foreach (var item in request.Inspecciones)
+            {
+                var operacionOk = await _context.Operaciones
+                    .AnyAsync(o => o.IdOperacion == item.IdOperacion && o.Activo);
+                if (!operacionOk)
+                    throw new InvalidOperationException($"La operación {item.IdOperacion} no existe o está inactiva.");
+
+                var tipoOk = await _context.TiposInspeccion
+                    .AnyAsync(t => t.IdTipoInspeccion == item.IdTipoInspeccion);
+                if (!tipoOk)
+                    throw new InvalidOperationException($"El tipo de inspección {item.IdTipoInspeccion} no existe.");
+
+                var puedeCapturar = await _context.PermisosOperacion.AnyAsync(p =>
+                    p.IdUsuario == idUsuario
+                    && p.IdOperacion == item.IdOperacion
+                    && p.PuedeCapturar);
+                if (!puedeCapturar)
+                    throw new UnauthorizedAccessException(
+                        $"No tienes permiso de captura en la operación {item.IdOperacion}.");
+
+                var inspeccion = new Inspeccion
+                {
+                    IdTransfer = transfer.IdTransfer,
+                    IdOperacion = item.IdOperacion,
+                    IdTipoInspeccion = item.IdTipoInspeccion,
+                    IdUsuario = idUsuario,
+                    FechaInspeccion = DateTime.UtcNow,
+                    Dispositivo = item.Dispositivo,
+                    Observaciones = item.Observaciones,
+                    Estado = "ABIERTA"
+                };
+
+                _context.Inspecciones.Add(inspeccion);
+                await _context.SaveChangesAsync();
+
+                var detallesCreados = new List<InspectionDetalleCreatedDto>();
+
+                if (item.Defectos is { Count: > 0 })
+                {
+                    foreach (var def in item.Defectos)
+                    {
+                        var defecto = await _context.Defectos
+                            .FirstOrDefaultAsync(d =>
+                                d.IdDefecto == def.IdDefecto
+                                && d.Activo
+                                && d.DefectosOperacion.Any(dop => dop.IdOperacion == item.IdOperacion));
+
+                        if (defecto is null)
+                            throw new InvalidOperationException(
+                                $"El defecto {def.IdDefecto} no pertenece a la operación {item.IdOperacion} o está inactivo.");
+
+                        var lado = MapLado(def.Lado);
+                        var tipoReg = MapTipoRegistro(def.TipoRegistro);
+
+                        var detalle = new InspeccionDetalle
+                        {
+                            IdInspeccion = inspeccion.IdInspeccion,
+                            IdDefecto = def.IdDefecto,
+                            TipoRegistro = tipoReg,
+                            Lado = lado,
+                            Cantidad = 1,
+                            FechaRegistro = DateTime.UtcNow,
+                            IdUsuario = idUsuario
+                        };
+
+                        _context.InspeccionDetalles.Add(detalle);
+                        await _context.SaveChangesAsync();
+
+                        detallesCreados.Add(new InspectionDetalleCreatedDto(
+                            detalle.IdDetalle,
+                            detalle.IdDefecto,
+                            detalle.TipoRegistro,
+                            detalle.Lado,
+                            detalle.Cantidad));
+                    }
+                }
+
+                inspeccionesCreadas.Add(new InspectionCreatedDto(
+                    inspeccion.IdInspeccion,
+                    inspeccion.IdOperacion,
+                    inspeccion.IdTipoInspeccion,
+                    inspeccion.Estado,
+                    detallesCreados));
+            }
+
+            return new InspectionRegisterResponse(
+                transfer.IdTransfer,
+                transfer.Lote,
+                transfer.Programa ?? programa,
+                transfer.IdModelo,
+                modeloCodigo ?? transfer.Modelo?.CodigoCombinacion,
+                inspeccionesCreadas);
+        }
+
+        private static string? MapLado(string? lado)
+        {
+            if (string.IsNullOrWhiteSpace(lado)) return null;
+
+            return lado.Trim().ToLowerInvariant() switch
+            {
+                "derecho" or "derecho" => "DERECHO",
+                "izquierdo" => "IZQUIERDO",
+                "ambos" or "par" => "PAR",                
+                _ => lado.Trim().ToUpperInvariant() switch
+                {
+                    "DERECHO" or "IZQUIERDO" or "PAR" => lado.Trim().ToUpperInvariant(),
+                    _ => throw new InvalidOperationException(
+                        "Lado inválido. Use: derecho, izquierdo o ambos.")
+                }
+            };
+        }
+
+        private static string MapTipoRegistro(string? tipo)
+        {
+            if (string.IsNullOrWhiteSpace(tipo)) return "PIOCHA";
+
+            return tipo.Trim().ToLowerInvariant() switch
+            {
+                "piocha" => "PIOCHA",
+                "reproceso" => "REPROCESO",
+                _ => tipo.Trim().ToUpperInvariant() switch
+                {
+                    "PIOCHA" or "REPROCESO" => tipo.Trim().ToUpperInvariant(),
+                    _ => throw new InvalidOperationException(
+                        "TipoRegistro inválido. Use: piocha o reproceso.")
+                }
+            };
+        }
+
         private static InspeccionDto Map(Inspeccion i) => new(
             i.IdInspeccion,
             i.IdTransfer,

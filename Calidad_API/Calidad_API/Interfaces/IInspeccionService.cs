@@ -11,5 +11,6 @@ namespace Calidad_API.Interfaces
         Task<InspeccionDetalleDto> AgregarDetalleAsync(long idInspeccion, InspeccionDetalleCreateDto dto, long idUsuario);
         Task<InspeccionDto?> CerrarAsync(long idInspeccion, InspeccionCerrarDto dto);
         Task<bool> EliminarDetalleAsync(long idDetalle);
+        Task<InspectionRegisterResponse> RegistrarAsync(InspectionRegisterRequest request, long idUsuario);
     }
 }

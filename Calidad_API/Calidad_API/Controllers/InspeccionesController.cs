@@ -112,5 +112,31 @@ namespace Calidad_API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
+        /// <summary>
+        /// Registro unificado: transfer (programa+lote) + inspecciones + defectos en un solo POST.
+        /// Modelo y lista son opcionales.
+        /// </summary>
+        [HttpPost("registrar")]
+        public async Task<ActionResult<InspectionRegisterResponse>> Registrar(
+            [FromBody] InspectionRegisterRequest request)
+        {
+            try
+            {
+                var result = await _inspeccionService.RegistrarAsync(request, GetUserId());
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
     }
 }
