@@ -15,6 +15,20 @@ namespace Calidad_API.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<InspeccionDto>> GetAll()
+        {
+            var list = await _context.Inspecciones
+                    .AsNoTracking()
+                    .Include(x => x.Transfer)
+                    .Include(x => x.Operacion)
+                    .Include(x => x.TipoInspeccion)
+                    .Include(x => x.Usuario)
+                    .Include(x => x.Detalles).ThenInclude(d => d.Defecto)
+                    .OrderByDescending(x => x.FechaInspeccion)
+                    .ToListAsync();
+            return list.Select(Map);
+        }
+
         public async Task<InspeccionDto?> GetByIdAsync(long id)
         {
             var i = await _context.Inspecciones

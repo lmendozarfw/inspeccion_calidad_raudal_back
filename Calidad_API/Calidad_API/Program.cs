@@ -99,6 +99,31 @@ builder.Services.AddOpenApi(options =>
 
 var app = builder.Build();
 
+// Solo para desarrollo
+
+// app.Use(async (context, next) =>
+// {
+//     Console.WriteLine("========================================");
+//     Console.WriteLine("NUEVA PETICIÓN");
+//     Console.WriteLine("========================================");
+
+//     Console.WriteLine($"Método: {context.Request.Method}");
+//     Console.WriteLine($"Ruta:   {context.Request.Path}");
+//     Console.WriteLine($"Query:  {context.Request.QueryString}");
+
+//     Console.WriteLine("\n--- HEADERS ---");
+
+//     foreach (var header in context.Request.Headers)
+//     {
+//         Console.WriteLine($"{header.Key}: {header.Value}");
+//     }
+
+//     Console.WriteLine("========================================\n");
+
+//     await next();
+// });
+
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

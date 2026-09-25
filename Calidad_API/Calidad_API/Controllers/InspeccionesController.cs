@@ -24,6 +24,13 @@ namespace Calidad_API.Controllers
             return long.Parse(claim!);
         }
 
+        [HttpGet()]
+        public async Task<ActionResult<IEnumerable<InspeccionDto>>> GetAll()
+        {
+            var resultado = await _inspeccionService.GetAll();
+            return Ok(resultado);
+        }
+
         [HttpGet("{id:long}")]
         public async Task<ActionResult<InspeccionDto>> GetById(long id)
         {
@@ -124,6 +131,7 @@ namespace Calidad_API.Controllers
         {
             try
             {
+                Console.WriteLine("=================OBTENIENDO PETICION=====================");
                 var result = await _inspeccionService.RegistrarAsync(request, GetUserId());
                 return Ok(result);
             }
