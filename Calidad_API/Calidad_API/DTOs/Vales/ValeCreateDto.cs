@@ -2,6 +2,7 @@
 {
     public record ValeCreateDto(
         long IdInspeccion,
+        string CodigoAutorizacion,
         IReadOnlyList<ValeLineaCreateDto>? Lineas = null
     );
 }

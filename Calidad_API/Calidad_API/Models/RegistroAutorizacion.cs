@@ -7,7 +7,7 @@ public class RegistroAutorizacion
 {
     [Key]
     [Column("id_registro_autorizacion")]
-    public short IdRegistroAutorizacion { get; set; }
+    public long IdRegistroAutorizacion { get; set; }
     
     [Column("id_usuario_solicita")]
     public long IdUsuarioSolicita { get; set; }
