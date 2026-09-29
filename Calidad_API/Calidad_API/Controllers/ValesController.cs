@@ -56,9 +56,9 @@ namespace Calidad_API.Controllers
                 var vale = await _valeService.GenerarAsync(dto, GetUserId());
                 return CreatedAtAction(nameof(GetById), new { id = vale.IdVale }, vale);
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException ex)
             {
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
             }
             catch (InvalidOperationException ex)
             {

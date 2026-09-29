@@ -8,25 +8,62 @@ using System.Data;
 
 namespace Calidad_API.Services
 {
+    /// <summary>
+    /// Servicio para manejar la generación, consulta y actualización de vales de material.
+    /// </summary>
     public class ValeService : IValeService
     {
+        /// <summary>
+        /// Contexto de la base de datos para acceder a los vales, inspecciones y piezas.
+        /// </summary>
         private readonly ApplicationDbContext _context;
+
+        /// <summary>
+        /// Servicio para generar y guardar archivos PDF de los vales.
+        /// </summary>
         private readonly ValePdfService _pdfService;
+
+        /// <summary>
+        /// Servicio para enviar correos electrónicos, utilizado para notificar sobre la generación de vales.
+        /// </summary>
         private readonly IEmailService _emailService;
+
+        /// <summary>
+        /// Configuración de la aplicación, utilizada para obtener parámetros como destinatarios de correo.
+        /// </summary>
         private readonly IConfiguration _config;
 
+        /// <summary>
+        /// Servicio para validar códigos de autorización de supervisores, utilizado para verificar permisos al generar vales.
+        /// </summary>
+        private readonly ICodigoAutorizacionService _codigoAuth;
+
+        /// <summary>
+        /// Constructor del servicio de vales, inyectando dependencias necesarias para la operación.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="pdfService"></param>
+        /// <param name="emailService"></param>
+        /// <param name="config"></param>
         public ValeService(
             ApplicationDbContext context,
             ValePdfService pdfService,
             IEmailService emailService,
-            IConfiguration config)
+            IConfiguration config,
+            ICodigoAutorizacionService codigoAuth)
         {
             _context = context;
             _pdfService = pdfService;
             _emailService = emailService;
             _config = config;
+            _codigoAuth = codigoAuth;
         }
 
+        /// <summary>
+        /// Obtiene un vale por su ID, incluyendo detalles y usuario solicitante.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<ValeDto?> GetByIdAsync(long id)
         {
             var v = await _context.Vales
@@ -38,6 +75,11 @@ namespace Calidad_API.Services
             return v is null ? null : Map(v);
         }
 
+        /// <summary>
+        /// Obtiene un vale por su folio, incluyendo detalles y usuario solicitante.
+        /// </summary>
+        /// <param name="folio"></param>
+        /// <returns></returns>
         public async Task<ValeDto?> GetByFolioAsync(string folio)
         {
             var v = await _context.Vales
@@ -49,6 +91,11 @@ namespace Calidad_API.Services
             return v is null ? null : Map(v);
         }
 
+        /// <summary>
+        /// Obtiene todos los vales asociados a una inspección específica, incluyendo detalles y usuario solicitante.
+        /// </summary>
+        /// <param name="idInspeccion"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<ValeDto>> GetByInspeccionDetalleAsync(long idInspeccion)
         {
             var list = await _context.Vales
@@ -62,8 +109,24 @@ namespace Calidad_API.Services
             return list.Select(Map);
         }
 
+        /// <summary>
+        /// Genera un nuevo vale de material basado en una inspección existente, verificando permisos y creando líneas de vale según los defectos asociados.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="idUsuario"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
         public async Task<ValeDto> GenerarAsync(ValeCreateDto dto, long idUsuario)
         {
+            if (string.IsNullOrWhiteSpace(dto.CodigoAutorizacion))
+                throw new InvalidOperationException("El código de autorización es obligatorio.");
+
+            var idSupervisor = await _codigoAuth.ValidarCodigoAsync(dto.CodigoAutorizacion);
+            if (idSupervisor is null)
+                throw new UnauthorizedAccessException(
+                    "Código de autorización inválido, inactivo o vencido.");
+
             var inspeccion = await _context.Inspecciones
                 .Include(i => i.Transfer)
                 .Include(i => i.Detalles)
@@ -140,6 +203,13 @@ namespace Calidad_API.Services
             }
 
             _context.Vales.Add(vale);
+            _context.RegistrosAutorizacion.Add(new RegistroAutorizacion
+            {
+                IdUsuarioSolicita = idUsuario,
+                IdUsuarioAutoriza = idSupervisor.Value,
+                IdInspeccion = dto.IdInspeccion,
+                FechaCreacion = DateTime.UtcNow
+            });
             await _context.SaveChangesAsync();
 
             // Recargar + PDF + correo (igual que ya tienes)
@@ -199,6 +269,13 @@ namespace Calidad_API.Services
             return Map(vale);
         }
 
+        /// <summary>
+        /// Actualiza el estado de un vale existente, permitiendo cambiarlo a "GENERADO", "ENTREGADO" o "CANCELADO".
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<ValeDto?> ActualizarEstadoAsync(long id, ValeUpdateEstadoDto dto)
         {
             var vale = await _context.Vales
@@ -242,6 +319,11 @@ namespace Calidad_API.Services
             return folio;
         }
 
+        /// <summary>
+        /// Mapea un objeto Vale a un ValeDto, incluyendo detalles y nombre del usuario solicitante.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
         private static ValeDto Map(Vale v) => new(
     v.IdVale,
     v.Folio,
@@ -262,6 +344,11 @@ namespace Calidad_API.Services
         .ToList()
 );
 
+        /// <summary>
+        /// Obtiene todos los vales asociados a una inspección específica, incluyendo detalles y usuario solicitante, ordenados por fecha de generación descendente.
+        /// </summary>
+        /// <param name="idInspeccion"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<ValeDto>> GetByInspeccionAsync(long idInspeccion)
         {
             var list = await _context.Vales

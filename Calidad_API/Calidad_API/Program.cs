@@ -41,6 +41,7 @@ builder.Services.AddSingleton<ICodigoCipher, AesGcmCodigoCipher>();
 builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
 builder.Services.AddProblemDetails();
 
 // Configuración JWT
