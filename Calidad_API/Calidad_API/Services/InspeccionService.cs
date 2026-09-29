@@ -2,6 +2,7 @@
 using Calidad_API.DTOs.Inspecciones;
 using Calidad_API.Interfaces;
 using Calidad_API.Models;
+using DocumentFormat.OpenXml.Math;
 using Microsoft.EntityFrameworkCore;
 
 namespace Calidad_API.Services
@@ -529,6 +530,27 @@ namespace Calidad_API.Services
                         ))
                         .OrderBy(x => x.Lote)
                         .ToList();
+        }
+
+        public async Task<InpseccionIndicadoresReporteDto> GetReportIndicadores(DateTime desde, DateTime hasta)
+        {
+            var inspecciones = await _context.Inspecciones.AsNoTracking()
+            .Include(x => x.Detalles)
+            .Include(x => x.Vales)
+            .Where(x => x.FechaInspeccion >= desde && x.FechaInspeccion < hasta.AddDays(1)).ToListAsync();
+            int inspeccionesCount = inspecciones.Count();
+            int defectos = (int)inspecciones.SelectMany(i => i.Detalles).Sum(d => d.Cantidad);
+            int piochas = (int)inspecciones.SelectMany(i => i.Detalles).Where(x => x.TipoRegistro == "PIOCHA").Sum(d => d.Cantidad);
+            int reprocesos = (int)inspecciones.SelectMany(i => i.Detalles).Where(x => x.TipoRegistro == "REPROCESO").Sum(d => d.Cantidad);
+            int vales = inspecciones.Select(i => i.Vales).Count();
+            return new InpseccionIndicadoresReporteDto(
+                inspeccionesCount,
+                defectos,
+                piochas,
+                reprocesos,
+                vales,
+                inspeccionesCount > 0 ? Math.Round(defectos / (decimal)inspeccionesCount, 2) : 0
+            );
         }
     }
 }

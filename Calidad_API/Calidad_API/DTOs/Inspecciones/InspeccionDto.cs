@@ -41,4 +41,13 @@
         int Reprocesos,
         int Vales
     );
+
+    public record InpseccionIndicadoresReporteDto(
+        int Inspecciones,
+        int Defectos,
+        int Piochas,
+        int Reprocesos,
+        int ValesGenerados,
+        decimal DefectosPorInspeccion
+    );
 }
