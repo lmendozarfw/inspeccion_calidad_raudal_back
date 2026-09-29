@@ -1,4 +1,5 @@
-﻿using Calidad_API.DTOs.TiposInspeccion;
+﻿using Calidad_API.DTOs.Inspecciones;
+using Calidad_API.DTOs.TiposInspeccion;
 using Calidad_API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

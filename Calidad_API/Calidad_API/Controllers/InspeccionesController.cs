@@ -13,6 +13,13 @@ namespace Calidad_API.Controllers
     {
         private readonly IInspeccionService _inspeccionService;
 
+        private static (DateTime desde, DateTime hasta) Rango(DateTime? desde, DateTime? hasta)
+        {
+            var h = hasta?.Date ?? DateTime.UtcNow.Date;
+            var d = desde?.Date ?? h.AddDays(-7);
+            return (d, h);
+        }
+
         public InspeccionesController(IInspeccionService inspeccionService)
         {
             _inspeccionService = inspeccionService;
@@ -29,6 +36,22 @@ namespace Calidad_API.Controllers
         {
             var resultado = await _inspeccionService.GetAll();
             return Ok(resultado);
+        }
+
+        [HttpGet("reporte")]
+        public async Task<ActionResult<IEnumerable<InspeccionReporteDto>>> GetReport([FromQuery] DateTime? desde, [FromQuery] DateTime? hasta)
+        {
+            var (d, h) = Rango(desde, hasta);
+            var response = await _inspeccionService.GetReport(d, h);
+            return Ok(response);
+        }
+
+        [HttpGet("por-lotes/reporte")]
+        public async Task<ActionResult<IEnumerable<InspeccionReporteDto>>> GetReportByLotes([FromQuery] DateTime? desde, [FromQuery] DateTime? hasta)
+        {
+            var (d, h) = Rango(desde, hasta);
+            var response = await _inspeccionService.GetReportByLotes(d, h);
+            return Ok(response);
         }
 
         [HttpGet("buscar")]

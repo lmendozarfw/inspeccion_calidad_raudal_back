@@ -17,4 +17,28 @@
         string Estado,
         IEnumerable<InspeccionDetalleDto> Detalles
     );
+
+    public record InspeccionReporteDto(
+        long IdInspeccion,
+        DateTime FechaInspeccion,
+        string Programa,
+        string Lote,
+        string Operacion,
+        string Tipo,
+        string Usuario,
+        string Estado,
+        string Dispositivo,
+        int NumeroDefectos,
+        string Observaciones
+    );
+
+    public record InspeccionPorLoteReporteDto(
+        string Programa,
+        string Lote,
+        int Inspecciones,
+        int Defectos,
+        int Piochas,
+        int Reprocesos,
+        int Vales
+    );
 }

@@ -419,7 +419,7 @@ namespace Calidad_API.Services
             {
                 "derecho" or "derecho" => "DERECHO",
                 "izquierdo" => "IZQUIERDO",
-                "ambos" or "par" => "PAR",                
+                "ambos" or "par" => "PAR",
                 _ => lado.Trim().ToUpperInvariant() switch
                 {
                     "DERECHO" or "IZQUIERDO" or "PAR" => lado.Trim().ToUpperInvariant(),
@@ -478,5 +478,57 @@ namespace Calidad_API.Services
                 d.FechaRegistro
             ))
         );
+
+        public async Task<IEnumerable<InspeccionReporteDto>> GetReport(
+            DateTime desde, DateTime hasta
+        )
+        {
+            return await _context.Inspecciones
+            .Include(x => x.Transfer)
+            .Include(x => x.Usuario)
+            .Include(x => x.TipoInspeccion)
+            .Include(x => x.Detalles).AsNoTracking()
+            .Where(i => i.FechaInspeccion >= desde && i.FechaInspeccion < hasta.AddDays(1))
+            .Select(i => new InspeccionReporteDto(
+                i.IdInspeccion,
+                i.FechaInspeccion,
+                i.Transfer.Programa ?? "",
+                i.Transfer.Lote,
+                i.Operacion.Nombre,
+                i.TipoInspeccion.Nombre,
+                i.Usuario.Nombre,
+                i.Estado,
+                i.Dispositivo ?? "",
+                i.Detalles.Count(),
+                i.Observaciones ?? ""
+            )).ToListAsync();
+        }
+
+        public async Task<IEnumerable<InspeccionPorLoteReporteDto>> GetReportByLotes(
+            DateTime desde, DateTime hasta
+        )
+        {
+            var list = await _context.Inspecciones
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(i => i.Transfer)
+                .Include(i => i.Detalles)
+                .Include(i => i.Vales)
+                .Where(i => i.FechaInspeccion >= desde && i.FechaInspeccion < hasta.AddDays(1))
+                .ToListAsync();
+
+            return list.GroupBy(i => i.Transfer.Lote)
+                        .Select(g => new InspeccionPorLoteReporteDto(
+                            g.First().Transfer.Programa ?? "",
+                            g.Key,
+                            g.Count(),
+                            (int)g.SelectMany(x => x.Detalles).Sum(d => d.Cantidad),
+                            (int)g.SelectMany(x => x.Detalles).Where(d => d.TipoRegistro == "PIOCHA").Sum(d => d.Cantidad),
+                            (int)g.SelectMany(x => x.Detalles).Where(d => d.TipoRegistro == "REPROCESO").Sum(d => d.Cantidad),
+                            g.SelectMany(x => x.Vales).Count()
+                        ))
+                        .OrderBy(x => x.Lote)
+                        .ToList();
+        }
     }
 }
