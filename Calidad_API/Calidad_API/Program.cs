@@ -39,6 +39,7 @@ builder.Services.AddScoped<IModeloService, ModeloService>();
 builder.Services.AddScoped<ICodigoAutorizacionService, CodigoAutorizacionService>();
 builder.Services.AddSingleton<ICodigoCipher, AesGcmCodigoCipher>();
 builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
