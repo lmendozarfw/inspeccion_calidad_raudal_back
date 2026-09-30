@@ -25,5 +25,7 @@
         Task<byte[]> InspeccionesExcelAsync(
             DateTime desde, DateTime hasta,
             long? idOperacion, string? lote);
+        
+        Task<byte[]> PorOperacionAsync(DateTime desde, DateTime hasta);
     }
 }

@@ -50,4 +50,19 @@
         int ValesGenerados,
         decimal DefectosPorInspeccion
     );
+
+    public record InspeccionPorOperacionReporteDto(
+        string CodigoOperacion,
+        string NombreOperacion,
+        int NumeroInspecciones,
+        List<InspeccionPorOperacionDefectoReportDto> Defectos
+    );
+
+    public record InspeccionPorOperacionDefectoReportDto(
+        string CodigoDefecto,
+        string NombreDefecto,
+        string Criticidad,
+        int Piocha,
+        int Reproceso
+    );
 }

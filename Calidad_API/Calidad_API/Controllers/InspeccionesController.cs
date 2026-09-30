@@ -46,6 +46,14 @@ namespace Calidad_API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("por-operacion/reporte")]
+        public async Task<ActionResult<IEnumerable<InspeccionPorOperacionReporteDto>>> GetReportPorOperacion([FromQuery] DateTime? desde, [FromQuery] DateTime? hasta)
+        {
+            var (d, h) = Rango(desde, hasta);
+            var response = await _inspeccionService.GetReportePorOpracion(d, h);
+            return Ok(response);
+        }
+
         [HttpGet("indicadores/reporte")]
         public async Task<ActionResult<IEnumerable<InspeccionReporteDto>>> GetReportIndicadores([FromQuery] DateTime? desde, [FromQuery] DateTime? hasta)
         {

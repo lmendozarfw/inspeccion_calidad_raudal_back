@@ -542,7 +542,7 @@ namespace Calidad_API.Services
             int defectos = (int)inspecciones.SelectMany(i => i.Detalles).Sum(d => d.Cantidad);
             int piochas = (int)inspecciones.SelectMany(i => i.Detalles).Where(x => x.TipoRegistro == "PIOCHA").Sum(d => d.Cantidad);
             int reprocesos = (int)inspecciones.SelectMany(i => i.Detalles).Where(x => x.TipoRegistro == "REPROCESO").Sum(d => d.Cantidad);
-            int vales = inspecciones.Select(i => i.Vales).Count();
+            int vales = inspecciones.SelectMany(i => i.Vales).Count();
             return new InpseccionIndicadoresReporteDto(
                 inspeccionesCount,
                 defectos,
@@ -551,6 +551,38 @@ namespace Calidad_API.Services
                 vales,
                 inspeccionesCount > 0 ? Math.Round(defectos / (decimal)inspeccionesCount, 2) : 0
             );
+        }
+
+        public async Task<IEnumerable<InspeccionPorOperacionReporteDto>> GetReportePorOpracion(DateTime desde, DateTime hasta)
+        {
+            var inspecciones = await _context.Inspecciones
+        .AsNoTracking()
+        .Include(x => x.Operacion)
+        .Include(x => x.Transfer)
+        .Include(x => x.TipoInspeccion)
+        .Include(x => x.Detalles).ThenInclude(d => d.Defecto).ThenInclude(d => d.Criticidad)
+        .Where(x => x.FechaInspeccion >= desde && x.FechaInspeccion < hasta.AddDays(1))
+        .ToListAsync();
+
+            return inspecciones
+                .GroupBy(x => x.IdOperacion)
+                .Select(g => new InspeccionPorOperacionReporteDto(
+                    g.First().Operacion.Codigo,
+                    g.First().Operacion.Nombre,
+                    g.Count(),
+                    g.SelectMany(x => x.Detalles)
+                     .GroupBy(d => d.Defecto.Codigo)
+                     .Select(dg => new InspeccionPorOperacionDefectoReportDto(
+                         dg.Key,
+                         dg.First().Defecto.Nombre,
+                         dg.First().Defecto.Criticidad?.Nombre ?? "",
+                         (int)dg.Where(d => d.TipoRegistro == "PIOCHA").Sum(d => d.Cantidad),
+                         (int)dg.Where(d => d.TipoRegistro == "REPROCESO").Sum(d => d.Cantidad)
+                     ))
+                     .ToList()
+                ))
+                .OrderBy(x => x.CodigoOperacion)
+                .ToList();
         }
     }
 }

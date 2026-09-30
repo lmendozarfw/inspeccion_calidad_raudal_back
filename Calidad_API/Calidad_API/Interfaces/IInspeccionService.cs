@@ -9,6 +9,7 @@ namespace Calidad_API.Interfaces
         Task<IEnumerable<InspeccionReporteDto>> GetReport(DateTime desde, DateTime hasta);
         Task<IEnumerable<InspeccionPorLoteReporteDto>> GetReportByLotes(DateTime desde, DateTime hasta);
         Task<InpseccionIndicadoresReporteDto> GetReportIndicadores(DateTime desde, DateTime hasta);
+        Task<IEnumerable<InspeccionPorOperacionReporteDto>> GetReportePorOpracion(DateTime desde, DateTime hasta);
         Task<IEnumerable<InspeccionDto>> Search(string? search);
         Task<IEnumerable<InspeccionDto>> GetByTransferAsync(long idTransfer);
         Task<IEnumerable<InspeccionDto>> GetByAreaAsync(long idArea, DateTime? desde, DateTime? hasta);

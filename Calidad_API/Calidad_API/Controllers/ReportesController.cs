@@ -59,6 +59,15 @@ namespace Calidad_API.Controllers
             return Excel(bytes, $"reporte_lote_{d:yyyyMMdd}_{h:yyyyMMdd}.xlsx");
         }
 
+        [HttpGet("por-operacion")]
+        public async Task<IActionResult> PorOperacion(
+            [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta)
+        {
+            var (d, h) = Rango(desde, hasta);
+            var bytes = await _reportes.PorOperacionAsync(d, h);
+            return Excel(bytes, $"reporte_lote_{d:yyyyMMdd}_{h:yyyyMMdd}.xlsx");
+        }
+
         [HttpGet("vales")]
         public async Task<IActionResult> Vales(
             [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta,

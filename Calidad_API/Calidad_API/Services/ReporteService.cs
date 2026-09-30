@@ -2,6 +2,7 @@
 using Calidad_API.Data;
 using Calidad_API.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Calidad_API.DTOs.Inspecciones;
 
 namespace Calidad_API.Services
 {
@@ -310,7 +311,7 @@ namespace Calidad_API.Services
             if (idOperacion.HasValue)
             {
                 var fechaDesde = DateOnly.FromDateTime(desde);
-var fechaHasta = DateOnly.FromDateTime(hasta);
+                var fechaHasta = DateOnly.FromDateTime(hasta);
                 paresProd = await _context.ProduccionesDiarias.AsNoTracking()
                     .Where(p => p.IdOperacion == idOperacion
                                 && p.Fecha == desde.Date
@@ -408,6 +409,69 @@ var fechaHasta = DateOnly.FromDateTime(hasta);
             using var ms = new MemoryStream();
             wb.SaveAs(ms);
             return ms.ToArray();
+        }
+
+        public async Task<byte[]> PorOperacionAsync(DateTime desde, DateTime hasta)
+        {
+            var inspecciones = await _context.Inspecciones
+                .AsNoTracking()
+                .Include(x => x.Operacion)
+                .Include(x => x.Transfer)
+                .Include(x => x.TipoInspeccion)
+                .Include(x => x.Detalles).ThenInclude(d => d.Defecto).ThenInclude(d => d.Criticidad)
+                .Where(x => x.FechaInspeccion >= desde && x.FechaInspeccion < hasta.AddDays(1))
+                .ToListAsync();
+
+            var lista = inspecciones
+                .GroupBy(x => x.IdOperacion)
+                .Select(g => new InspeccionPorOperacionReporteDto(
+                    g.First().Operacion.Codigo,
+                    g.First().Operacion.Nombre,
+                    g.Count(),
+                    g.SelectMany(x => x.Detalles)
+                     .GroupBy(d => d.Defecto.Codigo)
+                     .Select(dg => new InspeccionPorOperacionDefectoReportDto(
+                         dg.Key,
+                         dg.First().Defecto.Nombre,
+                         dg.First().Defecto.Criticidad?.Nombre ?? "",
+                         (int)dg.Where(d => d.TipoRegistro == "PIOCHA").Sum(d => d.Cantidad),
+                         (int)dg.Where(d => d.TipoRegistro == "REPROCESO").Sum(d => d.Cantidad)
+                     ))
+                     .ToList()
+                ))
+                .OrderBy(x => x.CodigoOperacion)
+                .ToList();
+            
+            using var wb = new XLWorkbook();
+            var ws = wb.Worksheets.Add("Defectos por operación");
+            int row = 1;
+            foreach (var item in lista)
+            {
+                ws.Cell(row, 1).Value = $"{item.CodigoOperacion} · {item.NombreOperacion} ({item.NumeroInspecciones} · {item.Defectos.Count()})";
+                row++;
+                ws.Cell(row, 1).Value = "Código";
+                ws.Cell(row, 2).Value = "Defecto";
+                ws.Cell(row, 3).Value = "Criticidad";
+                ws.Cell(row, 4).Value = "Piocha";
+                ws.Cell(row, 5).Value = "Reproceso";
+                ws.Cell(row, 6).Value = "Total";
+
+                foreach (var defecto in item.Defectos)
+                {
+                    row++;
+                    ws.Cell(row, 1).Value = defecto.CodigoDefecto;
+                    ws.Cell(row, 2).Value = defecto.NombreDefecto;
+                    ws.Cell(row, 3).Value = defecto.Criticidad;
+                    ws.Cell(row, 4).Value = defecto.Piocha;
+                    ws.Cell(row, 5).Value = defecto.Reproceso;
+                    ws.Cell(row, 6).Value = defecto.Piocha + defecto.Reproceso;
+                }
+                row+=2;
+            }
+            ws.Columns().AdjustToContents();
+            using var stream = new MemoryStream();
+            wb.SaveAs(stream);
+            return stream.ToArray();
         }
     }
 }
