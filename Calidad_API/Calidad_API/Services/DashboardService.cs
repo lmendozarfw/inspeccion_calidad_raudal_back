@@ -2,6 +2,7 @@ using Calidad_API.Data;
 using Calidad_API.DTOs.Dashboard;
 using Calidad_API.Interfaces;
 using Calidad_API.Models;
+using DocumentFormat.OpenXml.Math;
 using Microsoft.EntityFrameworkCore;
 
 namespace Calidad_API.Services;
@@ -25,7 +26,7 @@ public class DashboardService : IDashboardService
         var desde = range.StartDate;
         var hasta = range.EndDate;
 
-        var defectos = _context.InspeccionDetalles.AsNoTracking()
+        var defectos = _context.InspeccionDetalles.Include(x => x.Defecto).ThenInclude(d => d.Criticidad).AsNoTracking()
             .Where(id => id.FechaRegistro >= desde && id.FechaRegistro <= hasta);
 
         var inspecciones = _context.Inspecciones.AsNoTracking()
@@ -135,6 +136,14 @@ public class DashboardService : IDashboardService
             })
             .ToList();
 
+        var defectosCriticidad = defectos
+            .GroupBy(x => x.Defecto!.IdCriticidad)
+            .Select(g => new CriticidadDefecto()
+            {
+                Nombre = g.First().Defecto!.Criticidad!.Nombre,
+                Valor = g.Count(),
+                Percentage =  $"{(double)g.Count() * 100 / defectos.Count():0.00}%"
+            }).ToList();
         return new DashboardDto
         {
             DefectosRegistrados = new DefectosRegistradosDto { Valor = numeroDefectosEncontrados },
@@ -150,7 +159,8 @@ public class DashboardService : IDashboardService
             {
                 Nombre = SerieDefectosNombre,
                 Series = serieTiempo
-            }
+            },
+            CriticidadDefectos = defectosCriticidad
         };
     }
 }

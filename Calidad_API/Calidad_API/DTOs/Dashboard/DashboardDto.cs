@@ -18,6 +18,8 @@ public class DashboardDto
     public List<NombreValorDto> DefectosPorTipoInspeccion { get; set; }
     public List<NombreValorDto> TopDefectos {  get; set; }
     public SerieNombreValorDto defectosPorTiempo { get; set; }
+    public List<CriticidadDefecto> CriticidadDefectos {get; set;}
+    public List<NombreValorDto> DefectosPorLado {get; set;}
 }
 
 public class DefectosRegistradosDto
@@ -70,4 +72,11 @@ public class SerieNombreValorDto
 {
     public string Nombre { get; set; }
     public List<NombreValorDto> Series { get; set; }
+}
+
+public class CriticidadDefecto
+{
+    public string Nombre { get; set; } = string.Empty;
+    public int Valor { get; set; }
+    public string Percentage { get; set; } = string.Empty;
 }
