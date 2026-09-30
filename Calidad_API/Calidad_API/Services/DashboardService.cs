@@ -144,6 +144,30 @@ public class DashboardService : IDashboardService
                 Valor = g.Count(),
                 Percentage =  $"{(double)g.Count() * 100 / defectos.Count():0.00}%"
             }).ToList();
+
+        var defectosPorLado = defectos.GroupBy(x => x.Lado)
+                                .Select(g => new NombreValorDto()
+                                {
+                                    Nombre = g.First().Lado!,
+                                    Valor = g.Count()
+                                }).ToList();
+
+        var defectosPorPrograma = defectos
+                                    .GroupBy(x => x.Inspeccion.Transfer.Programa)
+                                    .Select(g => new NombreValorDto()
+                                    {
+                                        Nombre = g.Key!,
+                                        Valor = g.Count()
+                                    }).ToList();
+
+        var defectosPorLote = defectos
+                                .GroupBy(x => new {x.Inspeccion.Transfer.Programa, x.Inspeccion.Transfer.Lote})
+                                .Select(g => new NombreValorDto()
+                                {
+                                    Nombre = $"P:{g.First().Inspeccion.Transfer.Programa} - L:{g.First().Inspeccion.Transfer.Lote}",
+                                    Valor = g.Count()
+                                }).ToList();
+
         return new DashboardDto
         {
             DefectosRegistrados = new DefectosRegistradosDto { Valor = numeroDefectosEncontrados },
@@ -155,12 +179,15 @@ public class DashboardService : IDashboardService
             DefectosPorOperacion = defectosPorOperacion,
             DefectosPorTipoInspeccion = defectosPorTipoInspeccion,
             TopDefectos = topDefectos,
-            defectosPorTiempo = new SerieNombreValorDto
+            DefectosPorTiempo = new SerieNombreValorDto
             {
                 Nombre = SerieDefectosNombre,
                 Series = serieTiempo
             },
-            CriticidadDefectos = defectosCriticidad
+            CriticidadDefectos = defectosCriticidad,
+            DefectosPorLado = defectosPorLado,
+            DefectosPorPrograma = defectosPorPrograma,
+            DefectosPorLote = defectosPorLote
         };
     }
 }

@@ -17,9 +17,11 @@ public class DashboardDto
     public List<NombreValorDto> DefectosPorOperacion { get; set; }
     public List<NombreValorDto> DefectosPorTipoInspeccion { get; set; }
     public List<NombreValorDto> TopDefectos {  get; set; }
-    public SerieNombreValorDto defectosPorTiempo { get; set; }
+    public SerieNombreValorDto DefectosPorTiempo { get; set; }
     public List<CriticidadDefecto> CriticidadDefectos {get; set;}
     public List<NombreValorDto> DefectosPorLado {get; set;}
+    public List<NombreValorDto> DefectosPorPrograma {get; set;}
+    public List<NombreValorDto> DefectosPorLote {get; set;}
 }
 
 public class DefectosRegistradosDto
