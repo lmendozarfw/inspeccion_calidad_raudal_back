@@ -95,11 +95,6 @@ namespace Calidad_API.Services.Repositories
                 return null;
             }
 
-            if (user.Password.Length < 8)
-            {
-                return null;
-            }
-
             var usernameNormalizado = user.Username.Trim().ToLower();
             if (await _context.Usuarios.AnyAsync(u => u.Username.ToLower() == usernameNormalizado))
             {
@@ -249,7 +244,7 @@ namespace Calidad_API.Services.Repositories
             var verificacion = _passwordHasher.VerifyHashedPassword(usuario, usuario.PasswordHash, dto.PasswordActual);
             if (verificacion == PasswordVerificationResult.Failed) return false;
 
-            if (string.IsNullOrWhiteSpace(dto.PasswordNuevo) || dto.PasswordNuevo.Length < 8)
+            if (string.IsNullOrWhiteSpace(dto.PasswordNuevo))
                 return false;
 
             usuario.PasswordHash = _passwordHasher.HashPassword(usuario, dto.PasswordNuevo);
