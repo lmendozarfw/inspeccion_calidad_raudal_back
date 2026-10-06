@@ -12,6 +12,7 @@ namespace Calidad_API.Interfaces
         Task<IEnumerable<InspeccionPorOperacionReporteDto>> GetReportePorOpracion(DateTime desde, DateTime hasta);
         Task<IEnumerable<InspeccionDto>> Search(string? search);
         Task<IEnumerable<InspeccionDto>> GetByTransferAsync(long idTransfer);
+        Task<List<InspeccionDto>> GetAbiertasByTransferAsync(string programa, string lote, int modelo);
         Task<IEnumerable<InspeccionDto>> GetByAreaAsync(long idArea, DateTime? desde, DateTime? hasta);
         Task<InspeccionDto> CrearAsync(InspeccionCreateDto dto, long idUsuario);
         Task<InspeccionDetalleDto> AgregarDetalleAsync(long idInspeccion, InspeccionDetalleCreateDto dto, long idUsuario);

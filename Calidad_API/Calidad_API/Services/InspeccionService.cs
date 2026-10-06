@@ -63,6 +63,28 @@ namespace Calidad_API.Services
             return list.Select(Map);
         }
 
+        public async Task<List<InspeccionDto>> GetAbiertasByTransferAsync(string programa, string lote, int modelo)
+        {
+            programa = programa.Trim();
+            lote = lote.Trim();
+
+            var list = await _context.Inspecciones
+                .AsNoTracking()
+                .Include(x => x.Transfer)
+                .Include(x => x.Operacion)
+                .Include(x => x.TipoInspeccion)
+                .Include(x => x.Usuario)
+                .Include(x => x.Detalles).ThenInclude(d => d.Defecto)
+                .Where(x => x.Estado == "ABIERTA"
+                         && x.Transfer.Programa == programa
+                         && x.Transfer.Lote == lote
+                         && x.Transfer.IdModelo == modelo)
+                .OrderByDescending(x => x.FechaInspeccion)
+                .ToListAsync();
+
+            return list.Select(Map).ToList();
+        }
+
         public async Task<InspeccionDto?> GetByIdAsync(long id)
         {
             var i = await _context.Inspecciones

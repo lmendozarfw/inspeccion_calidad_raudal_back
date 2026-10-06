@@ -91,6 +91,22 @@ namespace Calidad_API.Controllers
             return Ok(list);
         }
 
+        [HttpGet("por-transfer")]
+        public async Task<ActionResult<List<InspeccionDto>>> GetAbiertasPorTransfer(
+            [FromQuery] string programa,
+            [FromQuery] string lote,
+            [FromQuery] int modelo)
+        {
+            if (string.IsNullOrWhiteSpace(programa) || string.IsNullOrWhiteSpace(lote))
+                return BadRequest(new { message = "Programa y lote son obligatorios." });
+
+            if (modelo <= 0)
+                return BadRequest(new { message = "Modelo es obligatorio." });
+
+            var list = await _inspeccionService.GetAbiertasByTransferAsync(programa, lote, modelo);
+            return Ok(list);
+        }
+
         [HttpGet("operacion/{idOperacion:long}")]
         public async Task<ActionResult<IEnumerable<InspeccionDto>>> GetByArea(
             long idOperacion,
