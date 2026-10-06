@@ -40,10 +40,29 @@ namespace Calidad_API.Data
         public DbSet<MetaCalidad> MetasCalidad { get; set; } = null!;
         public DbSet<ProduccionDiaria> ProduccionesDiarias { get; set; } = null!;
 
+        // ——— Reparaciones ———
+        public DbSet<Reparacion> Reparaciones {get; set;} = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // =====================================================
+            // REPARACIONES
+            // =====================================================
+            modelBuilder.Entity<Reparacion>(e =>
+            {
+                e.HasKey(x => x.IdReparacion);
+                e.HasOne(x => x.Usuario)
+                .WithMany(u => u.Reparaciones)
+                .HasForeignKey(x => x.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.InspeccionDetalle)
+                .WithOne(id => id.Reparacion)
+                .HasForeignKey<Reparacion>(x => x.IdInspeccionDetalle)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
             // =====================================================
             // SEGURIDAD
             // =====================================================

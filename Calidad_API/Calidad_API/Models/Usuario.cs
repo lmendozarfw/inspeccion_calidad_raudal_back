@@ -35,5 +35,7 @@ namespace Calidad_API.Models
 
         public ICollection<RegistroAutorizacion> RegistrosAutorizacionRealizados { get; set; } =
             new List<RegistroAutorizacion>();
+
+        public ICollection<Reparacion> Reparaciones {get; set;} = new List<Reparacion>();
     }
 }
