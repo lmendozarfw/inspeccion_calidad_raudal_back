@@ -95,13 +95,10 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<List<InspeccionDto>>> GetAbiertasPorTransfer(
             [FromQuery] string programa,
             [FromQuery] string lote,
-            [FromQuery] int modelo)
+            [FromQuery] string modelo)
         {
-            if (string.IsNullOrWhiteSpace(programa) || string.IsNullOrWhiteSpace(lote))
-                return BadRequest(new { message = "Programa y lote son obligatorios." });
-
-            if (modelo <= 0)
-                return BadRequest(new { message = "Modelo es obligatorio." });
+            if (string.IsNullOrWhiteSpace(programa) || string.IsNullOrWhiteSpace(lote) || string.IsNullOrWhiteSpace(modelo))
+                return BadRequest(new { message = "Programa, lote y modelo son obligatorios." });
 
             var list = await _inspeccionService.GetAbiertasByTransferAsync(programa, lote, modelo);
             return Ok(list);

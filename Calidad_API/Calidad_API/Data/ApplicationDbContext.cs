@@ -58,9 +58,9 @@ namespace Calidad_API.Data
                 .HasForeignKey(x => x.IdUsuario)
                 .OnDelete(DeleteBehavior.Restrict);
 
-                e.HasOne(x => x.InspeccionDetalle)
+                e.HasOne(x => x.Inspeccion)
                 .WithOne(id => id.Reparacion)
-                .HasForeignKey<Reparacion>(x => x.IdInspeccionDetalle)
+                .HasForeignKey<Reparacion>(x => x.IdInspeccion)
                 .OnDelete(DeleteBehavior.Cascade);
             });
             // =====================================================
@@ -230,6 +230,7 @@ namespace Calidad_API.Data
             {
                 e.HasIndex(x => x.Lote);
                 e.HasIndex(x => x.QrRaw);
+                e.HasIndex(x => new {x.Programa, x.Lote, x.IdModelo});
 
                 e.HasOne(x => x.Modelo)
                     .WithMany(m => m.Transfers)
@@ -267,6 +268,7 @@ namespace Calidad_API.Data
             {
                 e.HasIndex(x => x.IdDefecto);
                 e.HasIndex(x => x.FechaRegistro);
+                e.HasIndex(x => new {x.IdInspeccion, x.TipoRegistro});
 
                 e.HasOne(x => x.Inspeccion)
                     .WithMany(i => i.Detalles)

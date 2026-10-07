@@ -63,26 +63,60 @@ namespace Calidad_API.Services
             return list.Select(Map);
         }
 
-        public async Task<List<InspeccionDto>> GetAbiertasByTransferAsync(string programa, string lote, int modelo)
+        public async Task<List<InspeccionDto>> GetAbiertasByTransferAsync(string programa, string lote, string modelo)
         {
             programa = programa.Trim();
             lote = lote.Trim();
-
-            var list = await _context.Inspecciones
+            var modeloFound = await _context.Modelos.Where(m => m.CodigoMB.Contains(modelo) || m.CodigoCombinacion.Contains(modelo)).FirstOrDefaultAsync();
+            Console.WriteLine("========================VEAMOS=====================");
+            Console.WriteLine(modeloFound != null ? modeloFound.IdModelo : "null");
+            Console.WriteLine("========================FIN=====================");
+            return await _context.Inspecciones
                 .AsNoTracking()
-                .Include(x => x.Transfer)
-                .Include(x => x.Operacion)
-                .Include(x => x.TipoInspeccion)
-                .Include(x => x.Usuario)
-                .Include(x => x.Detalles).ThenInclude(d => d.Defecto)
-                .Where(x => x.Estado == "ABIERTA"
-                         && x.Transfer.Programa == programa
-                         && x.Transfer.Lote == lote
-                         && x.Transfer.IdModelo == modelo)
+                .Where(x =>
+                    x.Estado == "ABIERTA"
+                    && x.Transfer.Programa == programa
+                    && x.Transfer.Lote == lote
+                    && x.Transfer.IdModelo == (modeloFound != null ? modeloFound.IdModelo : null)
+                    && x.Detalles.Any(d => d.TipoRegistro == "PIOCHA"))
                 .OrderByDescending(x => x.FechaInspeccion)
-                .ToListAsync();
+                .Select(x => new InspeccionDto(
+                    x.IdInspeccion,
+                    x.IdTransfer,
+                    x.Transfer.Lote,
+                    x.IdOperacion,
+                    x.Operacion.Codigo,
+                    x.Operacion.Nombre,
+                    x.IdTipoInspeccion,
+                    x.TipoInspeccion.Codigo,
+                    x.IdUsuario,
+                    x.Usuario.Nombre,
+                    x.FechaInspeccion,
+                    x.Dispositivo,
+                    x.Observaciones,
+                    x.Estado,
 
-            return list.Select(Map).ToList();
+                    x.Detalles
+                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Select(d => new InspeccionDetalleDto(
+                            d.IdDetalle,
+                            d.IdDefecto,
+                            d.Defecto.Codigo,
+                            d.Defecto.Nombre,
+                            d.TipoRegistro,
+                            d.Lado,
+                            d.Cantidad,
+                            d.ValorObjetivo,
+                            d.ValorMin,
+                            d.ValorMax,
+                            d.Unidad,
+                            d.ValorObtenido,
+                            d.ResultadoCualitativo,
+                            d.FechaRegistro
+                        ))
+                        .ToList()
+                ))
+                .ToListAsync();
         }
 
         public async Task<InspeccionDto?> GetByIdAsync(long id)
@@ -485,6 +519,39 @@ namespace Calidad_API.Services
             i.Observaciones,
             i.Estado,
             i.Detalles.Select(d => new InspeccionDetalleDto(
+                d.IdDetalle,
+                d.IdDefecto,
+                d.Defecto.Codigo,
+                d.Defecto.Nombre,
+                d.TipoRegistro,
+                d.Lado,
+                d.Cantidad,
+                d.ValorObjetivo,
+                d.ValorMin,
+                d.ValorMax,
+                d.Unidad,
+                d.ValorObtenido,
+                d.ResultadoCualitativo,
+                d.FechaRegistro
+            ))
+        );
+
+        private static InspeccionDto MapWithOnlyPiochaDetails(Inspeccion i) => new(
+            i.IdInspeccion,
+            i.IdTransfer,
+            i.Transfer.Lote,
+            i.IdOperacion,
+            i.Operacion.Codigo,
+            i.Operacion.Nombre,
+            i.IdTipoInspeccion,
+            i.TipoInspeccion.Codigo,
+            i.IdUsuario,
+            i.Usuario.Nombre,
+            i.FechaInspeccion,
+            i.Dispositivo,
+            i.Observaciones,
+            i.Estado,
+            i.Detalles.Where(d => d.TipoRegistro == "PIOCHA").Select(d => new InspeccionDetalleDto(
                 d.IdDetalle,
                 d.IdDefecto,
                 d.Defecto.Codigo,

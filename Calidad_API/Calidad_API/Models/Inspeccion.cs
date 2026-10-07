@@ -40,5 +40,6 @@ namespace Calidad_API.Models
         public Usuario Usuario { get; set; } = null!;
         public ICollection<InspeccionDetalle> Detalles { get; set; } = new List<InspeccionDetalle>();
         public ICollection<Vale> Vales { get; set; } = new List<Vale>();
+        public Reparacion? Reparacion {get; set;}
     }
 }
