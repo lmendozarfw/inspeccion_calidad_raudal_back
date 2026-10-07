@@ -4,6 +4,7 @@ using Calidad_API.Middleware;
 using Calidad_API.Models;
 using Calidad_API.Services;
 using Calidad_API.Services.Repositories;
+using Calidad_API.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,15 @@ builder.Services.AddScoped<IReporteService, ReporteService>();
 builder.Services.AddScoped<IReparacionService, ReparacionService>();
 builder.Services.AddScoped<ICorteValeService, CorteValeService>();
 builder.Services.AddProblemDetails();
+
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new UtcDateTimeConverter()
+        );
+    });
 
 // Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
