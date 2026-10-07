@@ -17,6 +17,12 @@ public class ReparacionService : IReparacionService
 
     public async Task<ReparacionDto?> CreateAsync(ReparacionCreateDto request, long idUsuario)
     {
+        var inspeccion = await _context.Inspecciones.FirstOrDefaultAsync(x => x.IdInspeccion == request.IdInspeccion);
+        if (inspeccion == null)
+        {
+            throw new InvalidOperationException("No se ha encontrado la inspección");
+        }
+
         var reparacion = new Reparacion
         {
             IdUsuario = idUsuario,
@@ -25,6 +31,7 @@ public class ReparacionService : IReparacionService
             FechaFin = request.FechaFin
         };
         await _context.Reparaciones.AddAsync(reparacion);
+        inspeccion.Estado = "CERRADA";
         await _context.SaveChangesAsync();
         return await _context.Reparaciones.AsNoTracking()
         .Where(x => x.IdReparacion == reparacion.IdReparacion)
