@@ -27,6 +27,20 @@ namespace Calidad_API.Controllers
             return Ok(reparaciones);
         }
 
+        [HttpGet()]
+        public async Task<ActionResult<List<ReparacionDto>>> GetAll()
+        {
+            var reparaciones = await _reparacionService.GetAll();
+            return Ok(reparaciones);
+        }
+
+        [HttpGet("por-usuario")]
+        public async Task<ActionResult<List<ReparacionDto>>> GetAllByUser()
+        {
+            var reparaciones = await _reparacionService.GetAllByUser(GetUserId());
+            return Ok(reparaciones);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ReparacionDto>> Crear([FromBody] ReparacionCreateDto dto)
         {
