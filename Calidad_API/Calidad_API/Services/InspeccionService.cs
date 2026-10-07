@@ -213,6 +213,12 @@ namespace Calidad_API.Services
             // Recargar con defecto
             await _context.Entry(detalle).Reference(d => d.Defecto).LoadAsync();
 
+            var insp = await _context.Inspecciones
+                        .Include(i => i.Transfer)
+                        .FirstAsync(i => i.IdInspeccion == idInspeccion);
+
+            await EncolarSolicitudSiAplicaAsync(insp, detalle, defecto, idUsuario);
+
             return new InspeccionDetalleDto(
                 detalle.IdDetalle,
                 detalle.IdDefecto,
@@ -404,6 +410,8 @@ namespace Calidad_API.Services
 
                         _context.InspeccionDetalles.Add(detalle);
                         await _context.SaveChangesAsync();
+
+                        await EncolarSolicitudSiAplicaAsync(inspeccion, detalle, defecto, idUsuario);
 
                         detallesCreados.Add(new InspectionDetalleCreatedDto(
                             detalle.IdDetalle,
@@ -605,6 +613,43 @@ namespace Calidad_API.Services
                 ))
                 .OrderBy(x => x.CodigoOperacion)
                 .ToList();
+        }
+
+        private async Task EncolarSolicitudSiAplicaAsync(
+    Inspeccion inspeccion,
+    InspeccionDetalle detalle,
+    Defecto defecto,
+    long idUsuario)
+        {
+            if (!defecto.AplicaPieza || !defecto.IdPieza.HasValue || defecto.IdPieza.Value <= 0)
+                return;
+
+            // Cargar transfer si no viene
+            if (inspeccion.Transfer is null)
+                await _context.Entry(inspeccion).Reference(i => i.Transfer).LoadAsync();
+
+            var transfer = inspeccion.Transfer
+                ?? throw new InvalidOperationException("La inspección no tiene transfer.");
+
+            var solicitud = new SolicitudMaterial
+            {
+                IdInspeccion = inspeccion.IdInspeccion,
+                IdInspeccionDetalle = detalle.IdDetalle,
+                IdOperacion = inspeccion.IdOperacion,
+                Programa = transfer.Programa,
+                Lote = transfer.Lote,
+                Lista = transfer.Lista,
+                Punto = transfer.Punto,
+                Lado = detalle.Lado,
+                IdPieza = defecto.IdPieza.Value,
+                Cantidad = detalle.Cantidad <= 0 ? 1 : detalle.Cantidad,
+                IdUsuarioSolicita = idUsuario,
+                FechaSolicitud = DateTime.UtcNow,
+                Estado = "PENDIENTE"
+            };
+
+            _context.SolicitudesMaterial.Add(solicitud);
+            await _context.SaveChangesAsync();
         }
     }
 }

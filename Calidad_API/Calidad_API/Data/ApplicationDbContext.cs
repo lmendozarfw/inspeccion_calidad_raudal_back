@@ -35,6 +35,9 @@ namespace Calidad_API.Data
         public DbSet<InspeccionDetalle> InspeccionDetalles { get; set; } = null!;
         public DbSet<Vale> Vales { get; set; } = null!;
         public DbSet<ValeDetalle> ValesDetalles { get; set; } = null!;
+        public DbSet<SolicitudMaterial> SolicitudesMaterial { get; set; } = null!;
+        public DbSet<CorteVale> CortesVale { get; set; } = null!;
+        public DbSet<ConfigCorteVale> ConfigCortesVale { get; set; } = null!;
 
         // ——— Métricas ———
         public DbSet<MetaCalidad> MetasCalidad { get; set; } = null!;
@@ -320,6 +323,74 @@ namespace Calidad_API.Data
                     .WithMany(p => p.ValeDetalles)
                     .HasForeignKey(x => x.IdPieza)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Solicitud)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdSolicitud)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<SolicitudMaterial>(e =>
+            {
+                e.ToTable("solicitud_material");
+                e.HasKey(x => x.IdSolicitud);
+
+                e.HasOne(x => x.Inspeccion)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdInspeccion)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Operacion)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdOperacion)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Pieza)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdPieza)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.UsuarioSolicita)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdUsuarioSolicita)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Corte)
+                    .WithMany(c => c.Solicitudes)
+                    .HasForeignKey(x => x.IdCorte)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Vale)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdVale)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<CorteVale>(e =>
+            {
+                e.ToTable("corte_vale");
+                e.HasKey(x => x.IdCorte);
+
+                e.HasOne(x => x.Operacion)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdOperacion)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.UsuarioAutoriza)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdUsuarioAutoriza)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Vale)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdVale)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ConfigCorteVale>(e =>
+            {
+                e.ToTable("config_corte_vale");
+                e.HasKey(x => x.Id);
             });
 
             // =====================================================

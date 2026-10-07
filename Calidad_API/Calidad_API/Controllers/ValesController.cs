@@ -97,5 +97,55 @@ namespace Calidad_API.Controllers
         [HttpGet("inspeccion/{idInspeccion:long}")]
         public async Task<ActionResult<IEnumerable<ValeDto>>> GetByInspeccion(long idInspeccion)
     => Ok(await _valeService.GetByInspeccionAsync(idInspeccion));
+
+        [HttpPost("corte")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<CorteEjecutarResponse>> EjecutarCorte(
+    [FromServices] ICorteValeService corteService)
+        {
+            var result = await corteService.EjecutarCorteAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("cortes/pendientes")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<IEnumerable<CorteResumenDto>>> CortesPendientes(
+            [FromServices] ICorteValeService corteService)
+            => Ok(await corteService.GetPendientesAsync());
+
+        [HttpGet("cortes/{idCorte:long}")]
+        [Authorize]
+        public async Task<ActionResult<CorteDetalleDto>> GetCorte(
+            long idCorte,
+            [FromServices] ICorteValeService corteService)
+        {
+            var c = await corteService.GetByIdAsync(idCorte);
+            return c is null ? NotFound() : Ok(c);
+        }
+
+
+        [HttpPost("cortes/{idCorte:long}/autorizar")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<ValeDto>> AutorizarCorte(
+    long idCorte,
+    [FromBody] CorteAutorizarDto dto,
+    [FromServices] ICorteValeService corteService)
+        {
+            try
+            {
+                var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var idUsuario = long.Parse(claim!);
+                var vale = await corteService.AutorizarCorteAsync(idCorte, dto.CodigoAutorizacion, idUsuario);
+                return Ok(vale);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
