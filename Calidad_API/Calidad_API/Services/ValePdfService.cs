@@ -97,23 +97,34 @@ namespace Calidad_API.Services
                         {
                             table.ColumnsDefinition(c =>
                             {
-                                c.RelativeColumn(2);
-                                c.RelativeColumn(3);
-                                c.RelativeColumn(1);
+                                c.RelativeColumn(1.2f); // Programa
+                                c.RelativeColumn(1.2f); // Lote
+                                c.RelativeColumn(0.8f); // Lado
+                                c.RelativeColumn(1.2f); // Código
+                                c.RelativeColumn(2.0f); // Pieza
+                                c.RelativeColumn(0.8f); // Cant
                             });
 
                             table.Header(h =>
                             {
-                                h.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("Código").Bold();
-                                h.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("Pieza").Bold();
-                                h.Cell().Background(Colors.Grey.Lighten3).Padding(5).AlignRight().Text("Cant.").Bold();
+                                h.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Programa").Bold().FontSize(8);
+                                h.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Lote").Bold().FontSize(8);
+                                h.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Lado").Bold().FontSize(8);
+                                h.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Código").Bold().FontSize(8);
+                                h.Cell().Background(Colors.Grey.Lighten3).Padding(4).Text("Pieza").Bold().FontSize(8);
+                                h.Cell().Background(Colors.Grey.Lighten3).Padding(4).AlignRight().Text("Cant.").Bold().FontSize(8);
                             });
 
-                            foreach (var linea in vale.Detalles.OrderBy(x => x.Pieza.Codigo))
+                            foreach (var linea in vale.Detalles
+                                         .OrderBy(x => x.Lote)
+                                         .ThenBy(x => x.Pieza.Codigo))
                             {
-                                table.Cell().BorderBottom(0.5f).Padding(5).Text(linea.Pieza.Codigo);
-                                table.Cell().BorderBottom(0.5f).Padding(5).Text(linea.Pieza.Nombre);
-                                table.Cell().BorderBottom(0.5f).Padding(5).AlignRight().Text($"{linea.Cantidad:0.##}");
+                                table.Cell().BorderBottom(0.5f).Padding(4).Text(linea.Programa ?? "").FontSize(8);
+                                table.Cell().BorderBottom(0.5f).Padding(4).Text(linea.Lote ?? "").FontSize(8);
+                                table.Cell().BorderBottom(0.5f).Padding(4).Text(linea.Lado ?? "").FontSize(8);
+                                table.Cell().BorderBottom(0.5f).Padding(4).Text(linea.Pieza.Codigo).FontSize(8);
+                                table.Cell().BorderBottom(0.5f).Padding(4).Text(linea.Pieza.Nombre).FontSize(8);
+                                table.Cell().BorderBottom(0.5f).Padding(4).AlignRight().Text($"{linea.Cantidad:0.##}").FontSize(8);
                             }
                         });
 

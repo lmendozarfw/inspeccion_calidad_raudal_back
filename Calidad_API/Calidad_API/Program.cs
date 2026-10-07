@@ -42,7 +42,11 @@ builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
+<<<<<<< Updated upstream
 builder.Services.AddScoped<IReparacionService, ReparacionService>();
+=======
+builder.Services.AddScoped<ICorteValeService, CorteValeService>();
+>>>>>>> Stashed changes
 builder.Services.AddProblemDetails();
 
 // Configuración JWT

@@ -19,6 +19,20 @@ namespace Calidad_API.Models
         [Column("cantidad")]
         public decimal Cantidad { get; set; }
 
+        [Column("programa")]
+        public string? Programa { get; set; }
+
+        [Column("lote")]
+        public string? Lote { get; set; }
+
+        [Column("lado")]
+        public string? Lado { get; set; }
+
+        [Column("id_solicitud")]
+        public long? IdSolicitud { get; set; }
+
+        public SolicitudMaterial? Solicitud { get; set; }
+
         public Vale Vale { get; set; } = null!;
         public Pieza Pieza { get; set; } = null!;
     }

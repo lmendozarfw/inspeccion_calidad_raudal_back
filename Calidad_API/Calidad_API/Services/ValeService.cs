@@ -144,45 +144,17 @@ namespace Calidad_API.Services
             if (!puedeGenerar)
                 throw new UnauthorizedAccessException("No tienes permiso para generar vales en esta operación.");
 
-            // 1) Líneas: las del body, o automáticas desde detalles con pieza
-            List<(long IdPieza, decimal Cantidad)> lineasMerged;
+            // —— Líneas del vale (urgente) ——
+            // Preferencia: solicitudes PENDIENTE de esta inspección
+            // Si no hay: body Lineas o defectos con pieza (como antes)
 
-            if (dto.Lineas is { Count: > 0 })
-            {
-                lineasMerged = dto.Lineas
-                    .GroupBy(x => x.IdPieza)
-                    .Select(g => (g.Key, g.Sum(x => x.Cantidad)))
-                    .ToList();
-            }
-            else
-            {
-                // Automático: defectos que requieren pieza
-                lineasMerged = inspeccion.Detalles
-                    .Where(d => d.Defecto.AplicaPieza
-                                && d.Defecto.IdPieza.HasValue
-                                && d.Defecto.IdPieza.Value > 0)
-                    .GroupBy(d => d.Defecto.IdPieza!.Value)
-                    .Select(g => (IdPieza: g.Key, Cantidad: g.Sum(x => x.Cantidad)))
-                    .ToList();
-            }
-
-            if (lineasMerged.Count == 0)
-                throw new InvalidOperationException(
-                    "No hay materiales para el vale. Los defectos de la inspección no tienen pieza asociada, " +
-                    "o indica 'lineas' manualmente.");
-
-            if (lineasMerged.Any(x => x.Cantidad <= 0))
-                throw new InvalidOperationException("La cantidad de cada línea debe ser mayor a cero.");
-
-            var idsPieza = lineasMerged.Select(x => x.IdPieza).ToList();
-            var piezas = await _context.Piezas
-                .Where(p => idsPieza.Contains(p.IdPieza) && p.Activo)
+            var solsPend = await _context.SolicitudesMaterial
+                .Include(s => s.Pieza)
+                .Where(s => s.IdInspeccion == dto.IdInspeccion && s.Estado == "PENDIENTE")
                 .ToListAsync();
 
-            if (piezas.Count != idsPieza.Count)
-                throw new InvalidOperationException("Una o más piezas no existen o están inactivas.");
-
             var folio = await ObtenerSiguienteFolioAsync();
+            var transfer = inspeccion.Transfer;
 
             var vale = new Vale
             {
@@ -193,16 +165,88 @@ namespace Calidad_API.Services
                 Estado = "GENERADO"
             };
 
-            foreach (var linea in lineasMerged)
+            if (dto.Lineas is { Count: > 0 })
             {
-                vale.Detalles.Add(new ValeDetalle
+                // Manual desde el body
+                var lineasMerged = dto.Lineas
+                    .GroupBy(x => x.IdPieza)
+                    .Select(g => (IdPieza: g.Key, Cantidad: g.Sum(x => x.Cantidad)))
+                    .ToList();
+
+                if (lineasMerged.Any(x => x.Cantidad <= 0))
+                    throw new InvalidOperationException("La cantidad de cada línea debe ser mayor a cero.");
+
+                var idsPieza = lineasMerged.Select(x => x.IdPieza).ToList();
+                var piezasOk = await _context.Piezas
+                    .Where(p => idsPieza.Contains(p.IdPieza) && p.Activo)
+                    .CountAsync();
+                if (piezasOk != idsPieza.Count)
+                    throw new InvalidOperationException("Una o más piezas no existen o están inactivas.");
+
+                foreach (var linea in lineasMerged)
                 {
-                    IdPieza = linea.IdPieza,
-                    Cantidad = linea.Cantidad
-                });
+                    vale.Detalles.Add(new ValeDetalle
+                    {
+                        IdPieza = linea.IdPieza,
+                        Cantidad = linea.Cantidad,
+                        Programa = transfer.Programa,
+                        Lote = transfer.Lote,
+                        Lado = null
+                    });
+                }
+            }
+            else if (solsPend.Count > 0)
+            {
+                // Desde cola de solicitudes (urgente)
+                foreach (var sol in solsPend.OrderBy(s => s.Lote).ThenBy(s => s.Pieza.Codigo))
+                {
+                    vale.Detalles.Add(new ValeDetalle
+                    {
+                        IdPieza = sol.IdPieza,
+                        Cantidad = sol.Cantidad,
+                        Programa = sol.Programa,
+                        Lote = sol.Lote,
+                        Lado = sol.Lado,
+                        IdSolicitud = sol.IdSolicitud
+                    });
+                }
+            }
+            else
+            {
+                // Fallback: defectos de la inspección con pieza
+                var lineasMerged = inspeccion.Detalles
+                    .Where(d => d.Defecto.AplicaPieza
+                                && d.Defecto.IdPieza.HasValue
+                                && d.Defecto.IdPieza.Value > 0)
+                    .GroupBy(d => d.Defecto.IdPieza!.Value)
+                    .Select(g => (IdPieza: g.Key, Cantidad: g.Sum(x => x.Cantidad)))
+                    .ToList();
+
+                if (lineasMerged.Count == 0)
+                    throw new InvalidOperationException(
+                        "No hay materiales para el vale. No hay solicitudes pendientes ni defectos con pieza.");
+
+                if (lineasMerged.Any(x => x.Cantidad <= 0))
+                    throw new InvalidOperationException("La cantidad de cada línea debe ser mayor a cero.");
+
+                foreach (var linea in lineasMerged)
+                {
+                    vale.Detalles.Add(new ValeDetalle
+                    {
+                        IdPieza = linea.IdPieza,
+                        Cantidad = linea.Cantidad,
+                        Programa = transfer.Programa,
+                        Lote = transfer.Lote,
+                        Lado = null
+                    });
+                }
             }
 
+            if (vale.Detalles.Count == 0)
+                throw new InvalidOperationException("No hay líneas de material para el vale.");
+
             _context.Vales.Add(vale);
+
             _context.RegistrosAutorizacion.Add(new RegistroAutorizacion
             {
                 IdUsuarioSolicita = idUsuario,
@@ -210,7 +254,31 @@ namespace Calidad_API.Services
                 IdInspeccion = dto.IdInspeccion,
                 FechaCreacion = DateTime.UtcNow
             });
+
             await _context.SaveChangesAsync();
+
+            // ★ Marcar solicitudes para que no entren al próximo corte
+            var solsAMarcar = await _context.SolicitudesMaterial
+                .Where(s => s.IdInspeccion == dto.IdInspeccion
+                            && (s.Estado == "PENDIENTE" || s.Estado == "EN_CORTE"))
+                .ToListAsync();
+
+            foreach (var s in solsAMarcar)
+            {
+                s.Estado = "INCLUIDA_EN_VALE";
+                s.IdVale = vale.IdVale;
+            }
+
+            if (solsAMarcar.Count > 0)
+                await _context.SaveChangesAsync();
+
+            // —— A partir de aquí dejas IGUAL lo que ya tienes: ——
+            // recargar vale, PDF, correo, return Map(vale)
+            vale = await _context.Vales
+                .Include(v => v.UsuarioSolicita)
+                .Include(v => v.Detalles).ThenInclude(d => d.Pieza)
+                .Include(v => v.Inspeccion).ThenInclude(i => i.Transfer)
+                .FirstAsync(v => v.IdVale == vale.IdVale);
 
             // Recargar + PDF + correo (igual que ya tienes)
             vale = await _context.Vales
