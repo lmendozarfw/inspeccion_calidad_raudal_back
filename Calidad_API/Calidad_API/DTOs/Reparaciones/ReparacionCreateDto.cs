@@ -1,5 +1,5 @@
 public record ReparacionCreateDto(
-    long IdInspeccionDetalle,
+    long IdInspeccion,
     DateTime FechaInicio,
     DateTime FechaFin
 );

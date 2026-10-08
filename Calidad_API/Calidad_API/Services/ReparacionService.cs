@@ -1,4 +1,5 @@
 using Calidad_API.Data;
+using Calidad_API.DTOs.Inspecciones;
 using Calidad_API.Interfaces;
 using Calidad_API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,42 +17,160 @@ public class ReparacionService : IReparacionService
 
     public async Task<ReparacionDto?> CreateAsync(ReparacionCreateDto request, long idUsuario)
     {
-        var reparacion = new Reparacion{
+        var inspeccion = await _context.Inspecciones.FirstOrDefaultAsync(x => x.IdInspeccion == request.IdInspeccion);
+        if (inspeccion == null)
+        {
+            throw new InvalidOperationException("No se ha encontrado la inspección");
+        }
+
+        var reparacion = new Reparacion
+        {
             IdUsuario = idUsuario,
-            IdInspeccionDetalle = request.IdInspeccionDetalle,
+            IdInspeccion = request.IdInspeccion,
             FechaInicio = request.FechaInicio,
             FechaFin = request.FechaFin
         };
         await _context.Reparaciones.AddAsync(reparacion);
+        inspeccion.Estado = "CERRADA";
         await _context.SaveChangesAsync();
         return await _context.Reparaciones.AsNoTracking()
         .Where(x => x.IdReparacion == reparacion.IdReparacion)
         .Select(x => new ReparacionDto(
-            x.IdReparacion, x.IdUsuario, x.Usuario.Nombre, x.Usuario.Username,
-            x.IdInspeccionDetalle, x.InspeccionDetalle.Defecto.Nombre,
-            x.FechaInicio, x.FechaFin))
+            x.IdReparacion,
+            x.IdUsuario,
+            x.Usuario.Nombre,
+            x.Usuario.Username,
+            x.IdInspeccion,
+            x.FechaInicio, x.FechaFin,
+            x.Inspeccion.Detalles
+                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Select(d => new InspeccionDetalleDto(
+                            d.IdDetalle,
+                            d.IdDefecto,
+                            d.Defecto.Codigo,
+                            d.Defecto.Nombre,
+                            d.TipoRegistro,
+                            d.Lado,
+                            d.Cantidad,
+                            d.ValorObjetivo,
+                            d.ValorMin,
+                            d.ValorMax,
+                            d.Unidad,
+                            d.ValorObtenido,
+                            d.ResultadoCualitativo,
+                            d.FechaRegistro
+                        ))
+                        .ToList()
+            ))
         .FirstOrDefaultAsync();
 
     }
 
-    public async Task<List<ReparacionDto>> GetByAllAsync(long idDetalle)
+    public async Task<List<ReparacionDto>> GetAllByUser(long idUsuario)
     {
-        return await _context.Reparaciones
-        .AsNoTracking()
-        .Where(x => x.IdInspeccionDetalle == idDetalle)
-        .Include(x => x.Usuario)
-        .Include(x => x.InspeccionDetalle)
-        .ThenInclude(x => x.Defecto)
+        return await _context.Reparaciones.AsNoTracking()
+        .Where(x => x.IdUsuario == idUsuario)
         .OrderByDescending(x => x.FechaInicio)
         .Select(x => new ReparacionDto(
             x.IdReparacion,
-            x.IdUsuario, 
+            x.IdUsuario,
             x.Usuario.Nombre,
             x.Usuario.Username,
-            x.IdInspeccionDetalle, 
-            x.InspeccionDetalle.Defecto.Nombre,
+            x.IdInspeccion,
             x.FechaInicio,
-            x.FechaFin ))
+            x.FechaFin,
+             x.Inspeccion.Detalles
+                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Select(d => new InspeccionDetalleDto(
+                            d.IdDetalle,
+                            d.IdDefecto,
+                            d.Defecto.Codigo,
+                            d.Defecto.Nombre,
+                            d.TipoRegistro,
+                            d.Lado,
+                            d.Cantidad,
+                            d.ValorObjetivo,
+                            d.ValorMin,
+                            d.ValorMax,
+                            d.Unidad,
+                            d.ValorObtenido,
+                            d.ResultadoCualitativo,
+                            d.FechaRegistro
+                        ))
+                        .ToList()
+             ))
+        .ToListAsync();
+    }
+
+    public async Task<List<ReparacionDto>> GetAll()
+    {
+        return await _context.Reparaciones.AsNoTracking()
+        .OrderByDescending(x => x.FechaInicio)
+        .Select(x => new ReparacionDto(
+            x.IdReparacion,
+            x.IdUsuario,
+            x.Usuario.Nombre,
+            x.Usuario.Username,
+            x.IdInspeccion,
+            x.FechaInicio,
+            x.FechaFin,
+             x.Inspeccion.Detalles
+                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Select(d => new InspeccionDetalleDto(
+                            d.IdDetalle,
+                            d.IdDefecto,
+                            d.Defecto.Codigo,
+                            d.Defecto.Nombre,
+                            d.TipoRegistro,
+                            d.Lado,
+                            d.Cantidad,
+                            d.ValorObjetivo,
+                            d.ValorMin,
+                            d.ValorMax,
+                            d.Unidad,
+                            d.ValorObtenido,
+                            d.ResultadoCualitativo,
+                            d.FechaRegistro
+                        ))
+                        .ToList()
+             ))
+        .ToListAsync();
+    }
+
+    public async Task<List<ReparacionDto>> GetByAllAsync(long idInspeccion)
+    {
+        return await _context.Reparaciones
+        .AsNoTracking()
+        .Where(x => x.IdInspeccion == idInspeccion)
+        .OrderByDescending(x => x.FechaInicio)
+        .Select(x => new ReparacionDto(
+            x.IdReparacion,
+            x.IdUsuario,
+            x.Usuario.Nombre,
+            x.Usuario.Username,
+            x.IdInspeccion,
+            x.FechaInicio,
+            x.FechaFin,
+             x.Inspeccion.Detalles
+                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Select(d => new InspeccionDetalleDto(
+                            d.IdDetalle,
+                            d.IdDefecto,
+                            d.Defecto.Codigo,
+                            d.Defecto.Nombre,
+                            d.TipoRegistro,
+                            d.Lado,
+                            d.Cantidad,
+                            d.ValorObjetivo,
+                            d.ValorMin,
+                            d.ValorMax,
+                            d.Unidad,
+                            d.ValorObtenido,
+                            d.ResultadoCualitativo,
+                            d.FechaRegistro
+                        ))
+                        .ToList()
+             ))
         .ToListAsync();
     }
 }
