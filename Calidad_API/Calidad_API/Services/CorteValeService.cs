@@ -16,15 +16,19 @@ namespace Calidad_API.Services
         private readonly ValePdfService _pdfService;
 
         public CorteValeService(
-            ApplicationDbContext context,
-            IEmailService email,
-            IConfiguration config,
-            ILogger<CorteValeService> logger)
+    ApplicationDbContext context,
+    IEmailService email,
+    IConfiguration config,
+    ILogger<CorteValeService> logger,
+    ICodigoAutorizacionService codigoAuth,
+    ValePdfService pdfService)
         {
             _context = context;
             _email = email;
             _config = config;
             _logger = logger;
+            _codigoAuth = codigoAuth ?? throw new ArgumentNullException(nameof(codigoAuth));
+            _pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
         }
 
         public async Task<CorteEjecutarResponse> EjecutarCorteAsync()

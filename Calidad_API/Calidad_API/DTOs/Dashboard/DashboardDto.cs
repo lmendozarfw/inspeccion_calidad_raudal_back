@@ -103,8 +103,8 @@ public class DefectosPorDiaHoraDto
 
 public class DashboardDetalleFiltro
 {
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
     public DateTime? Fecha { get; set; }      // día concreto
     public int? Hora { get; set; }            // 0–23
     public long? IdOperacion { get; set; }

@@ -269,8 +269,7 @@ public class DashboardService : IDashboardService
 
     public async Task<IReadOnlyList<DashboardDetalleItemDto>> GetDetalleAsync(DashboardDetalleFiltro f)
     {
-        var desde = f.StartDate.Date;
-        var hastaExcl = f.EndDate.Date.AddDays(1);
+       
 
         var q = _context.InspeccionDetalles.AsNoTracking()
             .Include(d => d.Defecto).ThenInclude(def => def.Criticidad)
@@ -278,7 +277,14 @@ public class DashboardService : IDashboardService
             .Include(d => d.Inspeccion).ThenInclude(i => i.Transfer)
             .Include(d => d.Inspeccion).ThenInclude(i => i.Operacion)
             .Include(d => d.Inspeccion).ThenInclude(i => i.TipoInspeccion)
-            .Where(d => d.FechaRegistro >= desde && d.FechaRegistro < hastaExcl);
+            .AsQueryable();
+
+        if (f.StartDate.HasValue && f.EndDate.HasValue)
+        {
+            var desde = f.StartDate.Value.Date;
+            var hastaExcl = f.EndDate.Value.Date.AddDays(1);
+            q = q.Where(d => d.FechaRegistro >= desde && d.FechaRegistro < hastaExcl);
+        }
 
         if (f.Fecha.HasValue)
         {
