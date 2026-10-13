@@ -75,7 +75,8 @@ namespace Calidad_API.Services
                     corte.FechaCorte,
                     corte.Estado,
                     g.Count(),
-                    g.Sum(x => x.Cantidad));
+                    g.Sum(x => x.Cantidad),
+                    MapLineas(g));
 
                 creados.Add(resumen);
 
@@ -92,12 +93,18 @@ namespace Calidad_API.Services
             return new CorteEjecutarResponse(creados.Count, creados);
         }
 
-        public async Task<IEnumerable<CorteResumenDto>> GetPendientesAsync()
+        public async Task<IEnumerable<CorteResumenDto>> GetPendientesAsync(long idUsuario, bool esAdmin)
         {
-            var list = await _context.CortesVale.AsNoTracking()
+            var query = _context.CortesVale.AsNoTracking()
                 .Include(c => c.Operacion)
-                .Include(c => c.Solicitudes)
-                .Where(c => c.Estado == "PENDIENTE_AUTH")
+                .Include(c => c.Solicitudes).ThenInclude(s => s.Pieza)
+                .Where(c => c.Estado == "PENDIENTE_AUTH");
+
+            if (!esAdmin)
+                query = query.Where(c => _context.PermisosOperacion.Any(p =>
+                    p.IdUsuario == idUsuario && p.IdOperacion == c.IdOperacion));
+
+            var list = await query
                 .OrderByDescending(c => c.FechaCorte)
                 .ToListAsync();
 
@@ -109,15 +116,22 @@ namespace Calidad_API.Services
                 c.FechaCorte,
                 c.Estado,
                 c.Solicitudes.Count,
-                c.Solicitudes.Sum(s => s.Cantidad)));
+                c.Solicitudes.Sum(s => s.Cantidad),
+                MapLineas(c.Solicitudes)));
         }
 
-        public async Task<CorteDetalleDto?> GetByIdAsync(long idCorte)
+        public async Task<CorteDetalleDto?> GetByIdAsync(long idCorte, long idUsuario, bool esAdmin)
         {
-            var c = await _context.CortesVale.AsNoTracking()
+            var query = _context.CortesVale.AsNoTracking()
                 .Include(x => x.Operacion)
                 .Include(x => x.Solicitudes).ThenInclude(s => s.Pieza)
-                .FirstOrDefaultAsync(x => x.IdCorte == idCorte);
+                .Where(x => x.IdCorte == idCorte);
+
+            if (!esAdmin)
+                query = query.Where(x => _context.PermisosOperacion.Any(p =>
+                    p.IdUsuario == idUsuario && p.IdOperacion == x.IdOperacion));
+
+            var c = await query.FirstOrDefaultAsync();
 
             if (c is null) return null;
 
@@ -131,21 +145,24 @@ namespace Calidad_API.Services
                 c.IdUsuarioAutoriza,
                 c.FechaAutorizacion,
                 c.IdVale,
-                c.Solicitudes
-                    .OrderBy(s => s.Lote)
-                    .ThenBy(s => s.Pieza.Codigo)
-                    .Select(s => new CorteLineaDto(
-                        s.IdSolicitud,
-                        s.Programa,
-                        s.Lote,
-                        s.Lado,
-                        s.IdPieza,
-                        s.Pieza.Codigo,
-                        s.Pieza.Nombre,
-                        s.Cantidad,
-                        s.FechaSolicitud))
-                    .ToList());
+                MapLineas(c.Solicitudes));
         }
+
+        private static IReadOnlyList<CorteLineaDto> MapLineas(IEnumerable<SolicitudMaterial> solicitudes) =>
+            solicitudes
+                .OrderBy(s => s.Lote)
+                .ThenBy(s => s.Pieza.Codigo)
+                .Select(s => new CorteLineaDto(
+                    s.IdSolicitud,
+                    s.Programa,
+                    s.Lote,
+                    s.Lado,
+                    s.IdPieza,
+                    s.Pieza.Codigo,
+                    s.Pieza.Nombre,
+                    s.Cantidad,
+                    s.FechaSolicitud))
+                .ToList();
 
         private async Task NotificarSupervisorAsync(
             CorteResumenDto resumen,
@@ -209,7 +226,8 @@ namespace Calidad_API.Services
         public async Task<ValeDto> AutorizarCorteAsync(
     long idCorte,
     string codigoAutorizacion,
-    long idUsuarioAutoriza)
+    long idUsuarioAutoriza,
+    bool esAdmin)
         {
             if (string.IsNullOrWhiteSpace(codigoAutorizacion))
                 throw new InvalidOperationException("El código de autorización es obligatorio.");
@@ -230,6 +248,14 @@ namespace Calidad_API.Services
                 throw new InvalidOperationException($"El corte no está pendiente de autorización (estado: {corte.Estado}).");
             if (corte.Solicitudes.Count == 0)
                 throw new InvalidOperationException("El corte no tiene solicitudes.");
+
+            if (!esAdmin)
+            {
+                var tienePermiso = await _context.PermisosOperacion.AnyAsync(p =>
+                    p.IdUsuario == idSupervisor.Value && p.IdOperacion == corte.IdOperacion);
+                if (!tienePermiso)
+                    throw new UnauthorizedAccessException("No tienes permiso para autorizar vales en esta área.");
+            }
 
             // Folio
             var folio = await ObtenerSiguienteFolioAsync(); // copia el método del ValeService o extráelo a un helper

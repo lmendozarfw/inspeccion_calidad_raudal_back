@@ -131,7 +131,7 @@ namespace Calidad_API.Controllers
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
         public async Task<ActionResult<IEnumerable<CorteResumenDto>>> CortesPendientes(
             [FromServices] ICorteValeService corteService)
-            => Ok(await corteService.GetPendientesAsync());
+            => Ok(await corteService.GetPendientesAsync(GetUserId(), User.IsInRole("ADMIN")));
 
         [HttpGet("cortes/{idCorte:long}")]
         [Authorize]
@@ -139,7 +139,7 @@ namespace Calidad_API.Controllers
             long idCorte,
             [FromServices] ICorteValeService corteService)
         {
-            var c = await corteService.GetByIdAsync(idCorte);
+            var c = await corteService.GetByIdAsync(idCorte, GetUserId(), User.IsInRole("ADMIN"));
             return c is null ? NotFound() : Ok(c);
         }
 
@@ -155,7 +155,7 @@ namespace Calidad_API.Controllers
             {
                 var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var idUsuario = long.Parse(claim!);
-                var vale = await corteService.AutorizarCorteAsync(idCorte, dto.CodigoAutorizacion, idUsuario);
+                var vale = await corteService.AutorizarCorteAsync(idCorte, dto.CodigoAutorizacion, idUsuario, User.IsInRole("ADMIN"));
                 return Ok(vale);
             }
             catch (UnauthorizedAccessException ex)

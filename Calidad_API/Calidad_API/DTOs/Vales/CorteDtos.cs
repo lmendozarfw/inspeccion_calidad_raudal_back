@@ -13,7 +13,8 @@
         DateTime FechaCorte,
         string Estado,
         int NumSolicitudes,
-        decimal CantidadTotal
+        decimal CantidadTotal,
+        IReadOnlyList<CorteLineaDto> Lineas
     );
 
     public record CorteDetalleDto(
