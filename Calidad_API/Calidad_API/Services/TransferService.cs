@@ -53,7 +53,7 @@ namespace Calidad_API.Services
 
             if (existing is not null)
             {
-                existing.FechaUltimoScan = DateTime.UtcNow;
+                existing.FechaUltimoScan = DateTime.Now;
                 if (!string.IsNullOrWhiteSpace(dto.Programa)) existing.Programa = dto.Programa;
                 if (!string.IsNullOrWhiteSpace(dto.Lista)) existing.Lista = dto.Lista;
                 if (!string.IsNullOrWhiteSpace(dto.Punto)) existing.Punto = dto.Punto;
@@ -72,8 +72,8 @@ namespace Calidad_API.Services
                 Lote = dto.Lote.Trim(),
                 Punto = dto.Punto?.Trim(),
                 IdModelo = dto.IdModelo,
-                FechaPrimerScan = DateTime.UtcNow,
-                FechaUltimoScan = DateTime.UtcNow
+                FechaPrimerScan = DateTime.Now,
+                FechaUltimoScan = DateTime.Now
             };
 
             _context.Transfers.Add(entity);

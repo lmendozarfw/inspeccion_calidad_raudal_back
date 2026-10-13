@@ -66,7 +66,7 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
         }
 
         var codigo = await CrearCodigoUnicoAsync();
-        var fechaCreacion = DateTime.UtcNow;
+        var fechaCreacion = DateTime.Now;
         var fechaExpiracion = fechaCreacion.AddDays(90);
         var entity = new CodigoAutorizacion
         {
@@ -131,7 +131,7 @@ public class CodigoAutorizacionService : ICodigoAutorizacionService
             return null;
 
         var codigo = codigoPlano.Trim();
-        var ahora = DateTime.UtcNow;
+        var ahora = DateTime.Now;
 
         var candidatos = await _contex.CodigosAutorizacion
             .AsNoTracking()

@@ -47,14 +47,14 @@ builder.Services.AddScoped<IReparacionService, ReparacionService>();
 builder.Services.AddScoped<ICorteValeService, CorteValeService>();
 builder.Services.AddProblemDetails();
 
-builder.Services
-    .AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(
-            new UtcDateTimeConverter()
-        );
-    });
+//builder.Services
+//    .AddControllers()
+//    .AddJsonOptions(options =>
+//    {
+//        options.JsonSerializerOptions.Converters.Add(
+//            new UtcDateTimeConverter()
+//        );
+//    });
 
 // Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

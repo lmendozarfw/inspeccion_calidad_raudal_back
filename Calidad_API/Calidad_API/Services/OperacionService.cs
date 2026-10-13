@@ -101,7 +101,7 @@ namespace Calidad_API.Services
                 IdDepartamento = dto.IdDepartamento,
                 IdUnidadNegocio = dto.IdUnidadNegocio,
                 Activo = true,
-                FechaAlta = DateTime.UtcNow
+                FechaAlta = DateTime.Now
             };
 
             _context.Operaciones.Add(entity);

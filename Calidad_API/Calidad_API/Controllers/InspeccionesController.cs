@@ -15,7 +15,7 @@ namespace Calidad_API.Controllers
 
         private static (DateTime desde, DateTime hasta) Rango(DateTime? desde, DateTime? hasta)
         {
-            var h = hasta?.Date ?? DateTime.UtcNow.Date;
+            var h = hasta?.Date ?? DateTime.Now.Date;
             var d = desde?.Date ?? h.AddDays(-7);
             return (d, h);
         }

@@ -43,7 +43,7 @@ namespace Calidad_API.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
+                Expires = DateTime.Now.AddMinutes(expireMinutes),
                 Issuer = jwt["Issuer"],
                 Audience = jwt["Audience"],
                 SigningCredentials = creds

@@ -34,7 +34,7 @@ namespace Calidad_API.Services
                 Nombre = dto.Nombre.Trim(),
                 Unidad = dto.Unidad?.Trim(),
                 Activo = true,
-                FechaAlta = DateTime.UtcNow
+                FechaAlta = DateTime.Now
             };
             _context.Piezas.Add(e);
             await _context.SaveChangesAsync();

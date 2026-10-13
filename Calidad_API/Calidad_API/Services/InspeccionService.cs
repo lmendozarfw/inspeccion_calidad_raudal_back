@@ -192,7 +192,7 @@ namespace Calidad_API.Services
                 IdOperacion = dto.IdOperacion,
                 IdTipoInspeccion = dto.IdTipoInspeccion,
                 IdUsuario = idUsuario,
-                FechaInspeccion = DateTime.UtcNow,
+                FechaInspeccion = DateTime.Now,
                 Dispositivo = dto.Dispositivo,
                 Observaciones = dto.Observaciones,
                 Estado = "ABIERTA"
@@ -237,7 +237,7 @@ namespace Calidad_API.Services
                 Unidad = dto.Unidad,
                 ValorObtenido = dto.ValorObtenido,
                 ResultadoCualitativo = dto.ResultadoCualitativo,
-                FechaRegistro = DateTime.UtcNow,
+                FechaRegistro = DateTime.Now,
                 IdUsuario = idUsuario
             };
 
@@ -356,14 +356,14 @@ namespace Calidad_API.Services
                         ? null
                         : request.Contexto.Punto.Trim(),
                     IdModelo = idModelo,
-                    FechaPrimerScan = DateTime.UtcNow,
-                    FechaUltimoScan = DateTime.UtcNow
+                    FechaPrimerScan = DateTime.Now,
+                    FechaUltimoScan = DateTime.Now
                 };
                 _context.Transfers.Add(transfer);
             }
             else
             {
-                transfer.FechaUltimoScan = DateTime.UtcNow;
+                transfer.FechaUltimoScan = DateTime.Now;
                 transfer.Programa = programa;
                 if (!string.IsNullOrWhiteSpace(request.Contexto.Lista))
                     transfer.Lista = request.Contexto.Lista.Trim();
@@ -403,7 +403,7 @@ namespace Calidad_API.Services
                     IdOperacion = item.IdOperacion,
                     IdTipoInspeccion = item.IdTipoInspeccion,
                     IdUsuario = idUsuario,
-                    FechaInspeccion = DateTime.UtcNow,
+                    FechaInspeccion = DateTime.Now,
                     Dispositivo = item.Dispositivo,
                     Observaciones = item.Observaciones,
                     Estado = "ABIERTA"
@@ -438,7 +438,7 @@ namespace Calidad_API.Services
                             TipoRegistro = tipoReg,
                             Lado = lado,
                             Cantidad = 1,
-                            FechaRegistro = DateTime.UtcNow,
+                            FechaRegistro = DateTime.Now,
                             IdUsuario = idUsuario
                         };
 
@@ -711,7 +711,7 @@ namespace Calidad_API.Services
                 IdPieza = defecto.IdPieza.Value,
                 Cantidad = detalle.Cantidad <= 0 ? 1 : detalle.Cantidad,
                 IdUsuarioSolicita = idUsuario,
-                FechaSolicitud = DateTime.UtcNow,
+                FechaSolicitud = DateTime.Now,
                 Estado = "PENDIENTE"
             };
 

@@ -61,7 +61,7 @@ namespace Calidad_API.Services
                 Nombre = dto.Nombre.Trim(),
                 IdUnidadNegocio = dto.IdUnidadNegocio,
                 Activo = true,
-                FechaAlta = DateTime.UtcNow
+                FechaAlta = DateTime.Now
             };
             _context.Departamentos.Add(e);
             await _context.SaveChangesAsync();

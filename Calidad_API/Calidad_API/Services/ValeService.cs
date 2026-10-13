@@ -161,7 +161,7 @@ namespace Calidad_API.Services
                 Folio = folio,
                 IdInspeccion = dto.IdInspeccion,
                 IdUsuarioSolicita = idUsuario,
-                FechaGeneracion = DateTime.UtcNow,
+                FechaGeneracion = DateTime.Now,
                 Estado = "GENERADO"
             };
 
@@ -252,7 +252,7 @@ namespace Calidad_API.Services
                 IdUsuarioSolicita = idUsuario,
                 IdUsuarioAutoriza = idSupervisor.Value,
                 IdInspeccion = dto.IdInspeccion,
-                FechaCreacion = DateTime.UtcNow
+                FechaCreacion = DateTime.Now
             });
 
             await _context.SaveChangesAsync();

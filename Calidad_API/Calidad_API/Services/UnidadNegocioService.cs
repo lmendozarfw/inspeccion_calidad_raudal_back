@@ -33,7 +33,7 @@ namespace Calidad_API.Services
                 Codigo = dto.Codigo.Trim().ToUpper(),
                 Nombre = dto.Nombre.Trim(),
                 Activo = true,
-                FechaAlta = DateTime.UtcNow
+                FechaAlta = DateTime.Now
             };
             _context.UnidadesNegocio.Add(e);
             await _context.SaveChangesAsync();

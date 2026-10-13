@@ -113,7 +113,7 @@ namespace Calidad_API.Services.Repositories
                 Nombre = user.NombreCompleto.Trim(),
                 PasswordHash = _passwordHasher.HashPassword(new Usuario(), user.Password),
                 Activo = true,
-                FechaAlta = DateTime.UtcNow,
+                FechaAlta = DateTime.Now,
                 UsuarioRoles = idsRoles.Select(id => new UsuarioRol { IdRol = id }).ToList(),
             };
 

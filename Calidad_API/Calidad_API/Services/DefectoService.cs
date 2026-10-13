@@ -183,7 +183,7 @@ namespace Calidad_API.Services
                 IdPieza = dto.AplicaPieza ? dto.IdPieza : null,
                 Ponderacion = dto.Ponderacion,
                 Activo = true,
-                FechaAlta = DateTime.UtcNow
+                FechaAlta = DateTime.Now
             };
 
             foreach (var operacion in operaciones)

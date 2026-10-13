@@ -52,7 +52,7 @@ namespace Calidad_API.Services
                 var corte = new CorteVale
                 {
                     IdOperacion = g.Key,
-                    FechaCorte = DateTime.UtcNow,
+                    FechaCorte = DateTime.Now,
                     Estado = "PENDIENTE_AUTH"
                 };
 
@@ -240,7 +240,7 @@ namespace Calidad_API.Services
                 // Si el vale exige id_inspeccion NOT NULL, usa la primera solicitud como referencia
                 IdInspeccion = corte.Solicitudes.First().IdInspeccion,
                 IdUsuarioSolicita = idUsuarioAutoriza, // o el que prefieran (quien autoriza)
-                FechaGeneracion = DateTime.UtcNow,
+                FechaGeneracion = DateTime.Now,
                 Estado = "GENERADO"
             };
 
@@ -263,7 +263,7 @@ namespace Calidad_API.Services
             // Marcar corte y solicitudes
             corte.Estado = "AUTORIZADO";
             corte.IdUsuarioAutoriza = idSupervisor.Value;
-            corte.FechaAutorizacion = DateTime.UtcNow;
+            corte.FechaAutorizacion = DateTime.Now;
             corte.IdVale = vale.IdVale;
 
             foreach (var sol in corte.Solicitudes)
@@ -278,7 +278,7 @@ namespace Calidad_API.Services
                 IdUsuarioSolicita = idUsuarioAutoriza,
                 IdUsuarioAutoriza = idSupervisor.Value,
                 IdInspeccion = vale.IdInspeccion,
-                FechaCreacion = DateTime.UtcNow
+                FechaCreacion =  DateTime.Now,
             });
 
             await _context.SaveChangesAsync();
