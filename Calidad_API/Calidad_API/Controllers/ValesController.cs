@@ -98,6 +98,12 @@ namespace Calidad_API.Controllers
         public async Task<ActionResult<IEnumerable<ValeDto>>> GetByInspeccion(long idInspeccion)
     => Ok(await _valeService.GetByInspeccionAsync(idInspeccion));
 
+        [HttpGet("mis-areas")]
+        public async Task<ActionResult<IEnumerable<ValeDto>>> GetMisAreas()
+        {
+            return Ok(await _valeService.GetByUsuarioAreaAsync(GetUserId()));
+        }
+
         [HttpPost("corte")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
         public async Task<ActionResult<CorteEjecutarResponse>> EjecutarCorte(

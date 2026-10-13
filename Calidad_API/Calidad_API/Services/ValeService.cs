@@ -70,6 +70,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
             return v is null ? null : Map(v);
@@ -86,6 +87,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion)
                 .FirstOrDefaultAsync(x => x.Folio == folio);
 
             return v is null ? null : Map(v);
@@ -102,6 +104,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion)
                 .Where(x => x.IdInspeccion == idInspeccion)
                 .OrderByDescending(x => x.FechaGeneracion)
                 .ToListAsync();
@@ -349,6 +352,7 @@ namespace Calidad_API.Services
             var vale = await _context.Vales
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
             if (vale is null) return null;
@@ -396,6 +400,8 @@ namespace Calidad_API.Services
     v.IdVale,
     v.Folio,
     v.IdInspeccion,
+    v.Inspeccion.IdOperacion,
+    v.Inspeccion.Operacion.Nombre,
     v.IdUsuarioSolicita,
     v.UsuarioSolicita.Nombre,
     v.FechaGeneracion,
@@ -409,7 +415,8 @@ namespace Calidad_API.Services
             d.Pieza.Codigo,
             d.Pieza.Nombre,
             d.Cantidad))
-        .ToList()
+        .ToList(),
+    string.IsNullOrWhiteSpace(v.RutaPdf) ? null : $"/vales/{v.IdVale}/pdf"
 );
 
         /// <summary>
@@ -423,7 +430,23 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.UsuarioSolicita)
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
+                .Include(x => x.Inspeccion)
                 .Where(x => x.IdInspeccion == idInspeccion)
+                .OrderByDescending(x => x.FechaGeneracion)
+                .ToListAsync();
+
+            return list.Select(Map);
+        }
+
+        public async Task<IEnumerable<ValeDto>> GetByUsuarioAreaAsync(long idUsuario)
+        {
+            var list = await _context.Vales
+                .AsNoTracking()
+                .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
+                .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
+                .Where(x => _context.PermisosOperacion.Any(p =>
+                    p.IdUsuario == idUsuario && p.IdOperacion == x.Inspeccion.IdOperacion))
                 .OrderByDescending(x => x.FechaGeneracion)
                 .ToListAsync();
 

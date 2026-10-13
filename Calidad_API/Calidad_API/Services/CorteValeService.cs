@@ -338,6 +338,8 @@ namespace Calidad_API.Services
             v.IdVale,
             v.Folio,
             v.IdInspeccion,
+            v.Inspeccion.IdOperacion,
+            v.Inspeccion.Operacion.Nombre,
             v.IdUsuarioSolicita,
             v.UsuarioSolicita.Nombre,
             v.FechaGeneracion,
@@ -352,7 +354,8 @@ namespace Calidad_API.Services
                     d.Pieza.Codigo,
                     d.Pieza.Nombre,
                     d.Cantidad))
-                .ToList()
+                .ToList(),
+            string.IsNullOrWhiteSpace(v.RutaPdf) ? null : $"/vales/{v.IdVale}/pdf"
         );
 
         // Copia de ValeService:

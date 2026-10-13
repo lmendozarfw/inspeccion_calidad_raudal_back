@@ -1,14 +1,19 @@
-﻿namespace Calidad_API.DTOs.Vales
+﻿using System.Text.Json.Serialization;
+
+namespace Calidad_API.DTOs.Vales
 {
     public record ValeDto(
         long IdVale,
         string Folio,
         long IdInspeccion,
+        long IdOperacion,
+        string NombreOperacion,
         long IdUsuarioSolicita,
         string UsuarioNombre,
         DateTime FechaGeneracion,
-        string? RutaPdf,
+        [property: JsonIgnore] string? RutaPdf,
         string Estado,
-        IReadOnlyList<ValeLineaDto> Lineas
+        IReadOnlyList<ValeLineaDto> Lineas,
+        string? PdfUrl
     );
 }
