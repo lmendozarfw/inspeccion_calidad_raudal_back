@@ -90,8 +90,22 @@ namespace Calidad_API.Controllers
             if (string.IsNullOrWhiteSpace(vale.RutaPdf) || !System.IO.File.Exists(vale.RutaPdf))
                 return NotFound(new { message = "El PDF del vale aún no está disponible." });
 
-            var bytes = await System.IO.File.ReadAllBytesAsync(vale.RutaPdf);
-            return File(bytes, "application/pdf", $"{vale.Folio}.pdf");
+            try
+            {
+                var bytes = await System.IO.File.ReadAllBytesAsync(vale.RutaPdf);
+                return File(bytes, "application/pdf", $"{vale.Folio}.pdf");
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                Console.WriteLine("===========================DESCARGA DE PDF===========================");
+                Console.WriteLine(vale.Folio);
+                Console.WriteLine("===========================FIN DE DESCARGA DE PDF===========================");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "No se pudo leer el PDF del vale. Verifique el acceso a la ruta de almacenamiento.",
+                    detalle = ex.Message
+                });
+            }
         }
 
         [HttpGet("inspeccion/{idInspeccion:long}")]

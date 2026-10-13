@@ -70,7 +70,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
-                .Include(x => x.Inspeccion)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
             return v is null ? null : Map(v);
@@ -87,7 +87,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
-                .Include(x => x.Inspeccion)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .FirstOrDefaultAsync(x => x.Folio == folio);
 
             return v is null ? null : Map(v);
@@ -104,7 +104,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
-                .Include(x => x.Inspeccion)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .Where(x => x.IdInspeccion == idInspeccion)
                 .OrderByDescending(x => x.FechaGeneracion)
                 .ToListAsync();
@@ -352,7 +352,7 @@ namespace Calidad_API.Services
             var vale = await _context.Vales
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
-                .Include(x => x.Inspeccion)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
             if (vale is null) return null;
@@ -430,7 +430,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.UsuarioSolicita)
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
-                .Include(x => x.Inspeccion)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .Where(x => x.IdInspeccion == idInspeccion)
                 .OrderByDescending(x => x.FechaGeneracion)
                 .ToListAsync();
