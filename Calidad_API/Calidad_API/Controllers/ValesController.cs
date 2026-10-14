@@ -118,6 +118,16 @@ namespace Calidad_API.Controllers
             return Ok(await _valeService.GetByUsuarioAreaAsync(GetUserId()));
         }
 
+        /// <summary>
+        /// Vales autorizados por el supervisor autenticado (token JWT).
+        /// </summary>
+        [HttpGet("autorizados")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<IEnumerable<ValeAutorizadoDto>>> GetValesAutorizados()
+        {
+            return Ok(await _valeService.GetValesAutorizadosAsync(GetUserId()));
+        }
+
         [HttpPost("corte")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
         public async Task<ActionResult<CorteEjecutarResponse>> EjecutarCorte(

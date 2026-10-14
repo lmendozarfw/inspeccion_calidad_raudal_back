@@ -11,6 +11,7 @@ namespace Calidad_API.Interfaces
         Task<ValeDto?> ActualizarEstadoAsync(long id, ValeUpdateEstadoDto dto);
         Task<IEnumerable<ValeDto>> GetByInspeccionAsync(long idInspeccion);
         Task<IEnumerable<ValeDto>> GetByUsuarioAreaAsync(long idUsuario);
+        Task<IEnumerable<ValeAutorizadoDto>> GetValesAutorizadosAsync(long idUsuarioAutoriza);
     }
 }
 

@@ -438,6 +438,54 @@ namespace Calidad_API.Services
             return list.Select(Map);
         }
 
+        public async Task<IEnumerable<ValeAutorizadoDto>> GetValesAutorizadosAsync(long idUsuarioAutoriza)
+        {
+            var registros = await _context.RegistrosAutorizacion
+                .AsNoTracking()
+                .Include(r => r.UsuarioAutoriza)
+                .Where(r => r.IdUsuarioAutoriza == idUsuarioAutoriza)
+                .ToListAsync();
+
+            if (registros.Count == 0)
+                return Enumerable.Empty<ValeAutorizadoDto>();
+
+            var autorizacionPorInspeccion = registros
+                .GroupBy(r => r.IdInspeccion)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.OrderBy(r => r.FechaCreacion).First());
+
+            var idsInspeccion = autorizacionPorInspeccion.Keys.ToList();
+
+            var vales = await _context.Vales
+                .AsNoTracking()
+                .Include(v => v.UsuarioSolicita)
+                .Include(v => v.Inspeccion).ThenInclude(i => i.Operacion)
+                .Include(v => v.Inspeccion).ThenInclude(i => i.Transfer)
+                .Where(v => idsInspeccion.Contains(v.IdInspeccion))
+                .OrderByDescending(v => v.FechaGeneracion)
+                .ToListAsync();
+
+            return vales.Select(v =>
+            {
+                var reg = autorizacionPorInspeccion[v.IdInspeccion];
+                return new ValeAutorizadoDto(
+                    v.IdVale,
+                    v.Folio,
+                    v.Estado,
+                    v.IdInspeccion,
+                    v.Inspeccion.Operacion?.Nombre,
+                    v.Inspeccion.Transfer?.Programa,
+                    v.Inspeccion.Transfer?.Lote,
+                    v.UsuarioSolicita.Nombre,
+                    reg.UsuarioAutoriza.Nombre,
+                    v.FechaGeneracion,
+                    reg.FechaCreacion,
+                    v.Inspeccion.FechaInspeccion,
+                    string.IsNullOrWhiteSpace(v.RutaPdf) ? null : $"/vales/{v.IdVale}/pdf");
+            });
+        }
+
         public async Task<IEnumerable<ValeDto>> GetByUsuarioAreaAsync(long idUsuario)
         {
             var list = await _context.Vales
