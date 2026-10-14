@@ -43,7 +43,7 @@ namespace Calidad_API.Services.Repositories
         public async Task<List<UsuarioDto>> GetAllAsync(string? search)
         {
             var query = _context.Usuarios.Include(x => x.UsuarioRoles).ThenInclude(ur => ur.Rol).Include(x => x.PermisosOperacion).ThenInclude(po => po.Operacion).AsNoTracking()
-                .OrderBy(u => u.Username).AsNoTracking().AsQueryable();
+                .OrderByDescending(u => u.FechaAlta).AsNoTracking().AsQueryable();
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(u => u.Nombre.Contains(search) || 
@@ -265,6 +265,43 @@ namespace Calidad_API.Services.Repositories
             {
                 return null;
             }
+
+            var asignacionesActuales = await _context.PiocheroDefectos
+                .Where(pd => pd.IdUsuario == idUsuario)
+                .ToListAsync();
+
+            _context.PiocheroDefectos.RemoveRange(asignacionesActuales);
+            await _context.SaveChangesAsync();
+
+            var nuevasAsignaciones = idsDefectos.Select(idDefecto => new PiocheroDefecto
+            {
+                IdUsuario = idUsuario,
+                IdDefecto = idDefecto
+            }).ToList();
+
+            await _context.PiocheroDefectos.AddRangeAsync(nuevasAsignaciones);
+            await _context.SaveChangesAsync();
+
+            return await GetDefectosByUsuarioAsync(idUsuario);
+        }
+
+        public async Task<PiocheroDefectosDto?> AutoAsignarDefectosAsync(long idUsuario)
+        {
+            if (!await EsPiocheroAsync(idUsuario))
+            {
+                return null;
+            }
+
+            var idsOperaciones = await _context.PermisosOperacion
+                .Where(p => p.IdUsuario == idUsuario)
+                .Select(p => p.IdOperacion)
+                .ToListAsync();
+
+            var idsDefectos = await _context.DefectosOperacion
+                .Where(dop => idsOperaciones.Contains(dop.IdOperacion))
+                .Select(dop => dop.IdDefecto)
+                .Distinct()
+                .ToListAsync();
 
             var asignacionesActuales = await _context.PiocheroDefectos
                 .Where(pd => pd.IdUsuario == idUsuario)

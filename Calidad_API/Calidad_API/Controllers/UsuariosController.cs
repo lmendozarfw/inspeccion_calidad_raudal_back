@@ -78,6 +78,16 @@ namespace Calidad_API.Controllers
                 : Ok(result);
         }
 
+        [HttpPost("{id}/defectos/auto-asignar")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<PiocheroDefectosDto>> AutoAsignarDefectos(long id)
+        {
+            var result = await _repository.AutoAsignarDefectosAsync(id);
+            return result is null
+                ? BadRequest(new { mensaje = "El usuario no existe o no tiene el rol PIOCHERO." })
+                : Ok(result);
+        }
+
         [HttpPut("{id}/cambiar-password")]
         public async Task<IActionResult> CambiarPassword(long id, [FromBody] CambiarPasswordDto dto)
         {

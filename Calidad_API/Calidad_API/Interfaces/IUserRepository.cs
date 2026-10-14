@@ -15,6 +15,7 @@ namespace Calidad_API.Interfaces
         Task<UsuarioDto?> AsignarOperacionesAsync(long idUsuario, AsignarOperacionesDto dto);
         Task<PiocheroDefectosDto?> GetDefectosByUsuarioAsync(long idUsuario);
         Task<PiocheroDefectosDto?> AsignarDefectosAsync(long idUsuario, AsignarDefectosDto dto);
+        Task<PiocheroDefectosDto?> AutoAsignarDefectosAsync(long idUsuario);
         Task<bool> EsPiocheroAsync(long idUsuario);
         Task<bool> CambiarPasswordAsync(long id, CambiarPasswordDto dto);
     }
