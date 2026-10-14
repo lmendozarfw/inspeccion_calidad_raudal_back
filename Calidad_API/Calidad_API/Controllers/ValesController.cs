@@ -97,9 +97,6 @@ namespace Calidad_API.Controllers
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                Console.WriteLine("===========================DESCARGA DE PDF===========================");
-                Console.WriteLine(vale.Folio);
-                Console.WriteLine("===========================FIN DE DESCARGA DE PDF===========================");
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     message = "No se pudo leer el PDF del vale. Verifique el acceso a la ruta de almacenamiento.",

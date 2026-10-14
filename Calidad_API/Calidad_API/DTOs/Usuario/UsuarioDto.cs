@@ -12,6 +12,7 @@ public class UsuarioDto
     public List<RolDto> Roles { get; set; } = [];
     public List<long> IdsOperacion { get; set; } = [];
     public List<OperacionDto> Operaciones { get; set; } = [];
+    public List<long> IdsDefecto { get; set; } = [];
     public bool Activo { get; set; }
     public DateTime FechaCreacion { get; set; }
 }

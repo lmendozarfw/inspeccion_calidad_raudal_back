@@ -60,6 +60,24 @@ namespace Calidad_API.Controllers
                 : Ok(usuario);
         }
         
+        [HttpGet("{id}/defectos")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<PiocheroDefectosDto>> GetDefectos(long id)
+        {
+            var result = await _repository.GetDefectosByUsuarioAsync(id);
+            return result is null ? NotFound(new { mensaje = "Usuario no encontrado." }) : Ok(result);
+        }
+
+        [HttpPut("{id}/defectos")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<PiocheroDefectosDto>> AsignarDefectos(long id, [FromBody] AsignarDefectosDto dto)
+        {
+            var result = await _repository.AsignarDefectosAsync(id, dto);
+            return result is null
+                ? BadRequest(new { mensaje = "Datos inválidos, defectos no encontrados, el usuario no existe o no tiene el rol PIOCHERO." })
+                : Ok(result);
+        }
+
         [HttpPut("{id}/cambiar-password")]
         public async Task<IActionResult> CambiarPassword(long id, [FromBody] CambiarPasswordDto dto)
         {

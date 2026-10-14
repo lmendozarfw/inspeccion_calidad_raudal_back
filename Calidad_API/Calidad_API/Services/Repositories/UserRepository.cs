@@ -61,6 +61,7 @@ namespace Calidad_API.Services.Repositories
                     Roles = u.UsuarioRoles.Select(ur => new RolDto(ur.Rol.IdRol, ur.Rol.Codigo, ur.Rol.Nombre)).ToList(),
                     IdsOperacion = u.PermisosOperacion.Select(p => p.IdOperacion).ToList(),
                     Operaciones = u.PermisosOperacion.Select(p => new OperacionDto(p.IdOperacion, p.Operacion.Codigo, p.Operacion.Nombre, p.Operacion.Proceso, p.Operacion.Activo, null, null, p.Operacion.Departamento.Nombre)).ToList(),
+                    IdsDefecto = u.PiocheroDefectos.Select(pd => pd.IdDefecto).ToList(),
                     Activo = u.Activo,
                     FechaCreacion = u.FechaAlta
                 })
@@ -79,6 +80,7 @@ namespace Calidad_API.Services.Repositories
                     IdsRol = u.UsuarioRoles.Select(ur => ur.IdRol).ToList(),
                     Roles = u.UsuarioRoles.Select(ur => new RolDto(ur.Rol.IdRol, ur.Rol.Codigo, ur.Rol.Nombre)).ToList(),
                     IdsOperacion = u.PermisosOperacion.Select(p => p.IdOperacion).ToList(),
+                    IdsDefecto = u.PiocheroDefectos.Select(pd => pd.IdDefecto).ToList(),
                     Activo = u.Activo,
                     FechaCreacion = u.FechaAlta
                 })
@@ -222,6 +224,67 @@ namespace Calidad_API.Services.Repositories
             return await GetByIdAsync(idUsuario);
         }
 
+        public async Task<PiocheroDefectosDto?> GetDefectosByUsuarioAsync(long idUsuario)
+        {
+            var usuario = await _context.Usuarios
+                .AsNoTracking()
+                .Where(u => u.IdUsuario == idUsuario)
+                .Select(u => new
+                {
+                    u.IdUsuario,
+                    u.Nombre,
+                    Defectos = u.PiocheroDefectos
+                        .Select(pd => new DefectoAsignadoDto(
+                            pd.Defecto.IdDefecto,
+                            pd.Defecto.Codigo,
+                            pd.Defecto.Nombre))
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            if (usuario is null)
+            {
+                return null;
+            }
+
+            return new PiocheroDefectosDto(
+                usuario.IdUsuario,
+                usuario.Nombre,
+                usuario.Defectos.OrderBy(d => d.Codigo).ToList());
+        }
+
+        public async Task<PiocheroDefectosDto?> AsignarDefectosAsync(long idUsuario, AsignarDefectosDto dto)
+        {
+            if (!await EsPiocheroAsync(idUsuario))
+            {
+                return null;
+            }
+
+            var idsDefectos = dto.IdsDefecto.Distinct().ToList();
+            if (!await ExistenTodosLosDefectosAsync(idsDefectos))
+            {
+                return null;
+            }
+
+            var asignacionesActuales = await _context.PiocheroDefectos
+                .Where(pd => pd.IdUsuario == idUsuario)
+                .ToListAsync();
+
+            _context.PiocheroDefectos.RemoveRange(asignacionesActuales);
+            await _context.SaveChangesAsync();
+
+            var nuevasAsignaciones = idsDefectos.Select(idDefecto => new PiocheroDefecto
+            {
+                IdUsuario = idUsuario,
+                IdDefecto = idDefecto
+            }).ToList();
+
+            await _context.PiocheroDefectos.AddRangeAsync(nuevasAsignaciones);
+            await _context.SaveChangesAsync();
+
+            return await GetDefectosByUsuarioAsync(idUsuario);
+        }
+
         private async Task<bool> ExistenTodosLosRolesAsync(List<short> idsRoles)
         {
             var cantidadRolesExistentes = await _context.Roles.CountAsync(r => idsRoles.Contains(r.IdRol));
@@ -233,6 +296,24 @@ namespace Calidad_API.Services.Repositories
             var cantidadOperacionesExistentes = await _context.Operaciones
                 .CountAsync(o => idsOperaciones.Contains(o.IdOperacion));
             return cantidadOperacionesExistentes == idsOperaciones.Count;
+        }
+
+        private async Task<bool> ExistenTodosLosDefectosAsync(List<long> idsDefectos)
+        {
+            if (idsDefectos.Count == 0)
+            {
+                return true;
+            }
+
+            var cantidadDefectosExistentes = await _context.Defectos
+                .CountAsync(d => idsDefectos.Contains(d.IdDefecto));
+            return cantidadDefectosExistentes == idsDefectos.Count;
+        }
+
+        public async Task<bool> EsPiocheroAsync(long idUsuario)
+        {
+            return await _context.UsuarioRoles
+                .AnyAsync(ur => ur.IdUsuario == idUsuario && ur.Rol.Codigo == "PIOCHERO");
         }
         
         public async Task<bool> CambiarPasswordAsync(long id, CambiarPasswordDto dto)

@@ -28,7 +28,7 @@ namespace Calidad_API.Data
         public DbSet<Defecto> Defectos { get; set; } = null!;
         public DbSet<DefectoTipoInspeccion> DefectoTiposInspeccion { get; set; } = null!;
         public DbSet<DefectoOperacion> DefectosOperacion { get; set; } = null!;
-
+        public DbSet<PiocheroDefecto> PiocheroDefectos { get; set; } = null!;
         // ——— Operación (flujo) ———
         public DbSet<Transfer> Transfers { get; set; } = null!;
         public DbSet<Inspeccion> Inspecciones { get; set; } = null!;
@@ -224,6 +224,21 @@ namespace Calidad_API.Data
                 e.HasOne(x => x.Defecto).WithMany(d => d.DefectosOperacion).HasForeignKey(x => x.IdDefecto).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(x => x.Operacion).WithMany(o => o.DefectosOperacion).HasForeignKey(x => x.IdOperacion).OnDelete(DeleteBehavior.Restrict);
 
+            });
+
+            modelBuilder.Entity<PiocheroDefecto>(e =>
+            {
+                e.HasKey(x => new { x.IdUsuario, x.IdDefecto });
+
+                e.HasOne(x => x.Usuario)
+                    .WithMany(u => u.PiocheroDefectos)
+                    .HasForeignKey(x => x.IdUsuario)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Defecto)
+                    .WithMany(d => d.PiocheroDefectos)
+                    .HasForeignKey(x => x.IdDefecto)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             // =====================================================

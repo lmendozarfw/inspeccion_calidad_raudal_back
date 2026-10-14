@@ -63,22 +63,44 @@ namespace Calidad_API.Services
             return list.Select(Map);
         }
 
-        public async Task<List<InspeccionDto>> GetAbiertasByTransferAsync(string programa, string lote, string modelo)
+        public async Task<List<InspeccionDto>> GetAbiertasByTransferAsync(string programa, string lote, string modelo, long idUsuario)
         {
             programa = programa.Trim();
             lote = lote.Trim();
             var modeloFound = await _context.Modelos.Where(m => m.CodigoMB.Contains(modelo) || m.CodigoCombinacion.Contains(modelo)).FirstOrDefaultAsync();
-            Console.WriteLine("========================VEAMOS=====================");
-            Console.WriteLine(modeloFound != null ? modeloFound.IdModelo : "null");
-            Console.WriteLine("========================FIN=====================");
-            return await _context.Inspecciones
+
+            var esPiochero = await _context.UsuarioRoles
+                .AnyAsync(ur => ur.IdUsuario == idUsuario && ur.Rol.Codigo == "PIOCHERO");
+
+            var defectosPermitidos = new HashSet<long>();
+            if (esPiochero)
+            {
+                defectosPermitidos = (await _context.PiocheroDefectos
+                    .Where(pd => pd.IdUsuario == idUsuario)
+                    .Select(pd => pd.IdDefecto)
+                    .ToListAsync())
+                    .ToHashSet();
+            }
+
+            var query = _context.Inspecciones
                 .AsNoTracking()
                 .Where(x =>
                     x.Estado == "ABIERTA"
                     && x.Transfer.Programa == programa
                     && x.Transfer.Lote == lote
                     && x.Transfer.IdModelo == (modeloFound != null ? modeloFound.IdModelo : null)
-                    && x.Detalles.Any(d => d.TipoRegistro == "PIOCHA"))
+                    && x.Detalles.Any(d => d.TipoRegistro == "PIOCHA"));
+
+            if (esPiochero)
+            {
+                if (defectosPermitidos.Count == 0)
+                {
+                    return new List<InspeccionDto>();
+                }
+                query = query.Where(x => x.Detalles.Any(d => d.TipoRegistro == "PIOCHA" && defectosPermitidos.Contains(d.IdDefecto)));
+            }
+
+            return await query
                 .OrderByDescending(x => x.FechaInspeccion)
                 .Select(x => new InspeccionDto(
                     x.IdInspeccion,
@@ -98,6 +120,7 @@ namespace Calidad_API.Services
 
                     x.Detalles
                         .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Where(d => !esPiochero || defectosPermitidos.Contains(d.IdDefecto))
                         .Select(d => new InspeccionDetalleDto(
                             d.IdDetalle,
                             d.IdDefecto,
