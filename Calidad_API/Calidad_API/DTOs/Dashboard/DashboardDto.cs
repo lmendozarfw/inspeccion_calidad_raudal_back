@@ -134,3 +134,46 @@ public record DashboardDetalleItemDto(
     decimal Cantidad,
     string Usuario
 );
+
+public class DashboardDiaFiltro
+{
+    /// <summary>Día a evaluar. Si null, usa hoy (UTC o local según acuerden).</summary>
+    public DateTime? Fecha { get; set; }
+}
+
+public class DashboardRangoFiltro
+{
+    public DateTime? Desde { get; set; }
+    public DateTime? Hasta { get; set; }
+}
+
+public class HeatmapOperacionDto
+{
+    public string Fecha { get; set; } = "";
+    /// <summary>Una fila por operación; series = horas 00..23</summary>
+    public List<HeatmapFilaDto> Filas { get; set; } = [];
+}
+
+public class HeatmapFilaDto
+{
+    public long IdOperacion { get; set; }
+    public string Name { get; set; } = ""; // nombre operación (ngx-charts)
+    public List<NombreValorDto> Series { get; set; } = [];
+}
+
+public class SerieTiempoDto
+{
+    public string Nombre { get; set; } = "Defectos";
+    public List<NombreValorDto> Series { get; set; } = [];
+}
+
+public class DashboardSemanaBloqueDto
+{
+    public DateTime Desde { get; set; }
+    public DateTime Hasta { get; set; }
+    public SerieTiempoDto DefectosPorTiempo { get; set; } = new();
+    public List<NombreValorDto> TopDefectos { get; set; } = [];
+    public List<NombreValorDto> DefectosPorModelo { get; set; } = [];
+    public List<NombreValorDto> DefectosPorPrograma { get; set; } = [];
+    public List<NombreValorDto> DefectosPorLote { get; set; } = [];
+}

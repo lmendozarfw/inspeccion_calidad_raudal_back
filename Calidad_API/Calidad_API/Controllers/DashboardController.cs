@@ -33,5 +33,18 @@ public class DashboardController : ControllerBase
         return Ok(list);
     }
 
+    [HttpGet("heatmap")]
+    public async Task<ActionResult<HeatmapOperacionDto>> Heatmap([FromQuery] DateTime? fecha)
+    => Ok(await _dhasboardService.GetHeatmapPorOperacionAsync(fecha));
+
+    [HttpGet("top-por-operacion")]
+    public async Task<ActionResult<List<TopDefectosPorOperacionDto>>> TopPorOperacion([FromQuery] DateTime? fecha)
+        => Ok(await _dhasboardService.GetTopPorOperacionDiaAsync(fecha));
+
+    [HttpGet("bloque-rango")]
+    public async Task<ActionResult<DashboardSemanaBloqueDto>> BloqueRango(
+        [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta)
+        => Ok(await _dhasboardService.GetBloqueRangoAsync(desde, hasta));
+
 
 }

@@ -15,6 +15,28 @@ public class DashboardService : IDashboardService
     private const string SerieDefectosNombre = "Defectos";
     private const string FormatoFecha = "yyyy-MM-dd";
 
+    private static (DateTime desde, DateTime hastaExcl) Dia(DateTime? fecha)
+    {
+        var d = (fecha ?? DateTime.UtcNow).Date; // o Convertir a hora México si hace falta
+        return (d, d.AddDays(1));
+    }
+
+    private static (DateTime desde, DateTime hastaExcl) RangoOSemana(DateTime? desde, DateTime? hasta)
+    {
+        if (desde.HasValue && hasta.HasValue)
+            return (desde.Value.Date, hasta.Value.Date.AddDays(1));
+
+        // Semana actual: lunes → domingo (ajustar si usan otro inicio)
+        var today = DateTime.UtcNow.Date;
+        var diff = ((int)today.DayOfWeek + 6) % 7; // lunes = 0
+        var lun = today.AddDays(-diff);
+        return (lun, lun.AddDays(7));
+    }
+
+    private IQueryable<InspeccionDetalle> DefectosEntre(DateTime desde, DateTime hastaExcl) =>
+        _context.InspeccionDetalles.AsNoTracking()
+            .Where(d => d.FechaRegistro >= desde && d.FechaRegistro < hastaExcl);
+
     private readonly ApplicationDbContext _context;
 
     public DashboardService(ApplicationDbContext context)
@@ -269,7 +291,7 @@ public class DashboardService : IDashboardService
 
     public async Task<IReadOnlyList<DashboardDetalleItemDto>> GetDetalleAsync(DashboardDetalleFiltro f)
     {
-       
+
 
         var q = _context.InspeccionDetalles.AsNoTracking()
             .Include(d => d.Defecto).ThenInclude(def => def.Criticidad)
@@ -338,4 +360,148 @@ public class DashboardService : IDashboardService
             ))
             .ToListAsync();
     }
+
+    public async Task<HeatmapOperacionDto> GetHeatmapPorOperacionAsync(DateTime? fecha)
+    {
+        var (desde, hastaExcl) = Dia(fecha);
+        var fechaStr = desde.ToString(FormatoFecha);
+
+        var planos = await DefectosEntre(desde, hastaExcl)
+            .GroupBy(d => new
+            {
+                d.Inspeccion.IdOperacion,
+                Operacion = d.Inspeccion.Operacion.Nombre,
+                d.FechaRegistro.Hour
+            })
+            .Select(g => new
+            {
+                g.Key.IdOperacion,
+                g.Key.Operacion,
+                g.Key.Hour,
+                Valor = g.Count()
+            })
+            .ToListAsync();
+
+        var filas = planos
+            .GroupBy(x => new { x.IdOperacion, x.Operacion })
+            .OrderBy(g => g.Key.Operacion)
+            .Select(g =>
+            {
+                var map = g.ToDictionary(x => x.Hour, x => x.Valor);
+                return new HeatmapFilaDto
+                {
+                    IdOperacion = g.Key.IdOperacion,
+                    Name = g.Key.Operacion,
+                    Series = Enumerable.Range(0, 24)
+                        .Select(h => new NombreValorDto
+                        {
+                            Nombre = h.ToString("00"),
+                            Valor = map.TryGetValue(h, out var v) ? v : 0
+                        })
+                        .ToList()
+                };
+            })
+            .ToList();
+
+        return new HeatmapOperacionDto { Fecha = fechaStr, Filas = filas };
+    }
+
+    public async Task<List<TopDefectosPorOperacionDto>> GetTopPorOperacionDiaAsync(DateTime? fecha)
+    {
+        var (desde, hastaExcl) = Dia(fecha);
+
+        var planos = await DefectosEntre(desde, hastaExcl)
+            .GroupBy(d => new
+            {
+                d.Inspeccion.IdOperacion,
+                Operacion = d.Inspeccion.Operacion.Nombre,
+                d.IdDefecto,
+                Defecto = d.Defecto.Nombre
+            })
+            .Select(g => new
+            {
+                g.Key.IdOperacion,
+                g.Key.Operacion,
+                g.Key.Defecto,
+                Valor = g.Count()
+            })
+            .ToListAsync();
+
+        return planos
+            .GroupBy(x => new { x.IdOperacion, x.Operacion })
+            .Select(g => new TopDefectosPorOperacionDto
+            {
+                IdOperacion = g.Key.IdOperacion,
+                Operacion = g.Key.Operacion,
+                Defectos = g.OrderByDescending(x => x.Valor).ThenBy(x => x.Defecto)
+                    .Take(TopDefectosLimite)
+                    .Select(x => new NombreValorDto { Nombre = x.Defecto, Valor = x.Valor })
+                    .ToList()
+            })
+            .OrderBy(x => x.Operacion)
+            .ToList();
+    }
+
+    public async Task<DashboardSemanaBloqueDto> GetBloqueRangoAsync(DateTime? desde, DateTime? hasta)
+    {
+        var (d0, d1) = RangoOSemana(desde, hasta);
+        var q = DefectosEntre(d0, d1);
+
+        var serie = await q
+            .GroupBy(x => x.FechaRegistro.Date)
+            .Select(g => new { Fecha = g.Key, Valor = g.Count() })
+            .OrderBy(x => x.Fecha)
+            .ToListAsync();
+
+        var top = await q
+            .GroupBy(x => x.Defecto.Nombre)
+            .Select(g => new NombreValorDto { Nombre = g.Key, Valor = g.Count() })
+            .OrderByDescending(x => x.Valor)
+            .Take(TopDefectosLimite)
+            .ToListAsync();
+
+        // Modelo: Transfer.IdModelo + navegación Modelo (ajusta nombres de props)
+        var porModelo = await q
+            .Where(x => x.Inspeccion.Transfer.IdModelo != null)
+            .GroupBy(x => x.Inspeccion.Transfer.Modelo!.Descripcion
+                          //?? x.Inspeccion.Transfer.Modelo!.CodigoModeloBase
+                          ?? ("Id " + x.Inspeccion.Transfer.IdModelo))
+            .Select(g => new NombreValorDto { Nombre = g.Key!, Valor = g.Count() })
+            .OrderByDescending(x => x.Valor)
+            .ToListAsync();
+
+        var porPrograma = await q
+            .Where(x => x.Inspeccion.Transfer.Programa != null)
+            .GroupBy(x => x.Inspeccion.Transfer.Programa!)
+            .Select(g => new NombreValorDto { Nombre = g.Key, Valor = g.Count() })
+            .OrderByDescending(x => x.Valor)
+            .ToListAsync();
+
+        var porLote = await q
+            .GroupBy(x => x.Inspeccion.Transfer.Lote)
+            .Select(g => new NombreValorDto { Nombre = g.Key, Valor = g.Count() })
+            .OrderByDescending(x => x.Valor)
+            .Take(20)
+            .ToListAsync();
+
+        return new DashboardSemanaBloqueDto
+        {
+            Desde = d0,
+            Hasta = d1.AddDays(-1),
+            DefectosPorTiempo = new SerieTiempoDto
+            {
+                Nombre = "Defectos",
+                Series = serie.Select(x => new NombreValorDto
+                {
+                    Nombre = x.Fecha.ToString(FormatoFecha),
+                    Valor = x.Valor
+                }).ToList()
+            },
+            TopDefectos = top,
+            DefectosPorModelo = porModelo,
+            DefectosPorPrograma = porPrograma,
+            DefectosPorLote = porLote
+        };
+    }
+
 }
