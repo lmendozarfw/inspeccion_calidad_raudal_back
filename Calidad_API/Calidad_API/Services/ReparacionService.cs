@@ -43,7 +43,7 @@ public class ReparacionService : IReparacionService
             x.IdInspeccion,
             x.FechaInicio, x.FechaFin,
             x.Inspeccion.Detalles
-                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Where(d => d.TipoRegistro == "REPROCESO")
                         .Select(d => new InspeccionDetalleDto(
                             d.IdDetalle,
                             d.IdDefecto,
@@ -80,7 +80,7 @@ public class ReparacionService : IReparacionService
             x.FechaInicio,
             x.FechaFin,
              x.Inspeccion.Detalles
-                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Where(d => d.TipoRegistro == "REPROCESO")
                         .Select(d => new InspeccionDetalleDto(
                             d.IdDetalle,
                             d.IdDefecto,
@@ -115,7 +115,7 @@ public class ReparacionService : IReparacionService
             x.FechaInicio,
             x.FechaFin,
              x.Inspeccion.Detalles
-                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Where(d => d.TipoRegistro == "REPROCESO")
                         .Select(d => new InspeccionDetalleDto(
                             d.IdDetalle,
                             d.IdDefecto,
@@ -152,7 +152,7 @@ public class ReparacionService : IReparacionService
             x.FechaInicio,
             x.FechaFin,
              x.Inspeccion.Detalles
-                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Where(d => d.TipoRegistro == "REPROCESO")
                         .Select(d => new InspeccionDetalleDto(
                             d.IdDetalle,
                             d.IdDefecto,

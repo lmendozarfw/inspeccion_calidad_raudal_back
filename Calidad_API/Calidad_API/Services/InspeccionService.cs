@@ -88,8 +88,7 @@ namespace Calidad_API.Services
                     x.Estado == "ABIERTA"
                     && x.Transfer.Programa == programa
                     && x.Transfer.Lote == lote
-                    && x.Transfer.IdModelo == (modeloFound != null ? modeloFound.IdModelo : null)
-                    && x.Detalles.Any(d => d.TipoRegistro == "PIOCHA"));
+                    && x.Transfer.IdModelo == (modeloFound != null ? modeloFound.IdModelo : null));
 
             if (esPiochero)
             {
@@ -97,7 +96,9 @@ namespace Calidad_API.Services
                 {
                     return new List<InspeccionDto>();
                 }
-                query = query.Where(x => x.Detalles.Any(d => d.TipoRegistro == "PIOCHA" && defectosPermitidos.Contains(d.IdDefecto)));
+                query = query.Where(x =>
+                    x.Detalles.Any(d => d.TipoRegistro == "REPROCESO" && defectosPermitidos.Contains(d.IdDefecto))
+                    && !x.Detalles.Any(d => d.TipoRegistro == "PIOCHA"));
             }
 
             return await query
@@ -119,7 +120,7 @@ namespace Calidad_API.Services
                     x.Estado,
 
                     x.Detalles
-                        .Where(d => d.TipoRegistro == "PIOCHA")
+                        .Where(d => !esPiochero || d.TipoRegistro == "REPROCESO")
                         .Where(d => !esPiochero || defectosPermitidos.Contains(d.IdDefecto))
                         .Select(d => new InspeccionDetalleDto(
                             d.IdDetalle,
@@ -550,39 +551,6 @@ namespace Calidad_API.Services
             i.Observaciones,
             i.Estado,
             i.Detalles.Select(d => new InspeccionDetalleDto(
-                d.IdDetalle,
-                d.IdDefecto,
-                d.Defecto.Codigo,
-                d.Defecto.Nombre,
-                d.TipoRegistro,
-                d.Lado,
-                d.Cantidad,
-                d.ValorObjetivo,
-                d.ValorMin,
-                d.ValorMax,
-                d.Unidad,
-                d.ValorObtenido,
-                d.ResultadoCualitativo,
-                d.FechaRegistro
-            ))
-        );
-
-        private static InspeccionDto MapWithOnlyPiochaDetails(Inspeccion i) => new(
-            i.IdInspeccion,
-            i.IdTransfer,
-            i.Transfer.Lote,
-            i.IdOperacion,
-            i.Operacion.Codigo,
-            i.Operacion.Nombre,
-            i.IdTipoInspeccion,
-            i.TipoInspeccion.Codigo,
-            i.IdUsuario,
-            i.Usuario.Nombre,
-            i.FechaInspeccion,
-            i.Dispositivo,
-            i.Observaciones,
-            i.Estado,
-            i.Detalles.Where(d => d.TipoRegistro == "PIOCHA").Select(d => new InspeccionDetalleDto(
                 d.IdDetalle,
                 d.IdDefecto,
                 d.Defecto.Codigo,
