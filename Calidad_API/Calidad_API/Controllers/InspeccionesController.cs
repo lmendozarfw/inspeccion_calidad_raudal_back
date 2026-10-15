@@ -100,7 +100,7 @@ namespace Calidad_API.Controllers
             if (string.IsNullOrWhiteSpace(programa) || string.IsNullOrWhiteSpace(lote) || string.IsNullOrWhiteSpace(modelo))
                 return BadRequest(new { message = "Programa, lote y modelo son obligatorios." });
 
-            var list = await _inspeccionService.GetAbiertasByTransferAsync(programa, lote, modelo);
+            var list = await _inspeccionService.GetAbiertasByTransferAsync(programa, lote, modelo, GetUserId());
             return Ok(list);
         }
 

@@ -42,5 +42,6 @@ namespace Calidad_API.Models
         public ICollection<DefectoTipoInspeccion> DefectoTiposInspeccion { get; set; } = new List<DefectoTipoInspeccion>();
         public ICollection<InspeccionDetalle> InspeccionDetalles { get; set; } = new List<InspeccionDetalle>();
         public ICollection<DefectoOperacion>  DefectosOperacion { get; set; } = new List<DefectoOperacion>();
+        public ICollection<PiocheroDefecto> PiocheroDefectos { get; set; } = new List<PiocheroDefecto>();
     }
 }

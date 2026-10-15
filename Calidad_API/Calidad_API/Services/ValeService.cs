@@ -70,6 +70,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
             return v is null ? null : Map(v);
@@ -86,6 +87,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .FirstOrDefaultAsync(x => x.Folio == folio);
 
             return v is null ? null : Map(v);
@@ -102,6 +104,7 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .Where(x => x.IdInspeccion == idInspeccion)
                 .OrderByDescending(x => x.FechaGeneracion)
                 .ToListAsync();
@@ -349,6 +352,7 @@ namespace Calidad_API.Services
             var vale = await _context.Vales
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
                 .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .FirstOrDefaultAsync(x => x.IdVale == id);
 
             if (vale is null) return null;
@@ -396,6 +400,8 @@ namespace Calidad_API.Services
     v.IdVale,
     v.Folio,
     v.IdInspeccion,
+    v.Inspeccion.IdOperacion,
+    v.Inspeccion.Operacion.Nombre,
     v.IdUsuarioSolicita,
     v.UsuarioSolicita.Nombre,
     v.FechaGeneracion,
@@ -409,7 +415,8 @@ namespace Calidad_API.Services
             d.Pieza.Codigo,
             d.Pieza.Nombre,
             d.Cantidad))
-        .ToList()
+        .ToList(),
+    string.IsNullOrWhiteSpace(v.RutaPdf) ? null : $"/vales/{v.IdVale}/pdf"
 );
 
         /// <summary>
@@ -423,7 +430,71 @@ namespace Calidad_API.Services
                 .AsNoTracking()
                 .Include(x => x.UsuarioSolicita)
                 .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
                 .Where(x => x.IdInspeccion == idInspeccion)
+                .OrderByDescending(x => x.FechaGeneracion)
+                .ToListAsync();
+
+            return list.Select(Map);
+        }
+
+        public async Task<IEnumerable<ValeAutorizadoDto>> GetValesAutorizadosAsync(long idUsuarioAutoriza)
+        {
+            var registros = await _context.RegistrosAutorizacion
+                .AsNoTracking()
+                .Include(r => r.UsuarioAutoriza)
+                .Where(r => r.IdUsuarioAutoriza == idUsuarioAutoriza)
+                .ToListAsync();
+
+            if (registros.Count == 0)
+                return Enumerable.Empty<ValeAutorizadoDto>();
+
+            var autorizacionPorInspeccion = registros
+                .GroupBy(r => r.IdInspeccion)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.OrderBy(r => r.FechaCreacion).First());
+
+            var idsInspeccion = autorizacionPorInspeccion.Keys.ToList();
+
+            var vales = await _context.Vales
+                .AsNoTracking()
+                .Include(v => v.UsuarioSolicita)
+                .Include(v => v.Inspeccion).ThenInclude(i => i.Operacion)
+                .Include(v => v.Inspeccion).ThenInclude(i => i.Transfer)
+                .Where(v => idsInspeccion.Contains(v.IdInspeccion))
+                .OrderByDescending(v => v.FechaGeneracion)
+                .ToListAsync();
+
+            return vales.Select(v =>
+            {
+                var reg = autorizacionPorInspeccion[v.IdInspeccion];
+                return new ValeAutorizadoDto(
+                    v.IdVale,
+                    v.Folio,
+                    v.Estado,
+                    v.IdInspeccion,
+                    v.Inspeccion.Operacion?.Nombre,
+                    v.Inspeccion.Transfer?.Programa,
+                    v.Inspeccion.Transfer?.Lote,
+                    v.UsuarioSolicita.Nombre,
+                    reg.UsuarioAutoriza.Nombre,
+                    v.FechaGeneracion,
+                    reg.FechaCreacion,
+                    v.Inspeccion.FechaInspeccion,
+                    string.IsNullOrWhiteSpace(v.RutaPdf) ? null : $"/vales/{v.IdVale}/pdf");
+            });
+        }
+
+        public async Task<IEnumerable<ValeDto>> GetByUsuarioAreaAsync(long idUsuario)
+        {
+            var list = await _context.Vales
+                .AsNoTracking()
+                .Include(x => x.UsuarioSolicita)
+                .Include(x => x.Inspeccion).ThenInclude(i => i.Operacion)
+                .Include(x => x.Detalles).ThenInclude(d => d.Pieza)
+                .Where(x => _context.PermisosOperacion.Any(p =>
+                    p.IdUsuario == idUsuario && p.IdOperacion == x.Inspeccion.IdOperacion))
                 .OrderByDescending(x => x.FechaGeneracion)
                 .ToListAsync();
 

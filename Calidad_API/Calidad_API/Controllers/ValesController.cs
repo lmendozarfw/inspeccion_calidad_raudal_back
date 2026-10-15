@@ -90,13 +90,40 @@ namespace Calidad_API.Controllers
             if (string.IsNullOrWhiteSpace(vale.RutaPdf) || !System.IO.File.Exists(vale.RutaPdf))
                 return NotFound(new { message = "El PDF del vale aún no está disponible." });
 
-            var bytes = await System.IO.File.ReadAllBytesAsync(vale.RutaPdf);
-            return File(bytes, "application/pdf", $"{vale.Folio}.pdf");
+            try
+            {
+                var bytes = await System.IO.File.ReadAllBytesAsync(vale.RutaPdf);
+                return File(bytes, "application/pdf", $"{vale.Folio}.pdf");
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "No se pudo leer el PDF del vale. Verifique el acceso a la ruta de almacenamiento.",
+                    detalle = ex.Message
+                });
+            }
         }
 
         [HttpGet("inspeccion/{idInspeccion:long}")]
         public async Task<ActionResult<IEnumerable<ValeDto>>> GetByInspeccion(long idInspeccion)
     => Ok(await _valeService.GetByInspeccionAsync(idInspeccion));
+
+        [HttpGet("mis-areas")]
+        public async Task<ActionResult<IEnumerable<ValeDto>>> GetMisAreas()
+        {
+            return Ok(await _valeService.GetByUsuarioAreaAsync(GetUserId()));
+        }
+
+        /// <summary>
+        /// Vales autorizados por el supervisor autenticado (token JWT).
+        /// </summary>
+        [HttpGet("autorizados")]
+        [Authorize(Roles = "ADMIN,SUPERVISOR")]
+        public async Task<ActionResult<IEnumerable<ValeAutorizadoDto>>> GetValesAutorizados()
+        {
+            return Ok(await _valeService.GetValesAutorizadosAsync(GetUserId()));
+        }
 
         [HttpPost("corte")]
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
@@ -111,7 +138,7 @@ namespace Calidad_API.Controllers
         [Authorize(Roles = "ADMIN,SUPERVISOR")]
         public async Task<ActionResult<IEnumerable<CorteResumenDto>>> CortesPendientes(
             [FromServices] ICorteValeService corteService)
-            => Ok(await corteService.GetPendientesAsync());
+            => Ok(await corteService.GetPendientesAsync(GetUserId(), User.IsInRole("ADMIN")));
 
         [HttpGet("cortes/{idCorte:long}")]
         [Authorize]
@@ -119,7 +146,7 @@ namespace Calidad_API.Controllers
             long idCorte,
             [FromServices] ICorteValeService corteService)
         {
-            var c = await corteService.GetByIdAsync(idCorte);
+            var c = await corteService.GetByIdAsync(idCorte, GetUserId(), User.IsInRole("ADMIN"));
             return c is null ? NotFound() : Ok(c);
         }
 
@@ -135,7 +162,7 @@ namespace Calidad_API.Controllers
             {
                 var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var idUsuario = long.Parse(claim!);
-                var vale = await corteService.AutorizarCorteAsync(idCorte, dto.CodigoAutorizacion, idUsuario);
+                var vale = await corteService.AutorizarCorteAsync(idCorte, dto.CodigoAutorizacion, idUsuario, User.IsInRole("ADMIN"));
                 return Ok(vale);
             }
             catch (UnauthorizedAccessException ex)
